@@ -21,7 +21,7 @@
         {
             "displayName": "Example Scene",
             "description": "Example scene demonstrating how to use ANPrez SDK in the project",
-            "path": "Samples~/Example Scene"
+            "path": "Samples~/ExampleScene"
         }
     ]
 }
