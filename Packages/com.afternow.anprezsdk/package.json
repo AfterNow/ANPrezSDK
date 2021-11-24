@@ -1,3 +1,4 @@
+
 {
   "name": "com.afternow.anprezsdk",
   "version": "0.1.4",
@@ -21,7 +22,7 @@
         {
             "displayName": "Example Scene",
             "description": "Example scene demonstrating how to use ANPrez SDK in the project",
-            "path": "Samples~/ExampleScene"
+            "path": "Packages/com.afternow.anprezsdk/Samples~/ExampleScene"
         }
     ]
 }
