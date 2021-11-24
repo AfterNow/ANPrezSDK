@@ -8,10 +8,20 @@
   "documentationUrl": "https://docs.google.com/document/d/1mXnxeM_QAFcKOZxsfJSmhrCuBKO3C0tScWuiHqsTNIU/edit?usp=sharing",
   "changelogUrl": "https://docs.google.com/document/d/103JTBr0HOGTZz2nGMzaoILGD-tAhr5hpi0x-YnYwTEg/edit?usp=sharing",
   "licensesUrl": "https://example.com/licensing.html",
-  "keywords": [],
+  "dependencies": {
+ },
+ "keywords": [
+  ],
   "author": {
     "name": "AfterNow",
     "email": "today@afternow.io",
     "url": "https://www.afternow.io"
-  }
+  },
+"samples": [
+        {
+            "displayName": "Example Scene",
+            "description": "Example scene demonstrating how to use ANPrez SDK in the project",
+            "path": "Samples~/Example Scene"
+        }
+    ]
 }
