@@ -16,12 +16,5 @@
     "name": "AfterNow",
     "email": "today@afternow.io",
     "url": "https://www.afternow.io"
-  },
-"samples": [
-        {
-            "displayName": "Example Scene",
-            "description": "Example scene demonstrating how to use ANPrez SDK in the project",
-            "path": "Packages/com.afternow.anprezsdk/Samples/ExampleScene"
-        }
-    ]
+  }
 }
