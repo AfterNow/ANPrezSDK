@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
 using static AfterNow.AnPrez.SDK.Unity.PresentationManager;
+using TMPro;
 
 namespace AfterNow.AnPrez.SDK.Unity
 {
@@ -15,8 +16,8 @@ namespace AfterNow.AnPrez.SDK.Unity
     /// </summary>
     class PrezSDKManager : MonoBehaviour
     {
-        [SerializeField] Text PresentationIDText;
-        [SerializeField] Text CurrentSlideText;
+        [SerializeField] TMP_Text PresentationIDText;
+        [SerializeField] TMP_Text CurrentSlideText;
 
         [HideInInspector]
         public PresentationManager _manager;
