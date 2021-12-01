@@ -1,7 +1,6 @@
-
 {
   "name": "com.afternow.anprezsdk",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "displayName": "ANPrez SDK",
   "description": "SDK to import presentations created by Users on AfterNow's AN-Prez web portal in to their own Unity projects",
   "unity": "2020.3",
@@ -9,13 +8,11 @@
   "documentationUrl": "https://docs.google.com/document/d/1mXnxeM_QAFcKOZxsfJSmhrCuBKO3C0tScWuiHqsTNIU/edit?usp=sharing",
   "changelogUrl": "https://docs.google.com/document/d/103JTBr0HOGTZz2nGMzaoILGD-tAhr5hpi0x-YnYwTEg/edit?usp=sharing",
   "licensesUrl": "https://example.com/licensing.html",
-  "dependencies": {
- },
- "keywords": [
-  ],
+  "keywords": [],
   "author": {
     "name": "AfterNow",
     "email": "today@afternow.io",
     "url": "https://www.afternow.io"
-  }
+  },
+  "type": "tool"
 }

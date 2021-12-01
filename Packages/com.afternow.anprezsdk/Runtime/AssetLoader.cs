@@ -158,18 +158,45 @@ namespace AfterNow.AnPrez.SDK.Unity
 
         static IEnumerator LoadImage(GameObject _gameObject, string url)
         {
-            Texture2D tex;
-            tex = new Texture2D(4, 4, TextureFormat.DXT1Crunched, false);
-            using (WWW www = new WWW(url))
+            //Debug.Log("supports : " + SystemInfo.SupportsTextureFormat(TextureFormat.RGBA32));
+            //Texture2D tex;
+            //tex = new Texture2D(4, 4, TextureFormat.RGBA32, false);
+
+            using (UnityWebRequest webReq = UnityWebRequestTexture.GetTexture("file://" + url))
+            {
+                yield return webReq.SendWebRequest();
+                if (webReq.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogError(webReq.error + " url : " + url);
+                }
+                else
+                {
+                    var texture = DownloadHandlerTexture.GetContent(webReq);
+                    _gameObject.GetComponent<Renderer>().material.mainTexture = texture;
+                    Vector3 _ImageLocalScale = _gameObject.transform.localScale;
+                    _ImageLocalScale.x = ((float)texture.width / (float)texture.width) * (imageFator);
+                    _ImageLocalScale.y = ((float)texture.height / (float)texture.width) * (imageFator);
+                    _gameObject.transform.localScale = _ImageLocalScale;
+                }
+            }
+
+            /*using (WWW www = new WWW(url))
             {
                 yield return www;
-                www.LoadImageIntoTexture(tex);
-                Vector3 _ImageLocalScale = _gameObject.transform.localScale;
-                _ImageLocalScale.x = ((float)tex.width / (float)tex.width) * (imageFator);
-                _ImageLocalScale.y = ((float)tex.height / (float)tex.width) * (imageFator);
-                _gameObject.transform.localScale = _ImageLocalScale;
-                _gameObject.GetComponent<Renderer>().material.mainTexture = tex;
-            }
+                if (www.error != null)
+                {
+                    Debug.LogError("Error : " + www.error);
+                }
+                else
+                {
+                    www.LoadImageIntoTexture(tex);
+                    Vector3 _ImageLocalScale = _gameObject.transform.localScale;
+                    _ImageLocalScale.x = ((float)tex.width / (float)tex.width) * (imageFator);
+                    _ImageLocalScale.y = ((float)tex.height / (float)tex.width) * (imageFator);
+                    _gameObject.transform.localScale = _ImageLocalScale;
+                    _gameObject.GetComponent<Renderer>().material.mainTexture = tex;
+                }
+            }*/
         }
 
     }
