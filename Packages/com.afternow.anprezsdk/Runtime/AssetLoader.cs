@@ -40,6 +40,7 @@ namespace AfterNow.AnPrez.SDK.Unity
                     var request = Resources.LoadAsync<GameObject>("PrezTextAsset");
                     yield return request;
                     go = (GameObject)UnityEngine.Object.Instantiate(request.asset);
+                    go.name = txt.value;
                     TextMeshPro tm = go.GetComponent<TextMeshPro>();
                     tm.text = txt.value;
                     tm.font = txt.GetFontAsset();
@@ -134,6 +135,7 @@ namespace AfterNow.AnPrez.SDK.Unity
                     request = Resources.LoadAsync<GameObject>("PrezAudioAsset");
                     yield return request;
                     go = (GameObject)UnityEngine.Object.Instantiate(request.asset);
+                    go.name = fileName;
                     var audioSource = go.GetComponent<AudioSource>();
                     using (UnityWebRequest uwr = UnityWebRequestMultimedia.GetAudioClip(assetPath, AudioType.UNKNOWN))
                     {

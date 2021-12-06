@@ -54,7 +54,7 @@ namespace AfterNow.AnPrez.SDK.Unity
             {
                 //do cleanup
                 PrezStates.Reset();
-               
+
                 //Destroy parent on quit
                 if (_manager.gameObject != null)
                 {
@@ -131,7 +131,7 @@ namespace AfterNow.AnPrez.SDK.Unity
                         PrezStates.Presentation = prez;
                         LoadPresentation(prez);
                         GameObject @obj = new GameObject("Presentation Anchor");
-                        obj.transform.position = Vector3.zero;
+                        obj.transform.position = new Vector3(0, 0, 2);
                         obj.transform.localEulerAngles = new Vector3(0, 180, 0);
                         _manager = obj.AddComponent<PresentationManager>();
                         _manager.Init(prez.locations[0]);
@@ -173,7 +173,7 @@ namespace AfterNow.AnPrez.SDK.Unity
                 PreviousSlide.gameObject.SetActive(false);
             else
                 PreviousSlide.gameObject.SetActive(true);*/
-            
+
             //If this is last slide, disable the "next slide" button
             /*if (slideNo == slideCount - 1)
                 NextSlide.gameObject.SetActive(false);
@@ -204,7 +204,7 @@ namespace AfterNow.AnPrez.SDK.Unity
 
         IEnumerator PlayAssetAnimations()
         {
-            for (int i = 0; i < loadedObjects.Count; i++)
+            for (int i = 0; i < loadedObjects.Count && i < assetTransitions.Count; i++)
             {
                 switch (assetTransitions[i].startType)
                 {
@@ -225,7 +225,10 @@ namespace AfterNow.AnPrez.SDK.Unity
                 }
 
                 presentIndex = i;
+
+                yield return new WaitForSeconds(assetTransitions[i].atTime);
                 StartCoroutine(PlayAnim(presentIndex));
+
             }
         }
 
@@ -235,7 +238,6 @@ namespace AfterNow.AnPrez.SDK.Unity
             if (go != null)
             {
                 go.SetActive(true);
-
                 if (assets[index].type == ANPAssetType.VIDEO)
                 {
                     yield return null;
@@ -244,6 +246,10 @@ namespace AfterNow.AnPrez.SDK.Unity
                 }
 
                 DoRegularAnimation(go, assets[index], assetTransitions[index], false, 0f, 0f);
+            }
+            else
+            {
+                Debug.LogError("gameobject not found");
             }
         }
 
