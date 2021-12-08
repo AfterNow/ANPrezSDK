@@ -97,6 +97,7 @@ namespace AfterNow.AnPrez.SDK.Unity
 
                             go.name = fileName;
                             go.transform.SetParent(GameObject.FindObjectOfType<PresentationManager>().transform);
+                            go.transform.Rotate(0.0f, 180f, 0.0f, Space.Self);
                             if (go.transform.Find("Root") != null)
                             {
                                 UnityEngine.Object.Destroy(go.transform.Find("Root"));
