@@ -213,7 +213,11 @@ namespace AfterNow.AnPrez.SDK.Unity
                             //Debug.Log("go loaded " + go.name);
                             _loadedObject = go;
                             _loadedObject.transform.SetParent(_anchor);
-                            //_loadedObject.SetInitialPosition(_asset.itemTransform);
+                            _loadedObject.transform.localPosition = Vector3.zero;
+
+                            Debug.Log("name : " + _asset.FileName() + "\npos : " + _asset.itemTransform.position + "\nrot : " + _asset.itemTransform.rotation + "\nscale : " + _asset.itemTransform.localScale);
+                            _loadedObject.SetInitialPosition(_asset.itemTransform);
+
                             _loadedObject.SetActive(false);
                             _onLoaded?.Invoke();
 

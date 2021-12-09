@@ -17,8 +17,11 @@ namespace AfterNow.AnPrez.SDK.Unity
 {
     public static class AssetLoader
     {
+        private static GameObject assetGO; // The relating GO that corresponds to the type of asset (Image, Video, Audio, GLTF).
+
         private static float imageFator = 0.4f;
         private static int loadVideoFrame = 1;
+        private static float defaultSizeFactor = 1;
 
         static VideoPlayer player;
         static AudioSource audioChannelVideo;
@@ -88,24 +91,40 @@ namespace AfterNow.AnPrez.SDK.Unity
                     string fileExtention = Path.GetExtension(assetPath).ToLower();
                     if (fileExtention == SDKConstants.GLTF || fileExtention == SDKConstants.GLB)
                     {
+                        GameObject glb = null;
+
                         Importer.ImportGLBAsync(File.ReadAllBytes(assetPath), new ImportSettings() { useLegacyClips = true }, (obj, clips) =>
                         {
                             IsGLBLoading = false;
                             finishedAsync = true;
 
-                            go = obj;
+                            glb = obj;
 
-                            go.name = fileName;
-                            go.transform.SetParent(GameObject.FindObjectOfType<PresentationManager>().transform);
-                            go.transform.Rotate(0.0f, 180f, 0.0f, Space.Self);
-                            if (go.transform.Find("Root") != null)
+                            glb.name = fileName;
+                            assetGO = new GameObject();
+                            assetGO.name = glb.name;
+                            glb.transform.SetParent(assetGO.transform, false);
+                            glb.transform.localPosition = Vector3.zero;
+
+                            Camera[] cameras = glb.GetComponentsInChildren<Camera>();
+                            foreach (var cam in cameras)
                             {
-                                UnityEngine.Object.Destroy(go.transform.Find("Root"));
+                                if (cam)
+                                {
+                                    cam.enabled = false;
+                                    UnityEngine.Object.Destroy(cam.gameObject);
+                                }
+                            }
+                            AdjustObjectScale(glb);
+
+                            if (assetGO.transform.Find("Root") != null)
+                            {
+                                UnityEngine.Object.Destroy(assetGO.transform.Find("Root"));
                             }
 
                             animationClips = clips;
 
-                            onLoaded(go);
+                            onLoaded(assetGO);
                         }, null,
                             (ex) =>
                             {
@@ -125,10 +144,10 @@ namespace AfterNow.AnPrez.SDK.Unity
                     }
                     else if (fileExtention == SDKConstants.ASSETBUNDLE || fileExtention == SDKConstants.UNITYPACKAGE)
                     {
-                        yield return AssetBundleManager.LoadAssetBundle(assetPath, (bundle) => 
+                        yield return AssetBundleManager.LoadAssetBundle(assetPath, (bundle) =>
                         {
                             onLoaded(bundle);
-                        });          
+                        });
                     }
                     break;
 
@@ -157,6 +176,63 @@ namespace AfterNow.AnPrez.SDK.Unity
                     break;
             }
             yield return null;
+        }
+
+        // ONLY used for GLB Re Scaling
+        private static void AdjustObjectScale(GameObject glbObject)
+        {
+            assetGO.SetActive(true);
+
+            Bounds GLBBounds = CalculateLocalBounds(assetGO.transform);
+            BoxCollider GLBBoxCollider = assetGO.AddComponent<BoxCollider>();
+
+            float largest = Mathf.Max(GLBBounds.size.x, GLBBounds.size.y, GLBBounds.size.z) / defaultSizeFactor;
+            if (largest != 0)
+            {
+                Transform child0 = assetGO.transform.GetChild(0);
+                if (child0)
+                {
+                    child0.localScale /= largest;
+                    GLBBoxCollider.center = (GLBBounds.center / largest) * 2;
+                    GLBBoxCollider.size = (GLBBounds.size / largest) * 2;
+                   /* Vector3 defaultSize = new Vector3(defaultSizeFactor / largest, defaultSizeFactor / largest, defaultSizeFactor / largest) / 2;
+                    child0.localScale = defaultSize;
+                    GLBBoxCollider.center = Multiply(GLBBounds.center, defaultSize);
+                    GLBBoxCollider.size = Multiply(GLBBounds.size, defaultSize) * 2;*/
+
+                    if (glbObject != null)
+                    {
+                        foreach (Transform trans in glbObject.GetComponentsInChildren<Transform>())
+                        {
+                            trans.gameObject.layer = 0;
+                        }
+                    }
+                }
+            }
+        }
+
+        private static Vector3 Multiply(Vector3 one, Vector3 two)
+        {
+            one.x = one.x * two.x;
+            one.y = one.y * two.y;
+            one.z = one.z * two.z;
+            return one;
+        }
+
+        public static Bounds CalculateLocalBounds(Transform trans)
+        {
+            Debug.Log("transform name " + trans.name + " transform rotation " + trans.rotation);
+            Quaternion currentRotation = trans.rotation;
+            trans.rotation = Quaternion.Euler(0f, 0f, 0f);
+            Bounds bounds = new Bounds(trans.position, Vector3.zero);
+            foreach (Renderer renderer in trans.GetComponentsInChildren<Renderer>())
+            {
+                bounds.Encapsulate(renderer.bounds);
+            }
+            Vector3 localCenter = bounds.center - trans.position;
+            bounds.center = localCenter;
+            trans.rotation = currentRotation;
+            return bounds;
         }
 
         static IEnumerator LoadImage(GameObject _gameObject, string url)

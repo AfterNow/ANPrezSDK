@@ -21,6 +21,7 @@ namespace AfterNow.AnPrez.SDK.Unity
 
         [HideInInspector]
         public PresentationManager _manager;
+        public GameObject presentationAnchor;
 
         int slideCount = 0;
 
@@ -130,10 +131,8 @@ namespace AfterNow.AnPrez.SDK.Unity
                     {
                         PrezStates.Presentation = prez;
                         LoadPresentation(prez);
-                        GameObject @obj = new GameObject("Presentation Anchor");
-                        obj.transform.position = new Vector3(0, 0, 2);
-                        obj.transform.localEulerAngles = new Vector3(0, 180, 0);
-                        _manager = obj.AddComponent<PresentationManager>();
+
+                        _manager = presentationAnchor.AddComponent<PresentationManager>();
                         _manager.Init(prez.locations[0]);
                         StartCoroutine(LoadSlide(PrezStates.CurrentSlide));
                         hasLoggedIn = 1;
