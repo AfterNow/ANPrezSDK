@@ -63,7 +63,9 @@ namespace AfterNow.AnPrez.SDK.Unity
                     yield return request;
                     go = (GameObject)UnityEngine.Object.Instantiate(request.asset);
                     go.name = fileName;
-                    CoroutineRunner.Instance.StartCoroutine(LoadImage(go, assetPath));
+
+                    // Load image in to the child of the loaded asset (that's the one which has 'MeshRenderer')
+                    CoroutineRunner.Instance.StartCoroutine(LoadImage(go.transform.GetChild(0).gameObject, assetPath));
                     onLoaded(go);
                     break;
 
