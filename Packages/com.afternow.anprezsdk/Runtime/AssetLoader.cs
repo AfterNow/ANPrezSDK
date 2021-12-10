@@ -44,12 +44,17 @@ namespace AfterNow.AnPrez.SDK.Unity
                     yield return request;
                     go = (GameObject)UnityEngine.Object.Instantiate(request.asset);
                     go.name = txt.value;
-                    TextMeshPro tm = go.GetComponent<TextMeshPro>();
+                    TextMeshPro tm = go.GetComponentInChildren<TextMeshPro>();
                     tm.text = txt.value;
                     tm.font = txt.GetFontAsset();
                     tm.alignment = txt.GetTMPAlignment();
                     tm.color = PrezAssetHelper.GetColor(txt.color);
                     tm.faceColor = tm.color;
+                    //yield return null;
+                    var collider = go.AddComponent<BoxCollider>();
+                    collider.center = Vector3.zero;
+                    collider.size = new Vector3(collider.size.x, collider.size.y, 0.005f);
+                    //yield return null;
                     onLoaded(go);
                     break;
 

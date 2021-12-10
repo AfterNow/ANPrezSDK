@@ -26,7 +26,7 @@ namespace AfterNow.AnPrez.SDK.Unity
         private static Vector3 initialScale;
         public static Dictionary<ARPAsset, GameObject> loadedObjects = new Dictionary<ARPAsset, GameObject>();
         public static float totalLength = 3f;
-        
+
         public delegate void OnSlideLoaded();
         public static event OnSlideLoaded onSlideLoaded;
 
@@ -213,10 +213,11 @@ namespace AfterNow.AnPrez.SDK.Unity
                             //Debug.Log("go loaded " + go.name);
                             _loadedObject = go;
                             _loadedObject.transform.SetParent(_anchor);
-                            _loadedObject.transform.localPosition = Vector3.zero;
+                            //_loadedObject.transform.localPosition = Vector3.zero;
 
-                            Debug.Log("name : " + _asset.FileName() + "\npos : " + _asset.itemTransform.position + "\nrot : " + _asset.itemTransform.rotation + "\nscale : " + _asset.itemTransform.localScale);
                             _loadedObject.SetInitialPosition(_asset.itemTransform);
+
+                            _asset.itemTransform.SetTransform(_loadedObject.transform);
 
                             _loadedObject.SetActive(false);
                             _onLoaded?.Invoke();
@@ -264,7 +265,7 @@ namespace AfterNow.AnPrez.SDK.Unity
             {
                 case AnimationType.None:
                     // Shouldn't ever be able to reach here
-                    Debug.LogError("Animation is none, this shouldn't be possible"); 
+                    Debug.LogError("Animation is none, this shouldn't be possible");
                     break;
                 case AnimationType.Appear:
                     if (skipToEnd)
@@ -379,14 +380,14 @@ namespace AfterNow.AnPrez.SDK.Unity
                     {
                         go.SetActive(false);
                         Complete();
-                    }); 
+                    });
                     break;
                 case AnimationType.BlurOut:
                     Complete();
                     break;
                 case AnimationType.PopOut:
                     go.SetActive(false);
-                    Complete(); 
+                    Complete();
                     break;
                 case AnimationType.LeftSwooshOut:
                     Vector3 rightSwooshOutPos = initialPos;
@@ -401,7 +402,7 @@ namespace AfterNow.AnPrez.SDK.Unity
                     {
                         go.SetActive(false);
                         Complete();
-                    }); 
+                    });
                     break;
                 case AnimationType.RightSwooshOut:
                     Vector3 leftSwooshOutPos = initialPos;
@@ -416,15 +417,15 @@ namespace AfterNow.AnPrez.SDK.Unity
                     {
                         go.SetActive(false);
                         Complete();
-                    }); 
+                    });
                     break;
                 case AnimationType.RightSpinOut:
                     go.SetActive(false);
-                    Complete(); 
+                    Complete();
                     break;
                 case AnimationType.LeftSpinOut:
                     go.SetActive(false);
-                    Complete(); 
+                    Complete();
                     break;
                 case AnimationType.TopSwooshIn:
                     Vector3 topSwooshPos = initialPos;
@@ -461,7 +462,7 @@ namespace AfterNow.AnPrez.SDK.Unity
                     {
                         go.SetActive(false);
                         Complete();
-                    }); 
+                    });
                     break;
                 case AnimationType.BottomSwooshIn:
                     Vector3 bottomSwooshPos = initialPos;
@@ -498,7 +499,7 @@ namespace AfterNow.AnPrez.SDK.Unity
                     {
                         go.SetActive(false);
                         Complete();
-                    }); 
+                    });
                     break;
                 case AnimationType.StartRotationRight:
                     /*assetController.rotate.shouldUpdate = true;
@@ -506,8 +507,8 @@ namespace AfterNow.AnPrez.SDK.Unity
                     Complete(); */
                     break;
                 case AnimationType.StopRotation:
-                   /* assetController.rotate.shouldUpdate = false;
-                    Complete(); */
+                    /* assetController.rotate.shouldUpdate = false;
+                     Complete(); */
                     break;
                 case AnimationType.StartRotationLeft:
                     /*assetController.rotate.shouldUpdate = true;
