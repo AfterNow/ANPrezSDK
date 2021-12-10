@@ -1,6 +1,6 @@
 {
   "name": "com.afternow.anprezsdk",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "displayName": "ANPrez SDK",
   "description": "SDK to import presentations created by Users on AfterNow's AN-Prez web portal in to their own Unity projects",
   "unity": "2020.3",
