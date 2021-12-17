@@ -100,7 +100,18 @@ namespace AfterNow.AnPrez.SDK.Unity
                     {
                         GameObject glb = null;
 
-                        Importer.ImportGLBAsync(File.ReadAllBytes(assetPath), new ImportSettings() { useLegacyClips = true }, (obj, clips) =>
+                        while (IsGLBLoading)
+                        {
+                            yield return null;
+                        }
+                        IsGLBLoading = true;
+                        var glbLoader = GLBLoader.LoadGLTF(File.ReadAllBytes(assetPath), assetPath, assetGO.transform);
+                        yield return new WaitForTask(glbLoader);
+                        glb = glbLoader.Result;
+                        IsGLBLoading = false;
+                        finishedAsync = true;
+
+                        /*Importer.ImportGLBAsync(File.ReadAllBytes(assetPath), new ImportSettings() { useLegacyClips = true }, (obj, clips) =>
                         {
                             IsGLBLoading = false;
                             finishedAsync = true;
@@ -137,7 +148,7 @@ namespace AfterNow.AnPrez.SDK.Unity
                             {
                                 exception = ex;
                                 finishedAsync = true;
-                            });
+                            });*/
 
                         if (exception != null)
                         {

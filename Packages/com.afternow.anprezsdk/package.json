@@ -13,5 +13,8 @@
     "name": "AfterNow",
     "email": "today@afternow.io",
     "url": "https://www.afternow.io"
+  },
+  "dependencies": {
+    "com.unity.burst": "1.4.11"
   }
 }

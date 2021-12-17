@@ -1,0 +1,54 @@
+{
+    "name": "glTFastSchema",
+    "rootNamespace": "",
+    "references": [
+        "Unity.Mathematics",
+        "Unity.Meshopt.Decompress"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Unity.Burst.Unsafe.dll",
+        "JetBrains.Rider.Unity.Editor.Plugin.Repacked.dll",
+        "log4netPlastic.dll",
+        "Mono.Cecil.dll",
+        "Mono.Cecil.Mdb.dll",
+        "Mono.Cecil.Pdb.dll",
+        "Mono.Cecil.Rocks.dll",
+        "Newtonsoft.Json.dll",
+        "nunit.framework.dll",
+        "System.Drawing.Primitives.dll",
+        "Unity.Analytics.Editor.dll",
+        "Unity.Analytics.StandardEvents.dll",
+        "Unity.Analytics.Tracker.dll",
+        "Unity.Plastic.Antlr3.Runtime.dll",
+        "unityplastic.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.atteneder.draco",
+            "expression": "3.1.0",
+            "define": "DRACO_UNITY"
+        },
+        {
+            "name": "com.atteneder.ktx",
+            "expression": "1.1.0",
+            "define": "KTX_UNITY"
+        },
+        {
+            "name": "com.unity.meshopt.decompress",
+            "expression": "",
+            "define": "MESHOPT"
+        },
+        {
+            "name": "com.unity.modules.animation",
+            "expression": "1.0.0",
+            "define": "UNITY_ANIMATION"
+        }
+    ],
+    "noEngineReferences": false
+}

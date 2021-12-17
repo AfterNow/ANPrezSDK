@@ -1,4 +1,4 @@
-﻿#define USE_NEWTONSOFT
+﻿///#define USE_NEWTONSOFT
 
 #if USE_NEWTONSOFT
 using Newtonsoft.Json;
