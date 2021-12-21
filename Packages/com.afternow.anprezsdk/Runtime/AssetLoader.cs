@@ -18,6 +18,7 @@ namespace AfterNow.AnPrez.SDK.Unity
     public static class AssetLoader
     {
         private static GameObject assetGO; // The relating GO that corresponds to the type of asset (Image, Video, Audio, GLTF).
+        public static GameObject GLTF; // This is the GLB asset ref from the asset prefab.
 
         private static float imageFator = 0.4f;
         private static int loadVideoFrame = 1;
@@ -91,6 +92,13 @@ namespace AfterNow.AnPrez.SDK.Unity
                     break;
 
                 case ANPAssetType.OBJECT:
+                    request = Resources.LoadAsync<GameObject>("PrezObjectAsset");
+                    yield return request;
+                    GLTF = (GameObject)UnityEngine.Object.Instantiate(request.asset);
+
+                    assetGO = GLTF;
+                    assetGO.gameObject.SetActive(true);
+                    
                     bool IsGLBLoading = false;
                     bool finishedAsync = false;
                     Exception exception = null;
@@ -98,6 +106,8 @@ namespace AfterNow.AnPrez.SDK.Unity
                     string fileExtention = Path.GetExtension(assetPath).ToLower();
                     if (fileExtention == SDKConstants.GLTF || fileExtention == SDKConstants.GLB)
                     {
+                        assetGO.gameObject.SetActive(true);
+
                         GameObject glb = null;
 
                         while (IsGLBLoading)
