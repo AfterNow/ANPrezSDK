@@ -1,6 +1,5 @@
 ﻿using AfterNow.AnPrez.SDK.Internal;
 using AfterNow.AnPrez.SDK.Internal.Views;
-using Siccity.GLTFUtility;
 using System;
 using System.Collections;
 using System.Collections.Generic;
