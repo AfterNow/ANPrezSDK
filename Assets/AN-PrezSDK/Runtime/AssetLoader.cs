@@ -120,6 +120,26 @@ namespace AfterNow.AnPrez.SDK.Unity
                         IsGLBLoading = false;
                         finishedAsync = true;
 
+                        glb.name = fileName;
+                        glb.transform.SetParent(assetGO.transform, false);
+                        glb.transform.localPosition = Vector3.zero;
+
+                        Camera[] cameras = glb.GetComponentsInChildren<Camera>();
+                        foreach (var cam in cameras)
+                        {
+                            if (cam)
+                            {
+                                cam.enabled = false;
+                                UnityEngine.Object.Destroy(cam.gameObject);
+                            }
+                        }
+                        AdjustObjectScale(glb);
+                        if (assetGO.transform.Find("Root") != null)
+                        {
+                            UnityEngine.Object.Destroy(assetGO.transform.Find("Root"));
+                        }
+                        onLoaded(assetGO);
+
                         /*Importer.ImportGLBAsync(File.ReadAllBytes(assetPath), new ImportSettings() { useLegacyClips = true }, (obj, clips) =>
                         {
                             IsGLBLoading = false;
@@ -248,7 +268,6 @@ namespace AfterNow.AnPrez.SDK.Unity
 
         public static Bounds CalculateLocalBounds(Transform trans)
         {
-            Debug.Log("transform name " + trans.name + " transform rotation " + trans.rotation);
             Quaternion currentRotation = trans.rotation;
             trans.rotation = Quaternion.Euler(0f, 0f, 0f);
             Bounds bounds = new Bounds(trans.position, Vector3.zero);

@@ -208,10 +208,13 @@ namespace AfterNow.AnPrez.SDK.Unity
                 switch (assetTransitions[i].startType)
                 {
                     case AnimationStartType.None:
+                        yield return null;
                         break;
                     case AnimationStartType.OnCommand:
+                        yield return null;
                         break;
                     case AnimationStartType.Automatically:
+                        yield return null;
                         break;
                     case AnimationStartType.WithPreviousAnim:
                         yield return new WaitForSeconds(0f);
