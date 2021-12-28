@@ -10,6 +10,7 @@ namespace AfterNow.AnPrez.SDK.Unity
 {
     public class PresentationManager : MonoBehaviour
     {
+        public static LoadedSlide _slide;
         private Location _location;
         private Dictionary<int, LoadedSlide> _slides;
 
@@ -64,13 +65,17 @@ namespace AfterNow.AnPrez.SDK.Unity
         {
             if (!_slides.TryGetValue(index, out LoadedSlide slide))
             {
-                slide = new LoadedSlide(_location.slides[index], transform);
-                _slides[index] = slide;
+                _slide = slide;
+
+                _slide = new LoadedSlide(_location.slides[index], transform);
+                _slides[index] = _slide;
             }
-            slide.LoadSlide();
-            assetTransitions = slide.Slide.assetTransitions;
+            _slide.LoadSlide();
+
+            assetTransitions = _slide.Slide.assetTransitions;
+
             //StartCoroutine(InternalLoadSlide(slide));
-            return slide;
+            return _slide;
         }
 
         public LoadedSlide GetSlideReference(int i)
@@ -252,6 +257,9 @@ namespace AfterNow.AnPrez.SDK.Unity
 
         public static void DoRegularAnimation(GameObject go, ARPAsset asset, ARPTransition transition, bool skipToEnd, float _delay, float _animationDuration)
         {
+            //Debug.Log("go : " + go.name);
+            //Debug.Log("transition : " + transition.animation);
+
             _delay = skipToEnd ? 0 : _delay;
             _animationDuration = skipToEnd ? 0 : transition.animationDuration;
             AnimationStartType animationStartType = transition.startType;

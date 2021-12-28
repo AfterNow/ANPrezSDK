@@ -27,6 +27,13 @@ namespace AfterNow.AnPrez.SDK.Unity
 
         IPrezController prezController;
 
+        ARPAsset _asset;
+        List<ARPAsset> _assets = new List<ARPAsset>();
+        ARPTransition _transition;
+        List<ARPTransition> _transitions = new List<ARPTransition>();
+        float delay = 0;
+
+
         bool hasbeenAuthorized = false;
         bool IsAuthorized()
         {
@@ -198,13 +205,46 @@ namespace AfterNow.AnPrez.SDK.Unity
             assets = previousSlide.Slide.assets;
 
             //then play slide animations
-            StartCoroutine(PlayAssetAnimations());
+            //StartCoroutine(PlayAssetAnimations());
+
+            foreach (ARPTransition transition in assetTransitions)
+            {
+                _asset = _slide.Slide.assets.Find(x => x.id == transition.assetId);
+                _transition = transition;
+                //Debug.Log("a : " + _asset.FileName() + " :: " + "t : " + _transition.animation + " :: " + _transition.startType);
+
+                if (!_assets.Contains(_asset))
+                {
+                    _assets.Add(_asset);
+                }
+                _transitions.Add(_transition);
+            }
+
+            for (int i = 0; i < assets.Count; i++)
+            {
+                yield return new WaitForSeconds(1f);
+                var go = loadedObjects[_assets[i]];
+                go.SetActive(true);
+                if (_assets[i].type == ANPAssetType.VIDEO)
+                {
+                    yield return null;
+                    var videoPlayer = go.GetComponent<VideoPlayer>();
+                    videoPlayer.Play();
+                }
+
+                var currentAsset = _assets[i];
+                var currentTransition = _transitions[i];
+
+                DoRegularAnimation(go, currentAsset, currentTransition, false, currentTransition.atTime, currentTransition.animationDuration);
+            }
+
         }
 
         IEnumerator PlayAssetAnimations()
         {
             for (int i = 0; i < loadedObjects.Count && i < assetTransitions.Count; i++)
             {
+
                 switch (assetTransitions[i].startType)
                 {
                     case AnimationStartType.None:
@@ -237,6 +277,8 @@ namespace AfterNow.AnPrez.SDK.Unity
         IEnumerator PlayAnim(int index)
         {
             var go = loadedObjects[assets[index]];
+
+//            Debug.Log("object : " + loadedObjects[assets[index]] + " : " + );
             if (go != null)
             {
                 go.SetActive(true);
@@ -247,7 +289,8 @@ namespace AfterNow.AnPrez.SDK.Unity
                     videoPlayer.Play();
                 }
 
-                DoRegularAnimation(go, assets[index], assetTransitions[index], false, 0f, 0f);
+
+                //DoRegularAnimation(go, assets[index], assetTransitions[index], false, 0f, 0f);
             }
             else
             {
