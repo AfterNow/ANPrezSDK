@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using UnityEngine.Video;
 using static AfterNow.AnPrez.SDK.Unity.PresentationManager;
 using TMPro;
+using Assets.AN_PrezSDK.Runtime;
 
 namespace AfterNow.AnPrez.SDK.Unity
 {
@@ -87,17 +88,23 @@ namespace AfterNow.AnPrez.SDK.Unity
             });
         }
 
-        void ClearLoadedObjects()
+        void ClearObjects()
         {
             if (loadedObjects.Count > 0)
             {
                 loadedObjects.Clear();
             }
+
+            if (_assets.Count > 0)
+            {
+                _assets.Clear();
+            }
+
         }
 
         void Next_Slide()
         {
-            ClearLoadedObjects();
+            ClearObjects();
             //slideCount = PrezStates.Presentation.locations[0].slides.Count;
             int targetSlide = slideCount == PrezStates.CurrentSlide + 1 ? 0 : PrezStates.CurrentSlide + 1;
             GoToSlide(targetSlide);
@@ -105,7 +112,7 @@ namespace AfterNow.AnPrez.SDK.Unity
 
         void Previous_Slide()
         {
-            ClearLoadedObjects();
+            ClearObjects();
             //slideCount = PrezStates.Presentation.locations[0].slides.Count;
             int targetSlide = PrezStates.CurrentSlide == 0 ? slideCount - 1 : PrezStates.CurrentSlide - 1;
             GoToSlide(targetSlide);
@@ -171,6 +178,8 @@ namespace AfterNow.AnPrez.SDK.Unity
         private bool onCommand = true;
         private int presentIndex = 0;
         private int nextIndex = 0;
+        GameObject go = null;
+        private GameObject _go;
 
         IEnumerator LoadSlide(int slideNo)
         {
@@ -207,11 +216,27 @@ namespace AfterNow.AnPrez.SDK.Unity
             //then play slide animations
             //StartCoroutine(PlayAssetAnimations());
 
+            // Setup animation groups
+            List<ARPTransition> pTransitions = assetTransitions;
+            List<AnimationGroup> animationGroups = new List<AnimationGroup>();
+            AnimationGroup currentGroup = null;
+            int groupNum = 0;
+
             foreach (ARPTransition transition in assetTransitions)
             {
+                if (currentGroup == null || transition.startType != AnimationStartType.WithPreviousAnim)
+                {
+                    currentGroup = new AnimationGroup(groupNum++);
+                    animationGroups.Add(currentGroup);
+
+                }
+
                 _asset = _slide.Slide.assets.Find(x => x.id == transition.assetId);
                 _transition = transition;
                 //Debug.Log("a : " + _asset.FileName() + " :: " + "t : " + _transition.animation + " :: " + _transition.startType);
+
+                currentGroup.AddAnimation(_transition, _asset);
+
 
                 if (!_assets.Contains(_asset))
                 {
@@ -223,7 +248,16 @@ namespace AfterNow.AnPrez.SDK.Unity
             for (int i = 0; i < assets.Count; i++)
             {
                 yield return new WaitForSeconds(1f);
-                var go = loadedObjects[_assets[i]];
+
+                if (loadedObjects.TryGetValue(_assets[i], out _go))
+                {
+                    go = _go;
+                }
+                else
+                {
+                    Debug.LogErrorFormat("Cannot find {0} ", _assets[i].FileName());
+                }
+
                 go.SetActive(true);
                 if (_assets[i].type == ANPAssetType.VIDEO)
                 {
