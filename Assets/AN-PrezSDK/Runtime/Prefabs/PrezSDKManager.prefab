@@ -284,7 +284,7 @@ MonoBehaviour:
   m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 0}
-  m_sharedMaterial: {fileID: 0}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1265,7 +1265,7 @@ MonoBehaviour:
   m_text: 123456789
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 0}
-  m_sharedMaterial: {fileID: 0}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1381,6 +1381,9 @@ MonoBehaviour:
   CurrentSlideText: {fileID: 5051317054437617513}
   _manager: {fileID: 0}
   presentationAnchor: {fileID: 5051317055195200959}
+  isPlaying: 0
+  transMat: {fileID: 2100000, guid: 19fb0b70a9906044f9c538339e102979, type: 2}
+  prezAssets: []
 --- !u!114 &5051317054946455137
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1396,7 +1399,7 @@ MonoBehaviour:
   nextSlide: {fileID: 5051317054605212807}
   previousSlide: {fileID: 5051317054777221796}
   nextStep: {fileID: 5051317055796215161}
-  presentationID: 
+  presentationID: 94537987
   LoginUI: {fileID: 5051317054217683731}
   PresentationUI: {fileID: 5051317055338781738}
   Quit: {fileID: 5051317054822044615}
@@ -1550,7 +1553,7 @@ MonoBehaviour:
   m_text: Slide Number
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 0}
-  m_sharedMaterial: {fileID: 0}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2057,7 +2060,7 @@ MonoBehaviour:
   m_text: X
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 0}
-  m_sharedMaterial: {fileID: 0}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2492,7 +2495,7 @@ MonoBehaviour:
   m_text: Presentation ID
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 0}
-  m_sharedMaterial: {fileID: 0}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using AfterNow.AnPrez.SDK.Unity;
 using AfterNow.AnPrez.SDK.Internal.Views;
+using UnityEngine;
 
 namespace Assets.AN_PrezSDK.Runtime
 {
@@ -36,9 +37,10 @@ namespace Assets.AN_PrezSDK.Runtime
             ANPAnimation _anim = new ANPAnimation();
             runningDelay += _transition.atTime;
 
+            //Debug.Log("SetAnimation");
             _anim.SetAnimation(_transition, _asset, AnimationComplete, runningDelay);
             animations.Add(_anim);
-
+            //Debug.Log("animations length : " + animations.Count);
             FindLongest();
 
         }
@@ -57,6 +59,7 @@ namespace Assets.AN_PrezSDK.Runtime
 
         void AnimationComplete(ANPAnimation animation)
         {
+            //Debug.Log("AnimationComplete");
             OnAnimationComplete?.Invoke(animation);
             if (++finishedAnimations == animations.Count)
             {
@@ -69,11 +72,43 @@ namespace Assets.AN_PrezSDK.Runtime
         {
             if (onGroupComplete != null)
             {
+                //Debug.Log("onGroupComplete not null, firing event");
                 onGroupComplete(this);
+            }
+            else
+            {
+                //Debug.Log("onGroupComplete null");
             }
             isPlaying = false;
             hasFinished = true;
         }
 
+        public void Play()
+        {
+            if (animations.Count == 0)
+            {
+                //Debug.Log("animations are 0");
+                return;
+            }
+            isPlaying = true;
+
+            Debug.Log("count : " + animations.Count);
+            for (int i = 0; i < animations.Count; i++)
+            {
+                animations[i].Play(i == 0);
+            }
+        }
+
+        public void Finish(bool stopAudio = true)
+        {
+            /*// Finish all animations and call Complete
+            foreach (ANPAnimation _anim in animations)
+            {
+                _anim.Play(true, true, stopAudio);
+            }
+            isPlaying = false;
+            hasFinished = true;
+            //Complete();*/
+        }
     }
 }

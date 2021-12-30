@@ -14,7 +14,7 @@ namespace AfterNow.AnPrez.SDK.Unity
         private Location _location;
         private Dictionary<int, LoadedSlide> _slides;
 
-        private static PresentationManager _instance;
+        public static PresentationManager _instance;
 
         //public static Action<ANPAnimation> callback;
 
@@ -22,9 +22,9 @@ namespace AfterNow.AnPrez.SDK.Unity
         public static List<ARPTransition> assetTransitions;
         public static List<ARPAsset> assets;
         private static ItemTransform itemTransform;
-        private static Vector3 initialPos;
-        private static Quaternion initialRot;
-        private static Vector3 initialScale;
+        public static Vector3 initialPos;
+        public static Quaternion initialRot;
+        public static Vector3 initialScale;
         public static Dictionary<ARPAsset, GameObject> loadedObjects = new Dictionary<ARPAsset, GameObject>();
         public static float totalLength = 3f;
 
@@ -227,6 +227,7 @@ namespace AfterNow.AnPrez.SDK.Unity
                             _loadedObject.SetActive(false);
                             _onLoaded?.Invoke();
 
+                            FindObjectOfType<PrezSDKManager>().prezAssets.Add(_loadedObject);
                             loadedObjects.Add(_asset, _loadedObject);
                         }
                         else
@@ -265,9 +266,7 @@ namespace AfterNow.AnPrez.SDK.Unity
             AnimationStartType animationStartType = transition.startType;
 
             itemTransform = asset.GetItemTransform();
-            initialPos = new Vector3(-itemTransform.position.x, itemTransform.position.y, itemTransform.position.z);
-            initialRot = new Quaternion(itemTransform.rotation.x, itemTransform.rotation.y, itemTransform.rotation.z, itemTransform.rotation.w);
-            initialScale = new Vector3(itemTransform.localScale.x, itemTransform.localScale.y, itemTransform.localScale.z);
+            SetInitialTransform();
 
             switch (transition.animation)
             {
@@ -528,6 +527,14 @@ namespace AfterNow.AnPrez.SDK.Unity
 
             }
         }
+
+        public static void SetInitialTransform()
+        {
+            initialPos = new Vector3(itemTransform.position.x, itemTransform.position.y, itemTransform.position.z);
+            initialRot = new Quaternion(itemTransform.rotation.x, itemTransform.rotation.y, itemTransform.rotation.z, itemTransform.rotation.w);
+            initialScale = new Vector3(itemTransform.localScale.x, itemTransform.localScale.y, itemTransform.localScale.z);
+        }
+
         private static void Complete()
         {
             //if (callback == null) return;

@@ -17,6 +17,11 @@ namespace AfterNow.AnPrez.SDK.Unity
     /// </summary>
     class PrezSDKManager : MonoBehaviour
     {
+        public static VideoPlayer player;
+        private int loadVideoFrame = 1;
+
+        public static PrezSDKManager _instance = null;
+
         [SerializeField] TMP_Text PresentationIDText;
         [SerializeField] TMP_Text CurrentSlideText;
 
@@ -32,8 +37,24 @@ namespace AfterNow.AnPrez.SDK.Unity
         List<ARPAsset> _assets = new List<ARPAsset>();
         ARPTransition _transition;
         List<ARPTransition> _transitions = new List<ARPTransition>();
-        float delay = 0;
+        public static GameObject objectLoaded;
 
+        float delay = 0;
+        public bool isPlaying;
+
+        public AnimationTimeline animationTimeline;
+        int SlidePoint = -1;
+        private int _lastPlayedPoint = -1;
+        public int LastPlayedPoint
+        {
+            get => _lastPlayedPoint;
+            set
+            {
+                _lastPlayedPoint = value;
+            }
+        }
+
+        public float? PlayStartTime { get; private set; }
 
         bool hasbeenAuthorized = false;
         bool IsAuthorized()
@@ -46,9 +67,44 @@ namespace AfterNow.AnPrez.SDK.Unity
         {
             return hasLoggedIn;
         }
+        public Material transMat;
+
+        public List<GameObject> prezAssets = new List<GameObject>();
+
+        public static bool loadComplete = false;
+
+
+        private void OnEnable()
+        {
+            if (loadComplete)
+            {
+                if (_asset.type == ANPAssetType.AUDIO)
+                {
+                    objectLoaded.GetComponent<AudioSource>().Play();
+                    objectLoaded.GetComponent<SpriteRenderer>().enabled = false;
+                }
+                else if (_asset.type == ANPAssetType.VIDEO)
+                {
+                    if (player)
+                    {
+                        player.frame = loadVideoFrame;
+
+                        player.gameObject.GetComponent<AudioSource>().volume = _asset.volumn;
+                        player.Stop();
+                        Debug.Log("playing");
+                        player.Play();
+                    }
+                }
+                else if (_asset.type == ANPAssetType.OBJECT)
+                {
+                }
+            }
+        }
 
         private void Awake()
         {
+            _instance = this;
+
             prezController = GetComponent<IPrezController>();
             prezController.OnNextSlide += Next_Slide;
             prezController.OnPrevSlide += Previous_Slide;
@@ -100,6 +156,10 @@ namespace AfterNow.AnPrez.SDK.Unity
                 _assets.Clear();
             }
 
+            if (prezAssets.Count > 0)
+            {
+                prezAssets.Clear();
+            }
         }
 
         void Next_Slide()
@@ -120,7 +180,7 @@ namespace AfterNow.AnPrez.SDK.Unity
 
         void Next_Step()
         {
-            nextIndex = presentIndex + 1;
+            /*nextIndex = presentIndex + 1;
             StopAllCoroutines();
             if (nextIndex < assets.Count)
             {
@@ -129,6 +189,24 @@ namespace AfterNow.AnPrez.SDK.Unity
             else
             {
                 Next_Slide();
+            }*/
+
+            if (isPlaying)
+            {
+                if (!animationTimeline.FirstElementAutomatic && LastPlayedPoint == -1)
+                {
+                    SlidePoint = 0;
+                    LastPlayedPoint = animationTimeline.Play(SlidePoint);
+                }
+                else
+                {
+                    Debug.Log("slidepoint " + SlidePoint);
+                    LastPlayedPoint = animationTimeline.Play(SlidePoint);
+                }
+            }
+            else
+            {
+                Play();
             }
         }
 
@@ -245,7 +323,12 @@ namespace AfterNow.AnPrez.SDK.Unity
                 _transitions.Add(_transition);
             }
 
-            for (int i = 0; i < assets.Count; i++)
+
+            animationTimeline = new AnimationTimeline(animationGroups);
+            animationTimeline.OnGroupCompleted += OnGroupEnd;
+            //animationTimeline.OnTimelineComplete += TimelineComplete;
+
+            /*for (int i = 0; i < assets.Count; i++)
             {
                 yield return new WaitForSeconds(1f);
 
@@ -265,71 +348,37 @@ namespace AfterNow.AnPrez.SDK.Unity
                     var videoPlayer = go.GetComponent<VideoPlayer>();
                     videoPlayer.Play();
                 }
+            }*/
 
-                var currentAsset = _assets[i];
-                var currentTransition = _transitions[i];
 
-                DoRegularAnimation(go, currentAsset, currentTransition, false, currentTransition.atTime, currentTransition.animationDuration);
-            }
-
+            Play();
         }
 
-        IEnumerator PlayAssetAnimations()
+
+        public void Play(int groupNum = -1)
         {
-            for (int i = 0; i < loadedObjects.Count && i < assetTransitions.Count; i++)
+            //Debug.Log("PrezSDKManager Play");
+            //Debug.LogError(groupNum);
+
+            SlidePoint = groupNum;
+            //isDone.Value = false;
+
+            // Set initial transforms for each asset in this slide before they start animating in case we updated their transform
+            /*foreach (AssetController ac in assetControllers)
             {
+                ac.SetInitialTransform();
+            }*/
+            //SetInitialTransform();
 
-                switch (assetTransitions[i].startType)
-                {
-                    case AnimationStartType.None:
-                        yield return null;
-                        break;
-                    case AnimationStartType.OnCommand:
-                        yield return null;
-                        break;
-                    case AnimationStartType.Automatically:
-                        yield return null;
-                        break;
-                    case AnimationStartType.WithPreviousAnim:
-                        yield return new WaitForSeconds(0f);
-                        break;
-                    case AnimationStartType.AfterPreviousAnim:
-                        yield return new WaitForSeconds(3f);
-                        break;
-                    default:
-                        break;
-                }
-
-                presentIndex = i;
-
-                yield return new WaitForSeconds(assetTransitions[i].atTime);
-                StartCoroutine(PlayAnim(presentIndex));
-
-            }
-        }
-
-        IEnumerator PlayAnim(int index)
-        {
-            var go = loadedObjects[assets[index]];
-
-//            Debug.Log("object : " + loadedObjects[assets[index]] + " : " + );
-            if (go != null)
+            if (animationTimeline != null)
             {
-                go.SetActive(true);
-                if (assets[index].type == ANPAssetType.VIDEO)
-                {
-                    yield return null;
-                    var videoPlayer = go.GetComponent<VideoPlayer>();
-                    videoPlayer.Play();
-                }
-
-
-                //DoRegularAnimation(go, assets[index], assetTransitions[index], false, 0f, 0f);
+                isPlaying = true;
+                /*LastPlayedPoint = */
+                animationTimeline.Play(groupNum);
             }
-            else
-            {
-                Debug.LogError("gameobject not found");
-            }
+
+            if (!PlayStartTime.HasValue) PlayStartTime = Time.time;
+
         }
 
         void UpdateSlideCount()
@@ -338,13 +387,19 @@ namespace AfterNow.AnPrez.SDK.Unity
             slideCount = PrezStates.Presentation.locations[0].slides.Count;
         }
 
-        void DestroyObjects()
+        private void OnGroupEnd(AnimationGroup group)
         {
-            int childs = _manager.transform.childCount;
-            for (int i = childs - 1; i > 0; i--)
-            {
-                GameObject.Destroy(transform.GetChild(i).gameObject);
-            }
+            SlidePoint = group.GroupIndex + 1;
+        }
+
+        public void OnSyncGroup(int num, bool nextStep = true)
+        {
+            SlidePoint = num;
+            LastPlayedPoint = animationTimeline.Play(num, nextStep);
+        }
+        public void OnSyncTimeline(int num)
+        {
+            OnSyncGroup(num);
         }
     }
 }

@@ -16,17 +16,15 @@ namespace AfterNow.AnPrez.SDK.Unity
 {
     public static class AssetLoader
     {
-        private static GameObject assetGO; // The relating GO that corresponds to the type of asset (Image, Video, Audio, GLTF).
-        public static GameObject GLTF; // This is the GLB asset ref from the asset prefab.
+        private static GameObject assetGo; // The relating PrezSDKManager.objectLoaded that corresponds to the type of asset (Image, Video, Audio, GLTF).
 
         private static float imageFator = 0.4f;
         private static int loadVideoFrame = 1;
         private static float defaultSizeFactor = 1;
 
-        static VideoPlayer player;
         static AudioSource audioChannelVideo;
         private static AnimationClip[] animationClips;
-        static GameObject go;
+        //static GameObject PrezSDKManager.objectLoaded;
         private static string assetname;
         private static PlayableDirector director;
 
@@ -42,41 +40,50 @@ namespace AfterNow.AnPrez.SDK.Unity
                     ARPText txt = asset.text;
                     var request = Resources.LoadAsync<GameObject>("PrezTextAsset");
                     yield return request;
-                    go = (GameObject)UnityEngine.Object.Instantiate(request.asset);
-                    go.name = txt.value;
-                    TextMeshPro tm = go.GetComponentInChildren<TextMeshPro>();
+                    PrezSDKManager.objectLoaded = (GameObject)UnityEngine.Object.Instantiate(request.asset);
+                    PrezSDKManager.objectLoaded.name = txt.value;
+                    TextMeshPro tm = PrezSDKManager.objectLoaded.GetComponentInChildren<TextMeshPro>();
                     tm.text = txt.value;
                     tm.font = txt.GetFontAsset();
                     tm.alignment = txt.GetTMPAlignment();
                     tm.color = PrezAssetHelper.GetColor(txt.color);
                     tm.faceColor = tm.color;
                     //yield return null;
-                    var collider = go.AddComponent<BoxCollider>();
+                    var collider = PrezSDKManager.objectLoaded.AddComponent<BoxCollider>();
                     collider.center = Vector3.zero;
                     collider.size = new Vector3(collider.size.x, collider.size.y, 0.005f);
                     //yield return null;
-                    onLoaded(go);
+                    onLoaded(PrezSDKManager.objectLoaded);
                     break;
 
                 case ANPAssetType.IMAGE:
                     request = Resources.LoadAsync<GameObject>("PrezImageAsset");
                     yield return request;
-                    go = (GameObject)UnityEngine.Object.Instantiate(request.asset);
-                    go.name = fileName;
+                    PrezSDKManager.objectLoaded = (GameObject)UnityEngine.Object.Instantiate(request.asset);
+                    PrezSDKManager.objectLoaded.name = fileName;
 
                     // Load image in to the child of the loaded asset (that's the one which has 'MeshRenderer')
-                    CoroutineRunner.Instance.StartCoroutine(LoadImage(go.transform.GetChild(0).gameObject, assetPath));
-                    onLoaded(go);
+                    CoroutineRunner.Instance.StartCoroutine(LoadImage(PrezSDKManager.objectLoaded.transform.GetChild(0).gameObject, assetPath));
+                    onLoaded(PrezSDKManager.objectLoaded);
                     break;
 
                 case ANPAssetType.VIDEO:
+                    
                     request = Resources.LoadAsync<GameObject>("PrezVideoAsset");
                     yield return request;
-                    go = (GameObject)UnityEngine.Object.Instantiate(request.asset);
-                    go.name = fileName;
-                    player = go.GetComponent<VideoPlayer>();
-                    player.url = assetPath;
-                    player.prepareCompleted += (vPlayer) =>
+                    PrezSDKManager.objectLoaded = (GameObject)UnityEngine.Object.Instantiate(request.asset);
+                    PrezSDKManager.objectLoaded.name = fileName;
+
+                    if (PrezSDKManager.player == null)
+                        PrezSDKManager.player = PrezSDKManager.objectLoaded.GetComponent<VideoPlayer>();
+                    
+                    bool transVideo = Path.GetFileNameWithoutExtension(fileName).Substring(fileName.LastIndexOf('-') + 1).Equals("alpha");
+                    
+                    if (transVideo)
+                    {
+                        PrezSDKManager.player.GetComponent<Renderer>().material = GameObject.FindObjectOfType<PrezSDKManager>().transMat;
+                    }
+                    PrezSDKManager.player.prepareCompleted += (vPlayer) =>
                     {
                         vPlayer.frame = loadVideoFrame;
                         /*** fixing the on video aspect ratio issue ***/
@@ -85,19 +92,27 @@ namespace AfterNow.AnPrez.SDK.Unity
                         _VPLocalScale.y = ((float)vPlayer.texture.height / (float)vPlayer.texture.width);
                         vPlayer.transform.localScale = _VPLocalScale;
                     };
-                    player.Stop();
-                    player.frame = player.frameCount > 200 ? 200 : (long)(player.frameCount - 1);
-                    onLoaded(go);
+
+                    PrezSDKManager.player.url = assetPath;
+                    PrezSDKManager.player.Prepare();
+                    while (!PrezSDKManager.player.isPrepared)
+                    {
+                        yield return null;
+                    }
+
+                    HandleVideoPlayer(true);
+                    PrezSDKManager.loadComplete = true;
+
+                    onLoaded(PrezSDKManager.objectLoaded);
                     break;
 
                 case ANPAssetType.OBJECT:
                     request = Resources.LoadAsync<GameObject>("PrezObjectAsset");
                     yield return request;
-                    GLTF = (GameObject)UnityEngine.Object.Instantiate(request.asset);
+                    assetGo = (GameObject)UnityEngine.Object.Instantiate(request.asset);
+                    assetGo.name = fileName;
+                    assetGo.gameObject.SetActive(true);
 
-                    assetGO = GLTF;
-                    assetGO.gameObject.SetActive(true);
-                    
                     bool IsGLBLoading = false;
                     bool finishedAsync = false;
                     Exception exception = null;
@@ -105,8 +120,6 @@ namespace AfterNow.AnPrez.SDK.Unity
                     string fileExtention = Path.GetExtension(assetPath).ToLower();
                     if (fileExtention == SDKConstants.GLTF || fileExtention == SDKConstants.GLB)
                     {
-                        assetGO.gameObject.SetActive(true);
-
                         GameObject glb = null;
 
                         while (IsGLBLoading)
@@ -114,15 +127,17 @@ namespace AfterNow.AnPrez.SDK.Unity
                             yield return null;
                         }
                         IsGLBLoading = true;
-                        var glbLoader = GLBLoader.LoadGLTF(File.ReadAllBytes(assetPath), assetPath, assetGO.transform);
+                        var glbLoader = GLBLoader.LoadGLTF(File.ReadAllBytes(assetPath), assetPath, assetGo.transform);
                         yield return new WaitForTask(glbLoader);
                         glb = glbLoader.Result;
                         IsGLBLoading = false;
                         finishedAsync = true;
 
                         glb.name = fileName;
-                        glb.transform.SetParent(assetGO.transform, false);
-                        glb.transform.localPosition = Vector3.zero;
+                        glb.transform.SetParent(assetGo.transform, false);
+
+
+                        //glb.transform.localPosition = Vector3.zero;
 
                         Camera[] cameras = glb.GetComponentsInChildren<Camera>();
                         foreach (var cam in cameras)
@@ -134,11 +149,11 @@ namespace AfterNow.AnPrez.SDK.Unity
                             }
                         }
                         AdjustObjectScale(glb);
-                        if (assetGO.transform.Find("Root") != null)
+                        /*if (assetGo.transform.Find("Root") != null)
                         {
-                            UnityEngine.Object.Destroy(assetGO.transform.Find("Root"));
-                        }
-                        onLoaded(assetGO);
+                            UnityEngine.Object.Destroy(assetGo.transform.Find("Root"));
+                        }*/
+                        onLoaded(assetGo);
 
                         /*Importer.ImportGLBAsync(File.ReadAllBytes(assetPath), new ImportSettings() { useLegacyClips = true }, (obj, clips) =>
                         {
@@ -148,9 +163,9 @@ namespace AfterNow.AnPrez.SDK.Unity
                             glb = obj;
 
                             glb.name = fileName;
-                            assetGO = new GameObject();
-                            assetGO.name = glb.name;
-                            glb.transform.SetParent(assetGO.transform, false);
+                            assetGo = new GameObject();
+                            assetGo.name = glb.name;
+                            glb.transform.SetParent(assetGo.transform, false);
                             glb.transform.localPosition = Vector3.zero;
 
                             Camera[] cameras = glb.GetComponentsInChildren<Camera>();
@@ -164,14 +179,14 @@ namespace AfterNow.AnPrez.SDK.Unity
                             }
                             AdjustObjectScale(glb);
 
-                            if (assetGO.transform.Find("Root") != null)
+                            if (assetGo.transform.Find("Root") != null)
                             {
-                                UnityEngine.Object.Destroy(assetGO.transform.Find("Root"));
+                                UnityEngine.Object.Destroy(assetGo.transform.Find("Root"));
                             }
 
                             animationClips = clips;
 
-                            onLoaded(assetGO);
+                            onLoaded(assetGo);
                         }, null,
                             (ex) =>
                             {
@@ -201,9 +216,9 @@ namespace AfterNow.AnPrez.SDK.Unity
                 case ANPAssetType.AUDIO:
                     request = Resources.LoadAsync<GameObject>("PrezAudioAsset");
                     yield return request;
-                    go = (GameObject)UnityEngine.Object.Instantiate(request.asset);
-                    go.name = fileName;
-                    var audioSource = go.GetComponent<AudioSource>();
+                    PrezSDKManager.objectLoaded = (GameObject)UnityEngine.Object.Instantiate(request.asset);
+                    PrezSDKManager.objectLoaded.name = fileName;
+                    var audioSource = PrezSDKManager.objectLoaded.GetComponent<AudioSource>();
                     using (UnityWebRequest uwr = UnityWebRequestMultimedia.GetAudioClip(assetPath, AudioType.UNKNOWN))
                     {
                         yield return uwr.SendWebRequest();
@@ -218,7 +233,7 @@ namespace AfterNow.AnPrez.SDK.Unity
                             Debug.Log(uwr.error);
                         }
                     }
-                    onLoaded(go);
+                    onLoaded(PrezSDKManager.objectLoaded);
 
                     break;
             }
@@ -228,24 +243,24 @@ namespace AfterNow.AnPrez.SDK.Unity
         // ONLY used for GLB Re Scaling
         private static void AdjustObjectScale(GameObject glbObject)
         {
-            assetGO.SetActive(true);
+            assetGo.SetActive(true);
 
-            Bounds GLBBounds = CalculateLocalBounds(assetGO.transform);
-            BoxCollider GLBBoxCollider = assetGO.AddComponent<BoxCollider>();
+            Bounds GLBBounds = CalculateLocalBounds(assetGo.transform);
+            BoxCollider GLBBoxCollider = assetGo.AddComponent<BoxCollider>();
 
             float largest = Mathf.Max(GLBBounds.size.x, GLBBounds.size.y, GLBBounds.size.z) / defaultSizeFactor;
             if (largest != 0)
             {
-                Transform child0 = assetGO.transform.GetChild(0);
+                Transform child0 = assetGo.transform.GetChild(0);
                 if (child0)
                 {
                     child0.localScale /= largest;
                     GLBBoxCollider.center = (GLBBounds.center / largest) * 2;
                     GLBBoxCollider.size = (GLBBounds.size / largest) * 2;
-                   /* Vector3 defaultSize = new Vector3(defaultSizeFactor / largest, defaultSizeFactor / largest, defaultSizeFactor / largest) / 2;
-                    child0.localScale = defaultSize;
-                    GLBBoxCollider.center = Multiply(GLBBounds.center, defaultSize);
-                    GLBBoxCollider.size = Multiply(GLBBounds.size, defaultSize) * 2;*/
+                    /* Vector3 defaultSize = new Vector3(defaultSizeFactor / largest, defaultSizeFactor / largest, defaultSizeFactor / largest) / 2;
+                     child0.localScale = defaultSize;
+                     GLBBoxCollider.center = Multiply(GLBBounds.center, defaultSize);
+                     GLBBoxCollider.size = Multiply(GLBBounds.size, defaultSize) * 2;*/
 
                     if (glbObject != null)
                     {
@@ -279,6 +294,21 @@ namespace AfterNow.AnPrez.SDK.Unity
             bounds.center = localCenter;
             trans.rotation = currentRotation;
             return bounds;
+        }
+        private static void HandleVideoPlayer(bool OnEnable)
+        {
+            if (PrezSDKManager.player == null || string.IsNullOrEmpty(PrezSDKManager.player.url)) return;
+            if (!audioChannelVideo) audioChannelVideo = PrezSDKManager.player.GetComponent<AudioSource>();
+
+            if (OnEnable)
+            {
+                audioChannelVideo.volume = 1;
+            }
+            else
+            {
+                PrezSDKManager.player.frame = 0;
+                PrezSDKManager.player.Stop();
+            }
         }
 
         static IEnumerator LoadImage(GameObject _gameObject, string url)
