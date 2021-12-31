@@ -76,26 +76,28 @@ namespace AfterNow.AnPrez.SDK.Unity
 
         private void OnEnable()
         {
+        }
+
+        public void OnAssetLoaded(ARPAsset _arpAsset, GameObject _objectLoaded)
+        {
             if (loadComplete)
             {
-                if (_asset.type == ANPAssetType.AUDIO)
+                if (_arpAsset.type == ANPAssetType.AUDIO)
                 {
-                    objectLoaded.GetComponent<AudioSource>().Play();
-                    objectLoaded.GetComponent<SpriteRenderer>().enabled = false;
+                    _objectLoaded.GetComponent<AudioSource>().Play();
+                    _objectLoaded.GetComponent<SpriteRenderer>().enabled = false;
                 }
-                else if (_asset.type == ANPAssetType.VIDEO)
+                else if (_arpAsset.type == ANPAssetType.VIDEO)
                 {
                     if (player)
                     {
                         player.frame = loadVideoFrame;
-
-                        player.gameObject.GetComponent<AudioSource>().volume = _asset.volumn;
+                        player.gameObject.GetComponent<AudioSource>().volume = _arpAsset.volumn;
                         player.Stop();
-                        Debug.Log("playing");
                         player.Play();
                     }
                 }
-                else if (_asset.type == ANPAssetType.OBJECT)
+                else if (_arpAsset.type == ANPAssetType.OBJECT)
                 {
                 }
             }
@@ -200,7 +202,6 @@ namespace AfterNow.AnPrez.SDK.Unity
                 }
                 else
                 {
-                    Debug.Log("slidepoint " + SlidePoint);
                     LastPlayedPoint = animationTimeline.Play(SlidePoint);
                 }
             }

@@ -119,6 +119,9 @@ namespace Assets.AN_PrezSDK.Runtime
 
                 //ResetTransform();
                 assetGO.SetActive(true);
+
+                PrezSDKManager._instance.OnAssetLoaded(asset, assetGO);
+
                 if (skipToEnd)
                 {
                     LeanTween.cancel(assetGO);
@@ -176,7 +179,7 @@ namespace Assets.AN_PrezSDK.Runtime
             ARPAsset modelData = asset;
 
             PresentationManager.initialPos = PrezAssetHelper.GetVector(modelData.itemTransform.position);
-
+            PresentationManager.initialScale = PrezAssetHelper.GetVector(modelData.itemTransform.localScale);
 
             switch (model.animation)
             {
@@ -417,7 +420,6 @@ namespace Assets.AN_PrezSDK.Runtime
                     Debug.Log("TopSwooshIn");
 
                     Vector3 topSwooshPos = PresentationManager.initialPos;
-                    Debug.Log("topSwooshPos : " + topSwooshPos);
                     topSwooshPos.y += 1;
 
                     if (!skipToEnd)
