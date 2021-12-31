@@ -86,9 +86,21 @@ namespace Assets.AN_PrezSDK.Runtime
 
             foreach (var prezAsset in GameObject.FindObjectOfType<PrezSDKManager>().prezAssets)
             {
-                if (asset.FileName().Equals(prezAsset.name))
+                if (asset.type == ANPAssetType.TEXT)
                 {
-                    assetGO = prezAsset;
+                    Debug.Log("asset : " + asset.text.value + " prezAsset : " + prezAsset.name);
+                    if (asset.text.value.Equals(prezAsset.name))
+                    {
+                        assetGO = prezAsset;
+                    }
+                }
+                else
+                {
+                    Debug.Log("asset : " + asset.text.value + " prezAsset : " + prezAsset.name);
+                    if (asset.FileName().Equals(prezAsset.name))
+                    {
+                        assetGO = prezAsset;
+                    }
                 }
             }
 
@@ -563,6 +575,7 @@ namespace Assets.AN_PrezSDK.Runtime
                     Complete();
                     break;
                 case AnimationType.ScaleIn:
+                    Debug.Log("ScaleIn");
 
                     if (!skipToEnd)
                     {
@@ -583,6 +596,7 @@ namespace Assets.AN_PrezSDK.Runtime
                     }
                     break;
                 case AnimationType.ScaleOut:
+                    Debug.Log("ScaleOut");
 
                     if (!skipToEnd)
                     {

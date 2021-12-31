@@ -182,17 +182,6 @@ namespace AfterNow.AnPrez.SDK.Unity
 
         void Next_Step()
         {
-            /*nextIndex = presentIndex + 1;
-            StopAllCoroutines();
-            if (nextIndex < assets.Count)
-            {
-                StartCoroutine(PlayAnim(nextIndex));
-            }
-            else
-            {
-                Next_Slide();
-            }*/
-
             if (isPlaying)
             {
                 if (!animationTimeline.FirstElementAutomatic && LastPlayedPoint == -1)
