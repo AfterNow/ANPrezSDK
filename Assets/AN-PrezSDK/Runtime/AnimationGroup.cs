@@ -3,16 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-using AfterNow.AnPrez.SDK.Unity;
 using AfterNow.AnPrez.SDK.Internal.Views;
+using AfterNow.AnPrez.SDK.Unity;
 using UnityEngine;
 
 namespace Assets.AN_PrezSDK.Runtime
 {
     public class AnimationGroup
     {
-
         public List<ANPAnimation> animations = new List<ANPAnimation>();
         public event Action<AnimationGroup> onGroupComplete;
         public event Action<ANPAnimation> OnAnimationComplete;
@@ -92,7 +90,7 @@ namespace Assets.AN_PrezSDK.Runtime
             }
             isPlaying = true;
 
-            Debug.Log("count : " + animations.Count);
+            //Debug.Log("count : " + animations.Count);
             for (int i = 0; i < animations.Count; i++)
             {
                 animations[i].Play(i == 0);

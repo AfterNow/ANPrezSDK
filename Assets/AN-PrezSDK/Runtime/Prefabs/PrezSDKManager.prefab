@@ -1342,6 +1342,7 @@ GameObject:
   - component: {fileID: 5051317054946455167}
   - component: {fileID: 5051317054946455136}
   - component: {fileID: 5051317054946455137}
+  - component: {fileID: 6384915722628837659}
   m_Layer: 0
   m_Name: PrezSDKManager
   m_TagString: Untagged
@@ -1377,13 +1378,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70d501efcbd878d41a773576c822212c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slideIdx: -1
   PresentationIDText: {fileID: 5051317054907238704}
   CurrentSlideText: {fileID: 5051317054437617513}
   _manager: {fileID: 0}
   presentationAnchor: {fileID: 5051317055195200959}
   isPlaying: 0
+  isDone: 0
   transMat: {fileID: 2100000, guid: 19fb0b70a9906044f9c538339e102979, type: 2}
-  prezAssets: []
 --- !u!114 &5051317054946455137
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1406,6 +1408,21 @@ MonoBehaviour:
   Login: {fileID: 5051317055074644459}
   PresentationID: {fileID: 5051317054588666704}
   StatusText: {fileID: 5051317054828410596}
+--- !u!114 &6384915722628837659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5051317054946455138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42d35a962f9415844ab8fb441e603cb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dictionary:
+    keys: []
+    values: []
 --- !u!1 &5051317055023985187
 GameObject:
   m_ObjectHideFlags: 0

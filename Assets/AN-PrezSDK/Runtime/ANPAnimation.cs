@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-using AfterNow.AnPrez.SDK.Unity;
 using AfterNow.AnPrez.SDK.Internal.Views;
+using AfterNow.AnPrez.SDK.Unity;
 using UnityEngine;
 
 namespace Assets.AN_PrezSDK.Runtime
@@ -84,11 +83,11 @@ namespace Assets.AN_PrezSDK.Runtime
             go.SetActive(true);*/
             //pAssetGO = GameObject.Find(asset.FileName());
 
-            foreach (var prezAsset in GameObject.FindObjectOfType<PrezSDKManager>().prezAssets)
+            /*foreach (var prezAsset in GameObject.FindObjectOfType<PrezSDKManager>().prezAssets)
             {
                 if (asset.type == ANPAssetType.TEXT)
                 {
-                    Debug.Log("asset : " + asset.text.value + " prezAsset : " + prezAsset.name);
+                    //Debug.Log("asset : " + asset.text.value + " prezAsset : " + prezAsset.name);
                     if (asset.text.value.Equals(prezAsset.name))
                     {
                         assetGO = prezAsset;
@@ -96,13 +95,37 @@ namespace Assets.AN_PrezSDK.Runtime
                 }
                 else
                 {
-                    Debug.Log("asset : " + asset.text.value + " prezAsset : " + prezAsset.name);
+                    //Debug.Log("asset : " + asset.text.value + " prezAsset : " + prezAsset.name);
                     if (asset.FileName().Equals(prezAsset.name))
                     {
                         assetGO = prezAsset;
                     }
                 }
+            }*/
+
+
+            //if (GameObject.FindObjectOfType<PrezSDKManager>().prezAssets.TryGetValue(asset.FileName(), out GameObject go))
+            if (PrezSDKManager.uDictionaryExample.prezAssets.TryGetValue(asset.FileName(), out GameObject go))
+            {
+                if (asset.type == ANPAssetType.TEXT)
+                {
+                    //Debug.Log("asset : " + asset.text.value + " prezAsset : " + prezAsset.name);
+                    if (asset.text.value.Equals(go.name))
+                    {
+                        assetGO = go;
+                    }
+                }
+                else
+                {
+                    //Debug.Log("asset : " + asset.text.value + " prezAsset : " + prezAsset.name);
+                    if (asset.FileName().Equals(go.name))
+                    {
+                        assetGO = go;
+                    }
+                }
+
             }
+
 
             float _delay = skipToEnd ? 0 : delay;
             float _animationDuration = skipToEnd ? 0 : model.animationDuration;
@@ -120,7 +143,7 @@ namespace Assets.AN_PrezSDK.Runtime
 
             LeanTween.delayedCall(assetGO, _delay, () =>
             {
-                Debug.Log("pAssetGO : " + assetGO.name + " delay : " + _delay + " duration : " + _animationDuration);
+                //Debug.Log("pAssetGO : " + assetGO.name + " delay : " + _delay + " duration : " + _animationDuration);
 
                 //if (gotoInitial) assetController.GoToInitialTransform();
 
@@ -192,6 +215,26 @@ namespace Assets.AN_PrezSDK.Runtime
 
             PresentationManager.initialPos = PrezAssetHelper.GetVector(modelData.itemTransform.position);
             PresentationManager.initialScale = PrezAssetHelper.GetVector(modelData.itemTransform.localScale);
+
+            Debug.Log("data " + modelData.FileName() + " " + " localScale " + modelData.itemTransform.localScale);
+
+            /*if (!PrezSDKManager._instance.initialScales.ContainsKey(modelData))
+            {
+                PrezSDKManager._instance.initialScales.Add(modelData, modelData.itemTransform.localScale);
+            }
+            else
+            {
+                Debug.LogError(modelData + " key already exists");
+            }*/
+
+            if (!PrezSDKManager.uDictionaryExample.initialScales.ContainsKey(modelData))
+            {
+                PrezSDKManager.uDictionaryExample.initialScales.Add(modelData, modelData.itemTransform.localScale);
+            }
+            else
+            {
+                Debug.LogError(modelData + " key already exists");
+            }
 
             switch (model.animation)
             {
@@ -429,7 +472,7 @@ namespace Assets.AN_PrezSDK.Runtime
                     });
                     break;
                 case AnimationType.TopSwooshIn:
-                    Debug.Log("TopSwooshIn");
+                    //Debug.Log("TopSwooshIn");
 
                     Vector3 topSwooshPos = PresentationManager.initialPos;
                     topSwooshPos.y += 1;

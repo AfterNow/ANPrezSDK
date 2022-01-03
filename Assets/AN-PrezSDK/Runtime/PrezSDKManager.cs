@@ -9,6 +9,7 @@ using UnityEngine.Video;
 using static AfterNow.AnPrez.SDK.Unity.PresentationManager;
 using TMPro;
 using Assets.AN_PrezSDK.Runtime;
+using System;
 
 namespace AfterNow.AnPrez.SDK.Unity
 {
@@ -17,10 +18,14 @@ namespace AfterNow.AnPrez.SDK.Unity
     /// </summary>
     class PrezSDKManager : MonoBehaviour
     {
+        //public IntReactiveProperty slideIdx = new IntReactiveProperty(-1);
+        public int slideIdx = -1;
+
         public static VideoPlayer player;
         private int loadVideoFrame = 1;
 
         public static PrezSDKManager _instance = null;
+
 
         [SerializeField] TMP_Text PresentationIDText;
         [SerializeField] TMP_Text CurrentSlideText;
@@ -44,6 +49,7 @@ namespace AfterNow.AnPrez.SDK.Unity
 
         public AnimationTimeline animationTimeline;
         int SlidePoint = -1;
+        public bool isDone = false;
         private int _lastPlayedPoint = -1;
         public int LastPlayedPoint
         {
@@ -69,10 +75,24 @@ namespace AfterNow.AnPrez.SDK.Unity
         }
         public Material transMat;
 
-        public List<GameObject> prezAssets = new List<GameObject>();
+        //public List<GameObject> prezAssets = new List<GameObject>();
+        //[SerializeField] public static Dictionary<string, GameObject> prezAssets = new Dictionary<string, GameObject>();
+        public static UDictionaryExample uDictionaryExample { get; private set; }
 
         public static bool loadComplete = false;
 
+        public Dictionary<ARPAsset, PrezVector3> initialScales = new Dictionary<ARPAsset, PrezVector3>();
+        
+        #region enums
+
+        [Serializable]
+        public enum SlideProgressionType : sbyte
+        {
+            PreviousSlide = -1,
+            ResetSlide = 0,
+            NextSlide = 1
+        }
+        #endregion
 
         private void OnEnable()
         {
@@ -106,6 +126,8 @@ namespace AfterNow.AnPrez.SDK.Unity
         private void Awake()
         {
             _instance = this;
+
+            uDictionaryExample = GetComponent<UDictionaryExample>();
 
             prezController = GetComponent<IPrezController>();
             prezController.OnNextSlide += Next_Slide;
@@ -158,9 +180,11 @@ namespace AfterNow.AnPrez.SDK.Unity
                 _assets.Clear();
             }
 
-            if (prezAssets.Count > 0)
+            if (uDictionaryExample.prezAssets.Count > 0)
             {
-                prezAssets.Clear();
+                uDictionaryExample.prezAssets.Clear();
+
+                Debug.Log("Cleared prezAssets");
             }
         }
 
@@ -184,6 +208,21 @@ namespace AfterNow.AnPrez.SDK.Unity
         {
             if (isPlaying)
             {
+                Debug.Log("isPlaying");
+                NextStepLogic();
+            }
+            else if (isDone)
+            {
+                Debug.Log("isDone");
+                TransitionSlide(1, -1);
+
+            }
+        }
+
+        void NextStepLogic()
+        {
+            if (isPlaying)
+            {
                 if (!animationTimeline.FirstElementAutomatic && LastPlayedPoint == -1)
                 {
                     SlidePoint = 0;
@@ -198,6 +237,352 @@ namespace AfterNow.AnPrez.SDK.Unity
             {
                 Play();
             }
+        }
+
+        private Coroutine slideTransition;
+        private bool CanReset = false;
+        private readonly LinkedList<int> _slideTracker = new LinkedList<int>();
+
+        /// <summary>
+        /// The most inporttant function
+        /// </summary>
+        /// <param name="nextSlide">1 to move forward, -1 to move backward, 0 to reset slide(?)</param>
+        /// <param name="targetSlideIdx"></param>
+        public void TransitionSlide(int nextSlide = 1, int targetSlideIdx = -1, bool shouldTrySync = true, bool clickable = false, Action OnFinish = null)
+        {
+            if (slideTransition != null)
+            {
+                StopCoroutine(slideTransition);
+            }
+            slideTransition = StartCoroutine(StartTransitionSlide(nextSlide, targetSlideIdx, shouldTrySync, clickable, OnFinish));
+        }
+
+        private int targetSlideIdx = 0;
+        private IEnumerator StartTransitionSlide(int nextSlide, int _targetSlideIdx, bool shouldTrySync, bool clickable, Action OnFinish)
+        {
+            targetSlideIdx = _targetSlideIdx;
+
+            SlideProgressionType progressionType = (SlideProgressionType)nextSlide;
+            CanReset = false;
+            if (!isPlaying)
+            {
+                bool show = targetSlideIdx == -1;
+            }
+
+            isPlaying = true;
+
+            if (isPlaying)
+            {
+                if (targetSlideIdx == -1)
+                {
+                    if (nextSlide == 1)
+                    {
+                        //targetSlideIdx = slideIdx.Value + 1;
+                        targetSlideIdx = slideIdx + 1;
+
+                        if (targetSlideIdx == _manager._slides.Count)
+                        {
+                            _slideTracker.Clear();
+                        }
+                        else
+                        {
+                            _slideTracker.AddLast(targetSlideIdx);
+                        }
+                    }
+                    else if (nextSlide == -1)
+                    {
+                        Debug.Log("nextslide is -1");
+
+                        if (_slideTracker.Count > 1)
+                        {
+                            targetSlideIdx = _slideTracker.Last.Previous.Value;
+                            _slideTracker.RemoveLast();
+                        }
+                        else
+                        {
+                            targetSlideIdx = -1;
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("nextslide is something");
+
+                        //targetSlideIdx = slideIdx.Value;
+                        targetSlideIdx = slideIdx;
+                    }
+                }
+                else if (clickable)
+                {
+                    _slideTracker.AddLast(targetSlideIdx);
+                }
+
+                if (nextSlide == 0)
+                {
+                    //ClearActiveSlide(true);
+                    yield return null;
+                }
+
+
+
+                if (targetSlideIdx < _manager._slides.Count && targetSlideIdx >= 0)
+                {
+                    Coroutine slideLoader = GotoSlidePlayMode(targetSlideIdx);
+
+                    //if (_slide.Slide.DownloadProgress == 1f) //if current slide is loaded, animate it out
+                    //{
+                    bool hasSlideStopped = false;
+                    LeanTween.value(presentationAnchor, 0, 1, /*_manager._location.slides[targetSlideIdx].transition.delay*/0).setOnComplete(() =>
+                    {
+                        StopSlide(false, () =>
+                        {
+                            Debug.Log("targetSlideIdx : " + targetSlideIdx);
+                            Debug.Log("slides counts : " + _manager._location.slides.Count);
+                            if (targetSlideIdx != _manager._location.slides.Count)
+                            {
+                                    //   slideIdx.Value = targetSlideIdx;
+                                    slideIdx = targetSlideIdx;
+                            }
+                            hasSlideStopped = true;
+                        });
+                    });
+                    while (!hasSlideStopped) yield return null;
+                    //}
+                    yield return slideLoader;
+                    //yield return StartCoroutine(UpdateVRBackground(newSlideController.Slide.BackgroundTexture, newSlideController.Slide.backgroundOrientation));
+
+                    //only after new slide has loaded, and old slide has finished
+                    Play();
+
+                    OnSlideTransition(targetSlideIdx);
+                    CanReset = true;
+                }
+                /*else if (targetSlideIdx == Location.slides.Count)
+                {
+                    if (targetSlideIdx != Location.slides.Count)
+                        slideIdx.Value = targetSlideIdx;
+                    // Last slide, let it do the transition..
+                    if (currentSlide != null)
+                    {
+                        shouldTrySync = false;
+                        currentSlide.GetComponent<SlideController>().StopSlide(false, () =>
+                        {
+                            isPlaying = false;
+                            ResetLocation();
+                            AppManager.Instance.slideNo.Value = 0;
+                            eventUpdatePresValues();
+                            eventUpdateMenuLayout(AppManager.Instance.appMode);
+                            if (AppManager.Instance.isPresenter && AppNetworkController.Instance.channel.Value != null)
+                            {
+                                AppNetworkController.Instance.SelectPresentationMode(AppManager.Instance.presentationState.Value);
+                            }
+                            CanReset = true;
+                        });
+                    }
+
+                    else if (shouldTrySync)
+                    {
+                        SyncSlide(targetSlideIdx, progressionType);
+                    }
+                }
+                else
+                {
+                    currentSlide.StopSlide(false, () =>
+                    {
+                        isPlaying = false;
+                        ResetLocation();
+                        AppManager.Instance.slideNo.Value = 0;
+                        eventUpdatePresValues();
+                        eventUpdateMenuLayout(AppManager.Instance.appMode);
+                        if (AppManager.Instance.isPresenter && AppNetworkController.Instance.channel.Value != null)
+                        {
+                            AppNetworkController.Instance.SelectPresentationMode(AppManager.Instance.presentationState.Value);
+                        }
+                        CanReset = true;
+                        if (targetSlideIdx != Location.slides.Count)
+                            slideIdx.Value = targetSlideIdx;
+                    });
+                }*/
+            }
+            slideTransition = null;
+            yield return null;
+            //ClearActiveSlide(false);
+            //OnFirstTimeLoaded();
+            OnFinish?.Invoke();
+        }
+
+        private void OnSlideTransition(int targetSlideIdx)
+        {
+            //AppManager.Instance.slideNo.Value = targetSlideIdx + 1;
+            //AppManager.Instance.isPresPaused.Value = false;
+            //            slideIdx.Value = targetSlideIdx;
+            slideIdx = targetSlideIdx;
+        }
+
+
+        void ResetTimeline()
+        {
+            SlidePoint = animationTimeline.FirstElementAutomatic ? 0 : -1;
+            LastPlayedPoint = SlidePoint;
+            animationTimeline.Reset();
+            PlayStartTime = null;
+        }
+
+        public void StopSlide(bool now = false, Action action = null)
+        {
+            // If stop instantly, don't do animation and just hide children
+            if (now || isAnimating)
+            {
+                isAnimating = false;
+                LeanTween.cancel(gameObject);
+
+                if (action != null)
+                {
+                    action.Invoke();
+                }
+                ResetTimeline();
+                isPlaying = false;
+                isDone = true;
+                return;
+            }
+
+
+            // Animate children out
+            //ARPSlideTransition slideTransition = _slide.Slide.transition;
+            //ARPSlideTransition slideTransition = _manager._location.slides[targetSlideIdx].transition;
+            
+            ARPSlideTransition slideTransition = new ARPSlideTransition();
+            slideTransition.animation = SlideAnimationType.ScaleOut;
+            slideTransition.animationDuration = 5;
+            Debug.Log("slideTransition animation : " + slideTransition.animation);
+            Debug.Log("slideTransition animationDuration : " + slideTransition.animationDuration);
+
+            switch (slideTransition.animation)
+            {
+                case SlideAnimationType.Disappear:
+                    // Wait until after duration to disappear
+                    isAnimating = true;
+                    LeanTween.delayedCall(gameObject, slideTransition.animationDuration, () =>
+                    {
+                        isAnimating = false;
+                        //ShowChildren(false);
+                        if (action != null)
+                        {
+                            action.Invoke();
+                        }
+                        ResetTimeline();
+                        isPlaying = false;
+                        isDone = true;
+                        _manager.CleanUp();
+                    });
+                    break;
+                case SlideAnimationType.ScaleOut:
+                    isAnimating = true;
+                    /*foreach (var audioSource in audioSources)
+                    {
+                        if (audioSource)
+                            LeanTween.value(gameObject, 1, 0, slideTransition.animationDuration).setOnUpdate((float val) =>
+                            {
+                                if (audioSource)
+                                    audioSource.volume = val;
+                            }).setOnComplete(() =>
+                            {
+                                if (audioSource)
+                                    audioSource.volume = 1;
+                            });
+                    }*/
+
+                    /*foreach (var prezAsset in prezAssets)
+                    {
+                        prezAsset.transform.localScale = initialScale;
+                        LeanTween.scale(prezAsset, Vector3.zero, slideTransition.animationDuration).setOnComplete(_ =>
+                        {
+                            ShowChild(false, prezAsset);
+                        });
+                    }*/
+
+                    GameObject go = null;
+                    foreach (var asset in assets)
+                    {
+                        /*Debug.Log("prezAssets count : " + uDictionaryExample.prezAssets.Count);
+                        string output = "";
+                        foreach (KeyValuePair<string, GameObject> kvp in uDictionaryExample.prezAssets)
+                        {
+                            output += string.Format("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
+                            output += "\n";
+                        }
+                        Debug.Log(output);*/
+                        if (asset.type == ANPAssetType.TEXT)
+                        {
+                            //Debug.Log("assetfilename : " + asset.text.value);
+                            if (uDictionaryExample.prezAssets.TryGetValue(asset.text.value, out GameObject _go))
+                            {
+                                go = _go;
+                                //Debug.Log("goname : " + go.name);
+                            }
+                        }
+                        else
+                        {
+                            //Debug.Log("assetfilename : " + asset.FileName());
+                            if (uDictionaryExample.prezAssets.TryGetValue(asset.FileName(), out GameObject _go))
+                            {
+                                go = _go;
+                                //Debug.Log("goname : " + go.name);
+                            }
+                        }
+
+                        var initialScale = PrezAssetHelper.GetVector(asset.itemTransform.localScale);
+                        Debug.Log("initialScale : " + initialScale);
+                        go.transform.localScale = initialScale;
+                        LeanTween.scale(go, Vector3.zero, slideTransition.animationDuration).setOnComplete(_ =>
+                        {
+                            ShowChild(false, go);
+                        });
+                    }
+
+
+                    LeanTween.delayedCall(gameObject, slideTransition.animationDuration, () =>
+                    {
+                        if (this)
+                        {
+                            isAnimating = false;
+                            if (action != null)
+                            {
+                                action.Invoke();
+                            }
+                            ResetTimeline();
+                            isPlaying = false;
+                            isDone = true;
+                            _manager.CleanUp();
+                        }
+                    });
+                    break;
+            }
+
+        }
+
+        public void ShowChild(bool show, GameObject _prezAsset)
+        {
+            if (_prezAsset)
+            {
+                if (!show)
+                {
+                    LeanTween.cancel(_prezAsset);
+                }
+                _prezAsset.SetActive(show);
+            }
+        }
+
+        private Coroutine SlideIndexRunner;
+
+        /// <summary>
+        /// Only used for Play mode. Edit mode should never call this directly
+        /// </summary>
+        /// <param name="newIdx"></param>
+        /// <returns></returns>
+        private Coroutine GotoSlidePlayMode(int newIdx)
+        {
+            SlideIndexRunner = StartCoroutine(LoadSlide(newIdx));
+            return SlideIndexRunner;
         }
 
         public void OnStartPresentation(string presentationID)
@@ -248,6 +633,7 @@ namespace AfterNow.AnPrez.SDK.Unity
         private int nextIndex = 0;
         GameObject go = null;
         private GameObject _go;
+        private bool isAnimating = false;
 
         IEnumerator LoadSlide(int slideNo)
         {
@@ -266,7 +652,7 @@ namespace AfterNow.AnPrez.SDK.Unity
             if (previousSlide != null)
             {
                 //Debug.Log("cleanup initiated for slide " + PrezStates.CurrentSlide);
-                previousSlide.CleanUp();
+                //previousSlide.CleanUp();
                 yield return null;
             }
             PrezStates.CurrentSlide = slideNo;
@@ -316,7 +702,7 @@ namespace AfterNow.AnPrez.SDK.Unity
 
             animationTimeline = new AnimationTimeline(animationGroups);
             animationTimeline.OnGroupCompleted += OnGroupEnd;
-            //animationTimeline.OnTimelineComplete += TimelineComplete;
+            animationTimeline.OnTimelineComplete += TimelineComplete;
 
             /*for (int i = 0; i < assets.Count; i++)
             {
@@ -344,6 +730,11 @@ namespace AfterNow.AnPrez.SDK.Unity
             Play();
         }
 
+        public void TimelineComplete(AnimationTimeline timeilne)
+        {
+            isDone = true;
+            isPlaying = false;
+        }
 
         public void Play(int groupNum = -1)
         {
@@ -351,7 +742,7 @@ namespace AfterNow.AnPrez.SDK.Unity
             //Debug.LogError(groupNum);
 
             SlidePoint = groupNum;
-            //isDone.Value = false;
+            isDone = false;
 
             // Set initial transforms for each asset in this slide before they start animating in case we updated their transform
             /*foreach (AssetController ac in assetControllers)
@@ -364,6 +755,7 @@ namespace AfterNow.AnPrez.SDK.Unity
             {
                 isPlaying = true;
                 /*LastPlayedPoint = */
+                Debug.Log("playing new slide");
                 animationTimeline.Play(groupNum);
             }
 

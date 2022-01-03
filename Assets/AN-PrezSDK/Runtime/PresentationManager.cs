@@ -11,8 +11,8 @@ namespace AfterNow.AnPrez.SDK.Unity
     public class PresentationManager : MonoBehaviour
     {
         public static LoadedSlide _slide;
-        private Location _location;
-        private Dictionary<int, LoadedSlide> _slides;
+        public Location _location;
+        public Dictionary<int, LoadedSlide> _slides;
 
         public static PresentationManager _instance;
 
@@ -66,7 +66,6 @@ namespace AfterNow.AnPrez.SDK.Unity
             if (!_slides.TryGetValue(index, out LoadedSlide slide))
             {
                 _slide = slide;
-
                 _slide = new LoadedSlide(_location.slides[index], transform);
                 _slides[index] = _slide;
             }
@@ -138,6 +137,7 @@ namespace AfterNow.AnPrez.SDK.Unity
                     _assets[asset] = new LoadedAsset(asset, anchor, () => { loadedCount++; });
                 }
 
+                //Debug.Log("slidetransitionanimation " + slide.transition.animation);
                 Slide = slide;
             }
 
@@ -160,7 +160,7 @@ namespace AfterNow.AnPrez.SDK.Unity
                 AssetBundleManager.Cleanup();
                 foreach (Transform child in _instance.transform)
                 {
-                    Destroy(child.gameObject);
+                    /*Destroy(child.gameObject);*/
                 }
                 loadedCount = 0;
             }
@@ -194,6 +194,7 @@ namespace AfterNow.AnPrez.SDK.Unity
                     CoroutineRunner.Instance.StartCoroutine(LoadAssetInternal());
                 }
 
+
                 public IEnumerator LoadAssetInternal()
                 {
                     if (_asset.type != ANPAssetType.TEXT && !IsFileDownloaded)
@@ -211,6 +212,7 @@ namespace AfterNow.AnPrez.SDK.Unity
                         yield return new WaitForTask(task);
                     }
 
+
                     yield return AssetLoader.OnLoadAsset(_asset, (go) =>
                     {
                         if (go != null)
@@ -227,8 +229,31 @@ namespace AfterNow.AnPrez.SDK.Unity
                             _loadedObject.SetActive(false);
                             _onLoaded?.Invoke();
 
-                            FindObjectOfType<PrezSDKManager>().prezAssets.Add(_loadedObject);
-                            loadedObjects.Add(_asset, _loadedObject);
+                            if (_asset.type == ANPAssetType.TEXT)
+                            {
+                                //FindObjectOfType<PrezSDKManager>().prezAssets.Add(_asset.text.value, _loadedObject);
+                                if (!PrezSDKManager.uDictionaryExample.prezAssets.ContainsKey(_asset.text.value))
+                                {
+                                    PrezSDKManager.uDictionaryExample.prezAssets.Add(_asset.text.value, _loadedObject);
+
+                                    //Debug.Log("Adding " + "key : " + _asset.text.value + " " + "value : " + _loadedObject.name);
+                                }
+                            }
+                            else
+                            {
+                                //FindObjectOfType<PrezSDKManager>().prezAssets.Add(_asset.FileName(), _loadedObject);
+                                if (!PrezSDKManager.uDictionaryExample.prezAssets.ContainsKey(_asset.FileName()))
+                                {
+                                    PrezSDKManager.uDictionaryExample.prezAssets.Add(_asset.FileName(), _loadedObject);
+
+                                    //Debug.Log("Adding " + "key : " + _asset.FileName() + " " + "value : " + _loadedObject.name);
+                                }
+                            }
+
+                            if (!loadedObjects.ContainsKey(_asset))
+                            {
+                                loadedObjects.Add(_asset, _loadedObject);
+                            }
                         }
                         else
                         {
@@ -249,6 +274,7 @@ namespace AfterNow.AnPrez.SDK.Unity
                 {
                     if (_loadedObject)
                     {
+                        Debug.Log("destroying " + _loadedObject.name);
                         DestroyImmediate(_loadedObject);
                     }
                 }
@@ -533,6 +559,7 @@ namespace AfterNow.AnPrez.SDK.Unity
             initialPos = new Vector3(itemTransform.position.x, itemTransform.position.y, itemTransform.position.z);
             initialRot = new Quaternion(itemTransform.rotation.x, itemTransform.rotation.y, itemTransform.rotation.z, itemTransform.rotation.w);
             initialScale = new Vector3(itemTransform.localScale.x, itemTransform.localScale.y, itemTransform.localScale.z);
+
         }
 
         private static void Complete()
