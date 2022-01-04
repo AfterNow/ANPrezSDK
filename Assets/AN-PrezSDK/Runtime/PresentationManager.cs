@@ -42,7 +42,7 @@ namespace AfterNow.AnPrez.SDK.Unity
             _slides = new Dictionary<int, LoadedSlide>();
         }
 
-        public void CleanUp()
+        /*public void CleanUp()
         {
             StartCoroutine(InternalCleanup());
         }
@@ -59,7 +59,7 @@ namespace AfterNow.AnPrez.SDK.Unity
             yield return null;
             Resources.UnloadUnusedAssets();
             GC.Collect();
-        }
+        }*/
 
         public LoadedSlide LoadSlide(int index)
         {
@@ -160,7 +160,7 @@ namespace AfterNow.AnPrez.SDK.Unity
                 AssetBundleManager.Cleanup();
                 foreach (Transform child in _instance.transform)
                 {
-                    /*Destroy(child.gameObject);*/
+                    Destroy(child.gameObject);
                 }
                 loadedCount = 0;
             }

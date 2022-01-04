@@ -105,27 +105,28 @@ namespace Assets.AN_PrezSDK.Runtime
 
 
             //if (GameObject.FindObjectOfType<PrezSDKManager>().prezAssets.TryGetValue(asset.FileName(), out GameObject go))
-            if (PrezSDKManager.uDictionaryExample.prezAssets.TryGetValue(asset.FileName(), out GameObject go))
+            if (asset.type == ANPAssetType.TEXT)
             {
-                if (asset.type == ANPAssetType.TEXT)
+                //Debug.Log("asset : " + asset.text.value + " prezAsset : " + prezAsset.name);
+                if (PrezSDKManager.uDictionaryExample.prezAssets.TryGetValue(asset.text.value, out GameObject go))
                 {
-                    //Debug.Log("asset : " + asset.text.value + " prezAsset : " + prezAsset.name);
                     if (asset.text.value.Equals(go.name))
                     {
                         assetGO = go;
                     }
                 }
-                else
+            }
+            else
+            {
+                if (PrezSDKManager.uDictionaryExample.prezAssets.TryGetValue(asset.FileName(), out GameObject go))
                 {
-                    //Debug.Log("asset : " + asset.text.value + " prezAsset : " + prezAsset.name);
+                    //Debug.Log("asset : " + asset.FileName + " prezAsset : " + prezAsset.name);
                     if (asset.FileName().Equals(go.name))
                     {
                         assetGO = go;
                     }
                 }
-
             }
-
 
             float _delay = skipToEnd ? 0 : delay;
             float _animationDuration = skipToEnd ? 0 : model.animationDuration;
@@ -227,14 +228,7 @@ namespace Assets.AN_PrezSDK.Runtime
                 Debug.LogError(modelData + " key already exists");
             }*/
 
-            if (!PrezSDKManager.uDictionaryExample.initialScales.ContainsKey(modelData))
-            {
-                PrezSDKManager.uDictionaryExample.initialScales.Add(modelData, modelData.itemTransform.localScale);
-            }
-            else
-            {
-                Debug.LogError(modelData + " key already exists");
-            }
+            PrezSDKManager.uDictionaryExample.initialScales.Add(modelData, modelData.itemTransform.localScale);
 
             switch (model.animation)
             {

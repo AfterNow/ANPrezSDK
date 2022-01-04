@@ -186,6 +186,14 @@ namespace AfterNow.AnPrez.SDK.Unity
 
                 Debug.Log("Cleared prezAssets");
             }
+
+
+            if (uDictionaryExample.initialScales.Count > 0)
+            {
+                uDictionaryExample.initialScales.Clear();
+
+                Debug.Log("Cleared initialScales");
+            }
         }
 
         void Next_Slide()
@@ -472,7 +480,9 @@ namespace AfterNow.AnPrez.SDK.Unity
                         ResetTimeline();
                         isPlaying = false;
                         isDone = true;
-                        _manager.CleanUp();
+                        //_manager.CleanUp();
+                        previousSlide.CleanUp();
+                        ClearObjects();
                     });
                     break;
                 case SlideAnimationType.ScaleOut:
@@ -532,11 +542,18 @@ namespace AfterNow.AnPrez.SDK.Unity
 
                         var initialScale = PrezAssetHelper.GetVector(asset.itemTransform.localScale);
                         Debug.Log("initialScale : " + initialScale);
-                        go.transform.localScale = initialScale;
-                        LeanTween.scale(go, Vector3.zero, slideTransition.animationDuration).setOnComplete(_ =>
+                        if (go != null)
                         {
-                            ShowChild(false, go);
-                        });
+                            go.transform.localScale = initialScale;
+                            LeanTween.scale(go, Vector3.zero, slideTransition.animationDuration).setOnComplete(_ =>
+                            {
+                                ShowChild(false, go);
+                            });
+                        }
+                        else
+                        {
+                            Debug.LogError("go is null. Cannot retrieve scale.");
+                        }
                     }
 
 
@@ -552,7 +569,9 @@ namespace AfterNow.AnPrez.SDK.Unity
                             ResetTimeline();
                             isPlaying = false;
                             isDone = true;
-                            _manager.CleanUp();
+                            //_manager.CleanUp();
+                            previousSlide.CleanUp();
+                            ClearObjects();
                         }
                     });
                     break;
@@ -627,7 +646,7 @@ namespace AfterNow.AnPrez.SDK.Unity
             StartCoroutine(LoadSlide(slideNo));
         }
 
-        private LoadedSlide previousSlide;
+        public LoadedSlide previousSlide;
         private bool onCommand = true;
         private int presentIndex = 0;
         private int nextIndex = 0;
@@ -637,24 +656,12 @@ namespace AfterNow.AnPrez.SDK.Unity
 
         IEnumerator LoadSlide(int slideNo)
         {
-            //If this is first slide, disable the "previous slide" button
-            /*if (slideNo == 0)
-                PreviousSlide.gameObject.SetActive(false);
-            else
-                PreviousSlide.gameObject.SetActive(true);*/
-
-            //If this is last slide, disable the "next slide" button
-            /*if (slideNo == slideCount - 1)
-                NextSlide.gameObject.SetActive(false);
-            else
-                NextSlide.gameObject.SetActive(true);*/
-
-            if (previousSlide != null)
+            /*if (previousSlide != null)
             {
                 //Debug.Log("cleanup initiated for slide " + PrezStates.CurrentSlide);
-                //previousSlide.CleanUp();
+                previousSlide.CleanUp();
                 yield return null;
-            }
+            }*/
             PrezStates.CurrentSlide = slideNo;
             previousSlide = _manager.LoadSlide(slideNo);
             UpdateSlideCount();
