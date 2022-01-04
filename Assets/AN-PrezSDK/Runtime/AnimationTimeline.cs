@@ -1,13 +1,10 @@
-﻿using AfterNow.AnPrez.SDK.Internal.Views;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Assets.AN_PrezSDK.Runtime
-{
     public class AnimationTimeline
     {
         public List<AnimationGroup> animationGroups = new List<AnimationGroup>();
@@ -101,7 +98,7 @@ namespace Assets.AN_PrezSDK.Runtime
         /// <returns></returns>
         public int Play(int pointNum, bool nextStep = true)
         {
-            //Debug.Log("AnimationTimeline Play");
+            Debug.Log("AnimationTimeline Play");
             if (pointNum < 0)
             {
                 if (!FirstElementAutomatic)
@@ -156,7 +153,10 @@ namespace Assets.AN_PrezSDK.Runtime
                 else if (i < pointNum)
                 {
                     if (!animationGroups[i].hasFinished)
+                    {
                         animationGroups[i].Finish();
+                        Debug.Log("Finish1");
+                    }
                 }
                 else
                 {
@@ -167,13 +167,14 @@ namespace Assets.AN_PrezSDK.Runtime
             if (groupToFinish != null)
             {
                 groupToFinish.Finish(stopAudio);
+                Debug.Log("Finish2");
                 //Debug.LogError("Force finishing group");
                 //Debug.Log("AnimationGroupCompleted(groupToFinish)");
                 AnimationGroupCompleted(groupToFinish); //when we go to previous step, we dont need to do finish callback
             }
             else if (groupToPlay != null)
             {
-                //Debug.Log("groupToPlay");
+                Debug.Log("groupToPlay");
                 groupToPlay.Play();
             }
             return pointNum;
@@ -203,4 +204,3 @@ namespace Assets.AN_PrezSDK.Runtime
             group.Reset();*/
         }
     }
-}

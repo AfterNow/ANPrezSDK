@@ -1,11 +1,8 @@
-﻿using AfterNow.AnPrez.SDK.Unity.Interfaces;
-using System;
+﻿using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace AfterNow.AnPrez.SDK.Unity.Examples
-{
     public class ExampleController : MonoBehaviour, IPrezController
     {
         public event Action<string> OnPresentationJoin;
@@ -138,4 +135,3 @@ namespace AfterNow.AnPrez.SDK.Unity.Examples
             }
         }
     }
-}

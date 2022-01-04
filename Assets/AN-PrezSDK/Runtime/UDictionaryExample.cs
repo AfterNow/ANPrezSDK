@@ -15,7 +15,6 @@ using UnityEditorInternal;
 
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
-using AfterNow.AnPrez.SDK.Internal.Views;
 
 public class UDictionaryExample : MonoBehaviour
 {

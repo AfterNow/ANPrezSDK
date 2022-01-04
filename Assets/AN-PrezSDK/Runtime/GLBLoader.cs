@@ -1,5 +1,4 @@
-﻿using AfterNow.AnPrez.SDK.Unity;
-using GLTFast;
+﻿using GLTFast;
 using System;
 using System.Threading.Tasks;
 using UnityEngine;

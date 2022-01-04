@@ -1,8 +1,4 @@
-﻿using AfterNow.AnPrez.SDK.Internal.Views;
-
-namespace AfterNow.AnPrez.SDK.Unity
-{
-    public static class PrezStates
+﻿    public static class PrezStates
     {        
         public static Presentation Presentation;
 
@@ -21,4 +17,3 @@ namespace AfterNow.AnPrez.SDK.Unity
             PresenterID = 0;
         }
     }
-}

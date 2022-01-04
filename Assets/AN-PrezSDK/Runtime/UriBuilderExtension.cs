@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AfterNow.AnPrez.SDK.Unity
-{
     public static class UriBuilderExtension
     {
         public static string UriPath(string path)
@@ -21,4 +19,3 @@ namespace AfterNow.AnPrez.SDK.Unity
             return null;
         }
     }
-}

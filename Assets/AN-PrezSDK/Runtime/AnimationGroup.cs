@@ -3,12 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AfterNow.AnPrez.SDK.Internal.Views;
-using AfterNow.AnPrez.SDK.Unity;
 using UnityEngine;
 
-namespace Assets.AN_PrezSDK.Runtime
-{
     public class AnimationGroup
     {
         public List<ANPAnimation> animations = new List<ANPAnimation>();
@@ -83,6 +79,7 @@ namespace Assets.AN_PrezSDK.Runtime
 
         public void Play()
         {
+            Debug.Log("AnimationGroup Play");
             if (animations.Count == 0)
             {
                 //Debug.Log("animations are 0");
@@ -99,14 +96,13 @@ namespace Assets.AN_PrezSDK.Runtime
 
         public void Finish(bool stopAudio = true)
         {
-            /*// Finish all animations and call Complete
+            // Finish all animations and call Complete
             foreach (ANPAnimation _anim in animations)
             {
                 _anim.Play(true, true, stopAudio);
             }
             isPlaying = false;
             hasFinished = true;
-            //Complete();*/
+            Complete();
         }
     }
-}

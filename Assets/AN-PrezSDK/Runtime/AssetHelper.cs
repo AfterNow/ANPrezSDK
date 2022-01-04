@@ -1,12 +1,9 @@
-﻿using AfterNow.AnPrez.SDK.Internal.Views;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-namespace AfterNow.AnPrez.SDK.Unity
-{
     public static class PrezAssetHelper
     {
         private static readonly Dictionary<string, TMP_FontAsset> LoadedFontAssets = new Dictionary<string, TMP_FontAsset>();
@@ -192,4 +189,3 @@ namespace AfterNow.AnPrez.SDK.Unity
         }
     }
 
-}

@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Concurrent;
 using UnityEngine;
 
-namespace AfterNow.AnPrez.SDK.Unity
-{
     public class CoroutineRunner : Singleton<CoroutineRunner>
     {
         private static readonly ConcurrentQueue<Action> _executionQueue = new ConcurrentQueue<Action>();
@@ -102,4 +100,3 @@ namespace AfterNow.AnPrez.SDK.Unity
             else CoroutineRunner.Instance.StopCoroutine(coroutine);
         }
     }
-}

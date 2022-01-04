@@ -7,8 +7,6 @@ using System.Threading;
 using System.Text;
 using System;
 
-namespace AfterNow.AnPrez.SDK.Unity
-{
     [InitializeOnLoad]
     public class PostPackageImport
     {
@@ -56,4 +54,3 @@ namespace AfterNow.AnPrez.SDK.Unity
             Debug.Log($"Started importing package: {packagename}");
         }
     }
-}

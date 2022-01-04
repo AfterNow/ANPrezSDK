@@ -4,11 +4,6 @@
 using Newtonsoft.Json;
 #endif
 using UnityEngine;
-using AfterNow.AnPrez.SDK.Internal;
-
-
-namespace AfterNow.AnPrez.SDK.Unity
-{
     class InitializeSDK
     {
         public static string DownloadFolderPath { get; private set; }
@@ -31,5 +26,5 @@ namespace AfterNow.AnPrez.SDK.Unity
             InternalStates.SetAssetDownloadPath(downloadPath);
         }
     }
-}
+
 

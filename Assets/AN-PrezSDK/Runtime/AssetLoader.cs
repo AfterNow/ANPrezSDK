@@ -1,6 +1,4 @@
-﻿using AfterNow.AnPrez.SDK.Internal;
-using AfterNow.AnPrez.SDK.Internal.Views;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -12,8 +10,6 @@ using UnityEngine.Networking;
 using UnityEngine.Playables;
 using UnityEngine.Video;
 
-namespace AfterNow.AnPrez.SDK.Unity
-{
     public static class AssetLoader
     {
         private static GameObject assetGo; // The relating PrezSDKManager.objectLoaded that corresponds to the type of asset (Image, Video, Audio, GLTF).
@@ -355,4 +351,3 @@ namespace AfterNow.AnPrez.SDK.Unity
         }
 
     }
-}

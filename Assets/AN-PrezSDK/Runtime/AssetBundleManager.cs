@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace AfterNow.AnPrez.SDK.Unity
-{
     public class AssetBundleManager : MonoBehaviour
     {
         public static AssetBundleManager Instance 
@@ -81,7 +79,6 @@ namespace AfterNow.AnPrez.SDK.Unity
             }
         }
     }
-}
 
 
 

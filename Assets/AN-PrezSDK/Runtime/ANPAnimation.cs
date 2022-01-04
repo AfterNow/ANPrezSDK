@@ -3,12 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AfterNow.AnPrez.SDK.Internal.Views;
-using AfterNow.AnPrez.SDK.Unity;
 using UnityEngine;
 
-namespace Assets.AN_PrezSDK.Runtime
-{
     public class ANPAnimation
     {
         public ARPAsset asset;
@@ -76,7 +72,7 @@ namespace Assets.AN_PrezSDK.Runtime
 
         public void Play(bool gotoInitial, bool skipToEnd = false, bool stopAudio = true)
         {
-            //Debug.Log("ANPAnimation Play");
+            Debug.Log("ANPAnimation Play");
 
             ////GameObject pAssetGO = go;
             /*go = PresentationManager.loadedObjects[asset];
@@ -110,6 +106,7 @@ namespace Assets.AN_PrezSDK.Runtime
                 //Debug.Log("asset : " + asset.text.value + " prezAsset : " + prezAsset.name);
                 if (PrezSDKManager.uDictionaryExample.prezAssets.TryGetValue(asset.text.value, out GameObject go))
                 {
+                    Debug.Log("ASSET VALUE : " + asset.text.value);
                     if (asset.text.value.Equals(go.name))
                     {
                         assetGO = go;
@@ -120,7 +117,8 @@ namespace Assets.AN_PrezSDK.Runtime
             {
                 if (PrezSDKManager.uDictionaryExample.prezAssets.TryGetValue(asset.FileName(), out GameObject go))
                 {
-                    //Debug.Log("asset : " + asset.FileName + " prezAsset : " + prezAsset.name);
+                    Debug.Log("ASSET VALUE : " + asset.FileName());
+
                     if (asset.FileName().Equals(go.name))
                     {
                         assetGO = go;
@@ -193,6 +191,7 @@ namespace Assets.AN_PrezSDK.Runtime
 
         private void DoGlbAnim(bool skipToEnd, float _delay)
         {
+            Debug.Log("DoGLBAnim");
             if (skipToEnd)
             {
                 Complete();
@@ -212,6 +211,7 @@ namespace Assets.AN_PrezSDK.Runtime
         //returns whether animation happened or it got completed
         private void DoRegAnim(GameObject pAssetGO, bool skipToEnd, float _delay, float _animationDuration)
         {
+            Debug.Log("DoRegAnim");
             ARPAsset modelData = asset;
 
             PresentationManager.initialPos = PrezAssetHelper.GetVector(modelData.itemTransform.position);
@@ -672,4 +672,3 @@ namespace Assets.AN_PrezSDK.Runtime
         }
 
     }
-}

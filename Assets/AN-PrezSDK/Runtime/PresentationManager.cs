@@ -1,13 +1,9 @@
-﻿using AfterNow.AnPrez.SDK.Internal;
-using AfterNow.AnPrez.SDK.Internal.Views;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-namespace AfterNow.AnPrez.SDK.Unity
-{
     public class PresentationManager : MonoBehaviour
     {
         public static LoadedSlide _slide;
@@ -569,5 +565,4 @@ namespace AfterNow.AnPrez.SDK.Unity
         }
 
     }
-}
 
