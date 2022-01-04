@@ -52,7 +52,7 @@ using System.IO;
         {
             if (!string.IsNullOrEmpty(url))
             {
-                return id + "-" + url.Substring(url.LastIndexOf("/") + 1);
+                return /*id + "-" + */url.Substring(url.LastIndexOf("/") + 1);
             }
             return null;
         }

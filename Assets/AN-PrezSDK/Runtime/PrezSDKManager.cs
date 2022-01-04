@@ -456,8 +456,8 @@ class PrezSDKManager : MonoBehaviour
         ARPSlideTransition slideTransition = new ARPSlideTransition();
         slideTransition.animation = SlideAnimationType.ScaleOut;
         slideTransition.animationDuration = 5;
-        Debug.Log("slideTransition animation : " + slideTransition.animation);
-        Debug.Log("slideTransition animationDuration : " + slideTransition.animationDuration);
+        //Debug.Log("slideTransition animation : " + slideTransition.animation);
+        //Debug.Log("slideTransition animationDuration : " + slideTransition.animationDuration);
 
         switch (slideTransition.animation)
         {
@@ -536,7 +536,7 @@ class PrezSDKManager : MonoBehaviour
                     }
 
                     var initialScale = PrezAssetHelper.GetVector(asset.itemTransform.localScale);
-                    Debug.Log("initialScale : " + initialScale);
+                    //Debug.Log("initialScale : " + initialScale);
                     if (go != null)
                     {
                         go.transform.localScale = initialScale;
@@ -740,7 +740,7 @@ class PrezSDKManager : MonoBehaviour
 
     public void Play(int groupNum = -1)
     {
-        //Debug.Log("PrezSDKManager Play");
+        Debug.Log("PrezSDKManager Play");
         //Debug.LogError(groupNum);
 
         SlidePoint = groupNum;
@@ -759,6 +759,10 @@ class PrezSDKManager : MonoBehaviour
             /*LastPlayedPoint = */
             Debug.Log("playing new slide");
             animationTimeline.Play(groupNum);
+        }
+        else
+        {
+            Debug.LogError("animationTimeline is null");
         }
 
         if (!PlayStartTime.HasValue) PlayStartTime = Time.time;
