@@ -4,287 +4,295 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-    public class PresentationManager : MonoBehaviour
+public class PresentationManager : MonoBehaviour
+{
+    public static LoadedSlide _slide;
+    public Location _location;
+    public Dictionary<int, LoadedSlide> _slides;
+
+    public static PresentationManager _instance;
+
+    public static Action<ANPAnimation> callback;
+
+
+    public static List<ARPTransition> assetTransitions;
+    public static List<ARPAsset> assets;
+    private static ItemTransform itemTransform;
+    public static Vector3 initialPos;
+    public static Quaternion initialRot;
+    public static Vector3 initialScale;
+    public static Dictionary<ARPAsset, GameObject> loadedObjects = new Dictionary<ARPAsset, GameObject>();
+    public static float totalLength = 3f;
+
+    public delegate void OnSlideLoaded();
+    public static event OnSlideLoaded onSlideLoaded;
+
+
+    public delegate void OnObjectsDestroyed();
+    public static event OnObjectsDestroyed onObjectsDestroyed;
+
+
+    private void Awake()
     {
-        public static LoadedSlide _slide;
-        public Location _location;
-        public Dictionary<int, LoadedSlide> _slides;
+        _instance = this;
+    }
 
-        public static PresentationManager _instance;
+    public void Init(Location location)
+    {
+        _location = location;
+        _slides = new Dictionary<int, LoadedSlide>();
+    }
 
-        public static Action<ANPAnimation> callback;
+    /*public void CleanUp()
+    {
+        StartCoroutine(InternalCleanup());
+    }
 
-
-        public static List<ARPTransition> assetTransitions;
-        public static List<ARPAsset> assets;
-        private static ItemTransform itemTransform;
-        public static Vector3 initialPos;
-        public static Quaternion initialRot;
-        public static Vector3 initialScale;
-        public static Dictionary<ARPAsset, GameObject> loadedObjects = new Dictionary<ARPAsset, GameObject>();
-        public static float totalLength = 3f;
-
-        public delegate void OnSlideLoaded();
-        public static event OnSlideLoaded onSlideLoaded;
-
-        private void Awake()
+    private IEnumerator InternalCleanup()
+    {
+        foreach (var slide in _slides)
         {
-            _instance = this;
-        }
-
-        public void Init(Location location)
-        {
-            _location = location;
-            _slides = new Dictionary<int, LoadedSlide>();
-        }
-
-        /*public void CleanUp()
-        {
-            StartCoroutine(InternalCleanup());
-        }
-
-        private IEnumerator InternalCleanup()
-        {
-            foreach (var slide in _slides)
+            if (slide.Value != null)
             {
-                if (slide.Value != null)
-                {
-                    slide.Value.CleanUp();
-                }
+                slide.Value.CleanUp();
             }
+        }
+        yield return null;
+        Resources.UnloadUnusedAssets();
+        GC.Collect();
+    }*/
+
+    public LoadedSlide LoadSlide(int index)
+    {
+        if (!_slides.TryGetValue(index, out LoadedSlide slide))
+        {
+            _slide = slide;
+            _slide = new LoadedSlide(_location.slides[index], transform);
+            _slides[index] = _slide;
+        }
+        _slide.LoadSlide();
+
+        assetTransitions = _slide.Slide.assetTransitions;
+
+        //StartCoroutine(InternalLoadSlide(slide));
+        return _slide;
+    }
+
+    public LoadedSlide GetSlideReference(int i)
+    {
+        if (!_slides.TryGetValue(i, out LoadedSlide slide))
+            return null;
+        return slide;
+    }
+    private IEnumerator InternalLoadSlide(LoadedSlide slide)
+    {
+        while (!slide.HasSlideLoaded)
+        {
             yield return null;
-            Resources.UnloadUnusedAssets();
-            GC.Collect();
+        }
+        slide.ShowAssets();
+    }
+
+
+    private void OnDestroy()
+    {
+        Resources.UnloadUnusedAssets();
+        GC.Collect();
+        PrezAPIHelper.StopDownload();
+
+        //delete files
+        /*foreach (var file in Directory.EnumerateFiles(InitializeSDK.DownloadFolderPath))
+        {
+            System.IO.File.Delete(file);
         }*/
+        DirectoryInfo directoryInfo = new DirectoryInfo(InitializeSDK.DownloadFolderPath);
 
-        public LoadedSlide LoadSlide(int index)
+        foreach (var item in directoryInfo.EnumerateFiles())
         {
-            if (!_slides.TryGetValue(index, out LoadedSlide slide))
+            item.Delete();
+        }
+
+        foreach (var item in directoryInfo.EnumerateDirectories())
+        {
+            item.Delete(true);
+        }
+
+    }
+
+    public class LoadedSlide
+    {
+        public Slide Slide;
+        private Dictionary<ARPAsset, LoadedAsset> _assets;
+        private int loadedCount = 0;
+
+        public bool HasSlideLoaded => loadedCount == _assets.Count;
+
+        public LoadedSlide(Slide slide, Transform anchor)
+        {
+            //Debug.Log("slide id : " + slide.id);
+            assetTransitions = slide.assetTransitions;
+
+            _assets = new Dictionary<ARPAsset, LoadedAsset>();
+            foreach (var asset in slide.assets)
             {
-                _slide = slide;
-                _slide = new LoadedSlide(_location.slides[index], transform);
-                _slides[index] = _slide;
+                _assets[asset] = new LoadedAsset(asset, anchor, () => { loadedCount++; });
             }
-            _slide.LoadSlide();
 
-            assetTransitions = _slide.Slide.assetTransitions;
-
-            //StartCoroutine(InternalLoadSlide(slide));
-            return _slide;
+            //Debug.Log("slidetransitionanimation " + slide.transition.animation);
+            Slide = slide;
         }
 
-        public LoadedSlide GetSlideReference(int i)
+        public void LoadSlide()
         {
-            if (!_slides.TryGetValue(i, out LoadedSlide slide))
-                return null;
-            return slide;
-        }
-        private IEnumerator InternalLoadSlide(LoadedSlide slide)
-        {
-            while (!slide.HasSlideLoaded)
+            foreach (var asset in _assets)
             {
-                yield return null;
+                asset.Value.LoadAsset();
             }
-            slide.ShowAssets();
         }
 
-
-        private void OnDestroy()
+        public void CleanUp()
         {
-            Resources.UnloadUnusedAssets();
+            foreach (var asset in _assets)
+            {
+                asset.Value.CleanUp();
+            }
+            PrezSDKManager.ClearObjects();
+            onObjectsDestroyed();
+
             GC.Collect();
-            PrezAPIHelper.StopDownload();
-
-            //delete files
-            /*foreach (var file in Directory.EnumerateFiles(InitializeSDK.DownloadFolderPath))
+            Resources.UnloadUnusedAssets();
+            AssetBundleManager.Cleanup();
+            foreach (Transform child in _instance.transform)
             {
-                System.IO.File.Delete(file);
-            }*/
-            DirectoryInfo directoryInfo = new DirectoryInfo(InitializeSDK.DownloadFolderPath);
-
-            foreach (var item in directoryInfo.EnumerateFiles())
-            {
-                item.Delete();
+                Destroy(child.gameObject);
             }
-
-            foreach (var item in directoryInfo.EnumerateDirectories())
-            {
-                item.Delete(true);
-            }
-
+            loadedCount = 0;
         }
 
-        public class LoadedSlide
+        public void ShowAssets()
         {
-            public Slide Slide;
-            private Dictionary<ARPAsset, LoadedAsset> _assets;
-            private int loadedCount = 0;
-
-            public bool HasSlideLoaded => loadedCount == _assets.Count;
-
-            public LoadedSlide(Slide slide, Transform anchor)
+            foreach (var asset in _assets)
             {
-                //Debug.Log("slide id : " + slide.id);
-                assetTransitions = slide.assetTransitions;
+                asset.Value.ShowAsset();
+            }
+        }
 
-                _assets = new Dictionary<ARPAsset, LoadedAsset>();
-                foreach (var asset in slide.assets)
-                {
-                    _assets[asset] = new LoadedAsset(asset, anchor, () => { loadedCount++; });
-                }
+        private class LoadedAsset
+        {
+            private ARPAsset _asset;
+            private GameObject _loadedObject;
+            private Transform _anchor;
+            private Action _onLoaded;
 
-                //Debug.Log("slidetransitionanimation " + slide.transition.animation);
-                Slide = slide;
+            private bool IsFileDownloaded => System.IO.File.Exists(_asset.AbsoluteDownloadPath(InitializeSDK.DownloadFolderPath));
+
+            public LoadedAsset(ARPAsset asset, Transform anchor, Action OnLoaded)
+            {
+                _asset = asset;
+                _anchor = anchor;
+                _onLoaded = OnLoaded;
             }
 
-            public void LoadSlide()
+            public void LoadAsset()
             {
-                foreach (var asset in _assets)
-                {
-                    asset.Value.LoadAsset();
-                }
+                CoroutineRunner.Instance.StartCoroutine(LoadAssetInternal());
             }
 
-            public void CleanUp()
+
+            public IEnumerator LoadAssetInternal()
             {
-                foreach (var asset in _assets)
+                if (_asset.type != ANPAssetType.TEXT && !IsFileDownloaded)
                 {
-                    asset.Value.CleanUp();
-                }
-                GC.Collect();
-                Resources.UnloadUnusedAssets();
-                AssetBundleManager.Cleanup();
-                foreach (Transform child in _instance.transform)
-                {
-                    Destroy(child.gameObject);
-                }
-                loadedCount = 0;
-            }
+                    string replacement = null;
 
-            public void ShowAssets()
-            {
-                foreach (var asset in _assets)
-                {
-                    asset.Value.ShowAsset();
-                }
-            }
-
-            private class LoadedAsset
-            {
-                private ARPAsset _asset;
-                private GameObject _loadedObject;
-                private Transform _anchor;
-                private Action _onLoaded;
-
-                private bool IsFileDownloaded => System.IO.File.Exists(_asset.AbsoluteDownloadPath(InitializeSDK.DownloadFolderPath));
-
-                public LoadedAsset(ARPAsset asset, Transform anchor, Action OnLoaded)
-                {
-                    _asset = asset;
-                    _anchor = anchor;
-                    _onLoaded = OnLoaded;
-                }
-
-                public void LoadAsset()
-                {
-                    CoroutineRunner.Instance.StartCoroutine(LoadAssetInternal());
-                }
-
-
-                public IEnumerator LoadAssetInternal()
-                {
-                    if (_asset.type != ANPAssetType.TEXT && !IsFileDownloaded)
+                    if (_asset.type == ANPAssetType.OBJECT)
                     {
-                        string replacement = null;
-
-                        if (_asset.type == ANPAssetType.OBJECT)
+                        if (_asset.url.Contains(".unitypackage"))
                         {
-                            if (_asset.url.Contains(".unitypackage"))
-                            {
-                                replacement = PrezAssetHelper.ReplacementString();
-                            }
+                            replacement = PrezAssetHelper.ReplacementString();
                         }
-                        var task = PrezWebCalls.DownloadAsset(_asset, replacement);
-                        yield return new WaitForTask(task);
                     }
+                    var task = PrezWebCalls.DownloadAsset(_asset, replacement);
+                    yield return new WaitForTask(task);
+                }
 
 
-                    yield return AssetLoader.OnLoadAsset(_asset, (go) =>
+                yield return AssetLoader.OnLoadAsset(_asset, (go) =>
+                {
+                    if (go != null)
                     {
-                        if (go != null)
-                        {
                             //Debug.Log("go loaded " + go.name);
                             _loadedObject = go;
-                            _loadedObject.transform.SetParent(_anchor);
+                        _loadedObject.transform.SetParent(_anchor);
                             //_loadedObject.transform.localPosition = Vector3.zero;
 
                             _loadedObject.SetInitialPosition(_asset.itemTransform);
 
-                            _asset.itemTransform.SetTransform(_loadedObject.transform);
+                        _asset.itemTransform.SetTransform(_loadedObject.transform);
 
-                            _loadedObject.SetActive(false);
-                            _onLoaded?.Invoke();
+                        _loadedObject.SetActive(false);
+                        _onLoaded?.Invoke();
 
-                            if (_asset.type == ANPAssetType.TEXT)
-                            {
+                        if (_asset.type == ANPAssetType.TEXT)
+                        {
                                 //FindObjectOfType<PrezSDKManager>().prezAssets.Add(_asset.text.value, _loadedObject);
                                 if (!PrezSDKManager.uDictionaryExample.prezAssets.ContainsKey(_asset.text.value))
-                                {
-                                    PrezSDKManager.uDictionaryExample.prezAssets.Add(_asset.text.value, _loadedObject);
+                            {
+                                PrezSDKManager.uDictionaryExample.prezAssets.Add(_asset.text.value, _loadedObject);
 
                                     //Debug.Log("Adding " + "key : " + _asset.text.value + " " + "value : " + _loadedObject.name);
                                 }
-                            }
-                            else
-                            {
-                                //FindObjectOfType<PrezSDKManager>().prezAssets.Add(_asset.FileName(), _loadedObject);
-                                if (!PrezSDKManager.uDictionaryExample.prezAssets.ContainsKey(_asset.FileName()))
-                                {
-                                    PrezSDKManager.uDictionaryExample.prezAssets.Add(_asset.FileName(), _loadedObject);
-
-                                    //Debug.Log("Adding " + "key : " + _asset.FileName() + " " + "value : " + _loadedObject.name);
-                                }
-                            }
-
-                            if (!loadedObjects.ContainsKey(_asset))
-                            {
-                                loadedObjects.Add(_asset, _loadedObject);
-                            }
                         }
                         else
                         {
-                            Debug.LogError("go is null");
+                                //FindObjectOfType<PrezSDKManager>().prezAssets.Add(_asset.FileName(), _loadedObject);
+                                if (!PrezSDKManager.uDictionaryExample.prezAssets.ContainsKey(_asset.FileName()))
+                            {
+                                PrezSDKManager.uDictionaryExample.prezAssets.Add(_asset.FileName(), _loadedObject);
+
+                                    //Debug.Log("Adding " + "key : " + _asset.FileName() + " " + "value : " + _loadedObject.name);
+                                }
                         }
-                    });
 
-                }
-
-                public void ShowAsset()
-                {
-                    _loadedObject.SetActive(true);
-
-                    //onSlideLoaded();
-                }
-
-                public void CleanUp()
-                {
-                    if (_loadedObject)
-                    {
-                        Debug.Log("destroying " + _loadedObject.name);
-                        DestroyImmediate(_loadedObject);
+                        if (!loadedObjects.ContainsKey(_asset))
+                        {
+                            loadedObjects.Add(_asset, _loadedObject);
+                        }
                     }
-                }
+                    else
+                    {
+                        Debug.LogError("go is null");
+                    }
+                });
 
             }
-        }
 
-        public static void SetInitialTransform()
-        {
-            initialPos = new Vector3(itemTransform.position.x, itemTransform.position.y, itemTransform.position.z);
-            initialRot = new Quaternion(itemTransform.rotation.x, itemTransform.rotation.y, itemTransform.rotation.z, itemTransform.rotation.w);
-            initialScale = new Vector3(itemTransform.localScale.x, itemTransform.localScale.y, itemTransform.localScale.z);
+            public void ShowAsset()
+            {
+                _loadedObject.SetActive(true);
+
+                //onSlideLoaded();
+            }
+
+            public void CleanUp()
+            {
+                if (_loadedObject)
+                {
+                    Debug.Log("destroying " + _loadedObject.name);
+                    DestroyImmediate(_loadedObject);
+                }
+            }
 
         }
+    }
+
+    public static void SetInitialTransform()
+    {
+        initialPos = new Vector3(itemTransform.position.x, itemTransform.position.y, itemTransform.position.z);
+        initialRot = new Quaternion(itemTransform.rotation.x, itemTransform.rotation.y, itemTransform.rotation.z, itemTransform.rotation.w);
+        initialScale = new Vector3(itemTransform.localScale.x, itemTransform.localScale.y, itemTransform.localScale.z);
 
     }
+
+}
 
