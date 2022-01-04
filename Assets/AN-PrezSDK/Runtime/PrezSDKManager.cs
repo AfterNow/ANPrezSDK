@@ -34,7 +34,7 @@ class PrezSDKManager : MonoBehaviour
     IPrezController prezController;
 
     ARPAsset _asset;
-    List<ARPAsset> _assets = new List<ARPAsset>();
+    public static List<ARPAsset> _assets = new List<ARPAsset>();
     ARPTransition _transition;
     List<ARPTransition> _transitions = new List<ARPTransition>();
     public static GameObject objectLoaded;
@@ -91,6 +91,19 @@ class PrezSDKManager : MonoBehaviour
 
     private void OnEnable()
     {
+        PresentationManager.onObjectsDestroyed += ObjectsDestroyed;
+    }
+
+    private void OnDisable()
+    {
+        PresentationManager.onObjectsDestroyed -= ObjectsDestroyed;
+    }
+
+    private void ObjectsDestroyed()
+    {
+        Debug.Log("All objects destroyed");
+        //Play();
+        Next_Slide();
     }
 
     public void OnAssetLoaded(ARPAsset _arpAsset, GameObject _objectLoaded)
@@ -136,11 +149,11 @@ class PrezSDKManager : MonoBehaviour
 
         prezController.OnQuit += () =>
         {
-                //do cleanup
-                PrezStates.Reset();
+            //do cleanup
+            PrezStates.Reset();
 
-                //Destroy parent on quit
-                if (_manager.gameObject != null)
+            //Destroy parent on quit
+            if (_manager.gameObject != null)
             {
                 Destroy(_manager.gameObject);
             }
@@ -161,34 +174,6 @@ class PrezSDKManager : MonoBehaviour
                 }
             });
         });
-    }
-
-    void ClearObjects()
-    {
-        if (loadedObjects.Count > 0)
-        {
-            loadedObjects.Clear();
-        }
-
-        if (_assets.Count > 0)
-        {
-            _assets.Clear();
-        }
-
-        if (uDictionaryExample.prezAssets.Count > 0)
-        {
-            uDictionaryExample.prezAssets.Clear();
-
-            Debug.Log("Cleared prezAssets");
-        }
-
-
-        if (uDictionaryExample.initialScales.Count > 0)
-        {
-            uDictionaryExample.initialScales.Clear();
-
-            Debug.Log("Cleared initialScales");
-        }
     }
 
     void Next_Slide()
@@ -218,7 +203,6 @@ class PrezSDKManager : MonoBehaviour
         {
             Debug.Log("isDone");
             TransitionSlide(1, -1);
-
         }
     }
 
@@ -329,7 +313,7 @@ class PrezSDKManager : MonoBehaviour
 
             if (targetSlideIdx < _manager._slides.Count && targetSlideIdx >= 0)
             {
-                Coroutine slideLoader = GotoSlidePlayMode(targetSlideIdx);
+                //Coroutine slideLoader = GotoSlidePlayMode(targetSlideIdx);
 
                 //if (_slide.Slide.DownloadProgress == 1f) //if current slide is loaded, animate it out
                 //{
@@ -342,19 +326,19 @@ class PrezSDKManager : MonoBehaviour
                         Debug.Log("slides counts : " + _manager._location.slides.Count);
                         if (targetSlideIdx != _manager._location.slides.Count)
                         {
-                                //   slideIdx.Value = targetSlideIdx;
-                                slideIdx = targetSlideIdx;
+                            //   slideIdx.Value = targetSlideIdx;
+                            slideIdx = targetSlideIdx;
                         }
                         hasSlideStopped = true;
                     });
                 });
                 while (!hasSlideStopped) yield return null;
                 //}
-                yield return slideLoader;
+                //yield return slideLoader;
                 //yield return StartCoroutine(UpdateVRBackground(newSlideController.Slide.BackgroundTexture, newSlideController.Slide.backgroundOrientation));
 
                 //only after new slide has loaded, and old slide has finished
-                Play();
+                //Play();
 
                 OnSlideTransition(targetSlideIdx);
                 CanReset = true;
@@ -422,6 +406,31 @@ class PrezSDKManager : MonoBehaviour
     }
 
 
+    public static void ClearObjects()
+    {
+        if (loadedObjects.Count > 0)
+        {
+            loadedObjects.Clear();
+        }
+
+        if (_assets.Count > 0)
+        {
+            _assets.Clear();
+        }
+
+        if (uDictionaryExample.prezAssets.Count > 0)
+        {
+            uDictionaryExample.prezAssets.Clear();
+            Debug.Log("Cleared prezAssets");
+        }
+
+        if (uDictionaryExample.initialScales.Count > 0)
+        {
+            uDictionaryExample.initialScales.Clear();
+            Debug.Log("Cleared initialScales");
+        }
+    }
+
     void ResetTimeline()
     {
         SlidePoint = animationTimeline.FirstElementAutomatic ? 0 : -1;
@@ -467,19 +476,19 @@ class PrezSDKManager : MonoBehaviour
                 LeanTween.delayedCall(gameObject, slideTransition.animationDuration, () =>
                 {
                     isAnimating = false;
-                        //ShowChildren(false);
-                        if (action != null)
+                    //ShowChildren(false);
+                    if (action != null)
                     {
                         action.Invoke();
                     }
                     ResetTimeline();
                     isPlaying = false;
                     isDone = true;
-                        //_manager.CleanUp();
-                        previousSlide.CleanUp();
-                    ClearObjects();
+                    //_manager.CleanUp();
+                    previousSlide.CleanUp();
                 });
                 break;
+
             case SlideAnimationType.ScaleOut:
                 isAnimating = true;
                 /*foreach (var audioSource in audioSources)
@@ -563,10 +572,9 @@ class PrezSDKManager : MonoBehaviour
                         }
                         ResetTimeline();
                         isPlaying = false;
+                        //_manager.CleanUp();
+                        previousSlide.CleanUp();
                         isDone = true;
-                            //_manager.CleanUp();
-                            previousSlide.CleanUp();
-                        ClearObjects();
                     }
                 });
                 break;
@@ -620,8 +628,8 @@ class PrezSDKManager : MonoBehaviour
                 }
                 else
                 {
-                        //StatusText.text = "Invalid Presentation ID";
-                        hasLoggedIn = -1;
+                    //StatusText.text = "Invalid Presentation ID";
+                    hasLoggedIn = -1;
                 }
             });
         });

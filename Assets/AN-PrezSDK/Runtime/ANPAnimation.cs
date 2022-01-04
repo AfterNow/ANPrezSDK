@@ -74,14 +74,14 @@ public class ANPAnimation
     {
         Debug.Log("ANPAnimation Play");
 
-        if (asset != null)
+        /*if (asset != null)
         {
             Debug.Log("assetfilename : " + asset.FileName());
         }
         else
         {
             Debug.LogError("asset is null");
-        }
+        }*/
 
         ////GameObject pAssetGO = go;
         /*go = PresentationManager.loadedObjects[asset];
@@ -124,13 +124,19 @@ public class ANPAnimation
         }
         else
         {
-            if (PrezSDKManager.uDictionaryExample.prezAssets.TryGetValue(asset.FileName(), out GameObject go))
+            Debug.Log("prezAssets count : " + PrezSDKManager.uDictionaryExample.prezAssets.Count);
+            if (asset != null)
             {
-                Debug.Log("ASSET VALUE : " + asset.FileName());
+                Debug.Log("assetname : " + asset.FileName());
 
-                if (asset.FileName().Equals(go.name))
+                if (PrezSDKManager.uDictionaryExample.prezAssets.TryGetValue(asset.FileName(), out GameObject go))
                 {
-                    assetGO = go;
+                    Debug.Log("ASSET VALUE : " + asset.FileName());
+
+                    if (go != null && asset.FileName().Equals(go.name))
+                    {
+                        assetGO = go;
+                    }
                 }
             }
         }
