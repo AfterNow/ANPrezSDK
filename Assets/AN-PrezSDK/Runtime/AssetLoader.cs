@@ -204,6 +204,7 @@ using UnityEngine.Video;
                     {
                         yield return AssetBundleManager.LoadAssetBundle(assetPath, (bundle) =>
                         {
+                            bundle.name = asset.FileName();
                             onLoaded(bundle);
                         });
                     }

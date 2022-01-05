@@ -221,12 +221,11 @@ public class PresentationManager : MonoBehaviour
                 {
                     if (go != null)
                     {
-                            //Debug.Log("go loaded " + go.name);
-                            _loadedObject = go;
+                        _loadedObject = go;
                         _loadedObject.transform.SetParent(_anchor);
-                            //_loadedObject.transform.localPosition = Vector3.zero;
+                        //_loadedObject.transform.localPosition = Vector3.zero;
 
-                            _loadedObject.SetInitialPosition(_asset.itemTransform);
+                        _loadedObject.SetInitialPosition(_asset.itemTransform);
 
                         _asset.itemTransform.SetTransform(_loadedObject.transform);
 
@@ -235,23 +234,23 @@ public class PresentationManager : MonoBehaviour
 
                         if (_asset.type == ANPAssetType.TEXT)
                         {
-                                //FindObjectOfType<PrezSDKManager>().prezAssets.Add(_asset.text.value, _loadedObject);
-                                if (!PrezSDKManager.uDictionaryExample.prezAssets.ContainsKey(_asset.text.value))
+                            //FindObjectOfType<PrezSDKManager>().prezAssets.Add(_asset.text.value, _loadedObject);
+                            if (!PrezSDKManager.uDictionaryExample.prezAssets.ContainsKey(_asset.text.value))
                             {
                                 PrezSDKManager.uDictionaryExample.prezAssets.Add(_asset.text.value, _loadedObject);
 
-                                    //Debug.Log("Adding " + "key : " + _asset.text.value + " " + "value : " + _loadedObject.name);
-                                }
+                                //Debug.Log("Adding " + "key : " + _asset.text.value + " " + "value : " + _loadedObject.name);
+                            }
                         }
                         else
                         {
-                                //FindObjectOfType<PrezSDKManager>().prezAssets.Add(_asset.FileName(), _loadedObject);
-                                if (!PrezSDKManager.uDictionaryExample.prezAssets.ContainsKey(_asset.FileName()))
+                            //FindObjectOfType<PrezSDKManager>().prezAssets.Add(_asset.FileName(), _loadedObject);
+                            if (!PrezSDKManager.uDictionaryExample.prezAssets.ContainsKey(_asset.FileName()))
                             {
                                 PrezSDKManager.uDictionaryExample.prezAssets.Add(_asset.FileName(), _loadedObject);
 
-                                    //Debug.Log("Adding " + "key : " + _asset.FileName() + " " + "value : " + _loadedObject.name);
-                                }
+                                //Debug.Log("Adding " + "key : " + _asset.FileName() + " " + "value : " + _loadedObject.name);
+                            }
                         }
 
                         if (!loadedObjects.ContainsKey(_asset))

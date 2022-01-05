@@ -4,81 +4,82 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-    public class AssetBundleManager : MonoBehaviour
+public class AssetBundleManager : MonoBehaviour
+{
+    public static AssetBundleManager Instance
     {
-        public static AssetBundleManager Instance 
+        get
         {
-            get 
+
+            if (_instance == null)
             {
+                _instance = CoroutineRunner.Instance.gameObject.AddComponent<AssetBundleManager>();
+            }
 
-                if (_instance == null)
-                {
-                    _instance = CoroutineRunner.Instance.gameObject.AddComponent<AssetBundleManager>();
-                }
+            return _instance;
+        }
+    }
 
-                return _instance;
+    private static AssetBundleManager _instance;
+
+    private static Dictionary<string, AssetBundleContainer> _bundles = new Dictionary<string, AssetBundleContainer>();
+
+    public static void Cleanup()
+    {
+        foreach (var item in _bundles)
+        {
+            if (item.Value.Bundle)
+            {
+                item.Value.Bundle.Unload(true);
             }
         }
 
-        private static AssetBundleManager _instance;
+        _bundles.Clear();
+    }
 
-        private static Dictionary<string, AssetBundleContainer> _bundles = new Dictionary<string, AssetBundleContainer>();
-
-        public static void Cleanup()
+    public static IEnumerator LoadAssetBundle(string path, Action<GameObject> OnLoaded)
+    {
+        if (_bundles.TryGetValue(path, out AssetBundleContainer bundle))
         {
-            foreach (var item in _bundles)
-            {
-                if (item.Value.Bundle)
-                {
-                    item.Value.Bundle.Unload(true);
-                }
-            }
-
-            _bundles.Clear();
+            OnLoaded?.Invoke(bundle.GameObject);
         }
-
-        public static IEnumerator LoadAssetBundle(string path, Action<GameObject> OnLoaded)
+        else
         {
-            if (_bundles.TryGetValue(path, out AssetBundleContainer bundle))
+            string localPath = UriBuilderExtension.UriPath(path);
+            Debug.Log("localPath : " + localPath);
+            UnityWebRequest unityWebRequest = UnityWebRequestAssetBundle.GetAssetBundle(localPath);
+            yield return unityWebRequest.SendWebRequest();
+            if (string.IsNullOrEmpty(unityWebRequest.error))
             {
-                OnLoaded?.Invoke(bundle.GameObject);
+                if (unityWebRequest.isDone)
+                {
+                    var assetBundle = DownloadHandlerAssetBundle.GetContent(unityWebRequest);
+                    var assetObject = (GameObject)assetBundle.LoadAsset(assetBundle.GetAllAssetNames()[0]);
+                    var container = new AssetBundleContainer(assetBundle, Instantiate(assetObject));
+                    _bundles.Add(path, container);
+                    OnLoaded?.Invoke(container.GameObject);
+                }
             }
             else
             {
-                string localPath = UriBuilderExtension.UriPath(path);
-                Debug.Log("localPath : " + localPath);
-                UnityWebRequest unityWebRequest = UnityWebRequestAssetBundle.GetAssetBundle(localPath);
-                yield return unityWebRequest.SendWebRequest();
-                if (string.IsNullOrEmpty(unityWebRequest.error))
-                {
-                    if (unityWebRequest.isDone)
-                    {
-                        var assetBundle = DownloadHandlerAssetBundle.GetContent(unityWebRequest);
-                        var assetObject = (GameObject)assetBundle.LoadAsset(assetBundle.GetAllAssetNames()[0]);
-                        var container = new AssetBundleContainer(assetBundle, Instantiate(assetObject));
-                        _bundles.Add(path, container);
-                        OnLoaded?.Invoke(container.GameObject);
-                    }
-                }
-                else
-                {
-                    OnLoaded?.Invoke(null);
-                }
-            }
-        }
-
-        private struct AssetBundleContainer
-        {
-            public AssetBundle Bundle;
-            public GameObject GameObject;
-
-            public AssetBundleContainer(AssetBundle bundle, GameObject go)
-            {
-                Bundle = bundle;
-                GameObject = go;
+                Debug.LogError("Assetbundleerror : " + unityWebRequest.error);
+                OnLoaded?.Invoke(null);
             }
         }
     }
+
+    private struct AssetBundleContainer
+    {
+        public AssetBundle Bundle;
+        public GameObject GameObject;
+
+        public AssetBundleContainer(AssetBundle bundle, GameObject go)
+        {
+            Bundle = bundle;
+            GameObject = go;
+        }
+    }
+}
 
 
 
