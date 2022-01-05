@@ -6,8 +6,6 @@ using UnityEngine.Video;
 using TMPro;
 using System;
 
-using static PresentationManager;
-
 /// <summary>
 /// Sample class on how to Authenticate to server, join a presentation and Navigate through the presentation
 /// </summary>
@@ -178,18 +176,29 @@ class PrezSDKManager : MonoBehaviour
 
     void Next_Slide()
     {
+        previousSlide.DestroyLoadedObjects();
         ClearObjects();
+
         //slideCount = PrezStates.Presentation.locations[0].slides.Count;
+        Debug.Log("Slidecount " + slideCount);
+        Debug.Log("CurrentSlide " + PrezStates.CurrentSlide);
         int targetSlide = slideCount == PrezStates.CurrentSlide + 1 ? 0 : PrezStates.CurrentSlide + 1;
         GoToSlide(targetSlide);
     }
 
     void Previous_Slide()
     {
-        ClearObjects();
-        //slideCount = PrezStates.Presentation.locations[0].slides.Count;
-        int targetSlide = PrezStates.CurrentSlide == 0 ? slideCount - 1 : PrezStates.CurrentSlide - 1;
-        GoToSlide(targetSlide);
+        if (PrezStates.CurrentSlide != 0)
+        {
+            //ClearObjects();
+            previousSlide.CleanUp();
+
+            //slideCount = PrezStates.Presentation.locations[0].slides.Count;
+            Debug.Log("slidecount " + slideCount);
+            Debug.Log("CurrentSlide " + PrezStates.CurrentSlide);
+            int targetSlide = PrezStates.CurrentSlide == 0 ? slideCount - 1 : PrezStates.CurrentSlide - 1;
+            GoToSlide(targetSlide);
+        }
     }
 
     void Next_Step()
@@ -408,9 +417,9 @@ class PrezSDKManager : MonoBehaviour
 
     public static void ClearObjects()
     {
-        if (loadedObjects.Count > 0)
+        if (PresentationManager.loadedObjects.Count > 0)
         {
-            loadedObjects.Clear();
+            PresentationManager.loadedObjects.Clear();
         }
 
         if (_assets.Count > 0)
@@ -515,7 +524,7 @@ class PrezSDKManager : MonoBehaviour
                 }*/
 
                 GameObject go = null;
-                foreach (var asset in assets)
+                foreach (var asset in PresentationManager.assets)
                 {
                     /*Debug.Log("prezAssets count : " + uDictionaryExample.prezAssets.Count);
                     string output = "";
@@ -649,7 +658,7 @@ class PrezSDKManager : MonoBehaviour
         StartCoroutine(LoadSlide(slideNo));
     }
 
-    public LoadedSlide previousSlide;
+    public PresentationManager.LoadedSlide previousSlide;
     private bool onCommand = true;
     private int presentIndex = 0;
     private int nextIndex = 0;
@@ -675,18 +684,18 @@ class PrezSDKManager : MonoBehaviour
             yield return null;
         }
 
-        assets = previousSlide.Slide.assets;
+        PresentationManager.assets = previousSlide.Slide.assets;
 
         //then play slide animations
         //StartCoroutine(PlayAssetAnimations());
 
         // Setup animation groups
-        List<ARPTransition> pTransitions = assetTransitions;
+        List<ARPTransition> pTransitions = PresentationManager.assetTransitions;
         List<AnimationGroup> animationGroups = new List<AnimationGroup>();
         AnimationGroup currentGroup = null;
         int groupNum = 0;
 
-        foreach (ARPTransition transition in assetTransitions)
+        foreach (ARPTransition transition in PresentationManager.assetTransitions)
         {
             if (currentGroup == null || transition.startType != AnimationStartType.WithPreviousAnim)
             {
@@ -695,7 +704,7 @@ class PrezSDKManager : MonoBehaviour
 
             }
 
-            _asset = _slide.Slide.assets.Find(x => x.id == transition.assetId);
+            _asset = PresentationManager._slide.Slide.assets.Find(x => x.id == transition.assetId);
             _transition = transition;
             //Debug.Log("a : " + _asset.FileName() + " :: " + "t : " + _transition.animation + " :: " + _transition.startType);
 
