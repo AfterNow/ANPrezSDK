@@ -183,6 +183,7 @@ class PrezSDKManager : MonoBehaviour
         Debug.Log("Slidecount " + slideCount);
         Debug.Log("CurrentSlide " + PrezStates.CurrentSlide);
         int targetSlide = slideCount == PrezStates.CurrentSlide + 1 ? 0 : PrezStates.CurrentSlide + 1;
+        Debug.Log("targetSlide " + targetSlide);
         GoToSlide(targetSlide);
     }
 
@@ -668,6 +669,7 @@ class PrezSDKManager : MonoBehaviour
 
     IEnumerator LoadSlide(int slideNo)
     {
+        Debug.Log("PrezSDKManager LoadSlide " + slideNo);
         /*if (previousSlide != null)
         {
             //Debug.Log("cleanup initiated for slide " + PrezStates.CurrentSlide);
@@ -681,16 +683,19 @@ class PrezSDKManager : MonoBehaviour
         //Wait till the slide completely loads
         while (!previousSlide.HasSlideLoaded)
         {
+            Debug.Log("LOADING SLIDE");
             yield return null;
         }
-
+        Debug.Log("LOADED SLIDE");
         PresentationManager.assets = previousSlide.Slide.assets;
-
+        Debug.Log("PresentationManager.assets count : " + PresentationManager.assets.Count);
         //then play slide animations
         //StartCoroutine(PlayAssetAnimations());
 
         // Setup animation groups
         List<ARPTransition> pTransitions = PresentationManager.assetTransitions;
+        Debug.Log("PresentationManager.assetTransitions.Count : " + PresentationManager.assetTransitions.Count);
+
         List<AnimationGroup> animationGroups = new List<AnimationGroup>();
         AnimationGroup currentGroup = null;
         int groupNum = 0;
@@ -706,7 +711,7 @@ class PrezSDKManager : MonoBehaviour
 
             _asset = PresentationManager._slide.Slide.assets.Find(x => x.id == transition.assetId);
             _transition = transition;
-            //Debug.Log("a : " + _asset.FileName() + " :: " + "t : " + _transition.animation + " :: " + _transition.startType);
+            Debug.Log("a : " + _asset.FileName() + " :: " + "t : " + _transition.animation + " :: " + _transition.startType);
 
             currentGroup.AddAnimation(_transition, _asset);
 
@@ -745,7 +750,7 @@ class PrezSDKManager : MonoBehaviour
             }
         }*/
 
-
+        Debug.Log("Before play");
         Play();
     }
 
@@ -788,8 +793,11 @@ class PrezSDKManager : MonoBehaviour
 
     void UpdateSlideCount()
     {
+        Debug.Log("Writing text");
         CurrentSlideText.text = (PrezStates.CurrentSlide + 1).ToString();
+        Debug.Log("Text written");
         slideCount = PrezStates.Presentation.locations[0].slides.Count;
+        Debug.Log("slideCount : " + slideCount);
     }
 
     private void OnGroupEnd(AnimationGroup group)

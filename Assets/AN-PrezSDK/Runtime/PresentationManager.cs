@@ -64,6 +64,7 @@ public class PresentationManager : MonoBehaviour
 
     public LoadedSlide LoadSlide(int index)
     {
+        Debug.Log("PresentationManager LoadSlide " + index);
         if (!_slides.TryGetValue(index, out LoadedSlide slide))
         {
             _slide = slide;
@@ -73,7 +74,7 @@ public class PresentationManager : MonoBehaviour
         _slide.LoadSlide();
 
         assetTransitions = _slide.Slide.assetTransitions;
-
+        Debug.Log("assetTransitions.Count " + assetTransitions.Count);
         //StartCoroutine(InternalLoadSlide(slide));
         return _slide;
     }
@@ -123,7 +124,7 @@ public class PresentationManager : MonoBehaviour
     {
         public Slide Slide;
         private Dictionary<ARPAsset, LoadedAsset> _assets;
-        private static int loadedCount = 0;
+        private int loadedCount = 0;
 
         public bool HasSlideLoaded => loadedCount == _assets.Count;
 
@@ -135,7 +136,22 @@ public class PresentationManager : MonoBehaviour
             _assets = new Dictionary<ARPAsset, LoadedAsset>();
             foreach (var asset in slide.assets)
             {
-                _assets[asset] = new LoadedAsset(asset, anchor, () => { loadedCount++; });
+                _assets[asset] = new LoadedAsset(asset, anchor, () =>
+                {
+                    loadedCount++;
+                    Debug.Log("loadedCount : " + loadedCount + "assetsCount : " + _assets.Count);
+
+                    if (loadedCount == _assets.Count)
+                    {
+                        Debug.Log("HasSlideLoaded : TRUE");
+                    }
+                    else
+                    {
+                        Debug.Log("HasSlideLoaded : FALSE");
+                    }
+                });
+
+
             }
 
             //Debug.Log("slidetransitionanimation " + slide.transition.animation);
@@ -206,6 +222,7 @@ public class PresentationManager : MonoBehaviour
 
             public IEnumerator LoadAssetInternal()
             {
+                Debug.Log("LoadAssetInternal");
                 if (_asset.type != ANPAssetType.TEXT && !IsFileDownloaded)
                 {
                     string replacement = null;
@@ -220,7 +237,6 @@ public class PresentationManager : MonoBehaviour
                     var task = PrezWebCalls.DownloadAsset(_asset, replacement);
                     yield return new WaitForTask(task);
                 }
-
 
                 yield return AssetLoader.OnLoadAsset(_asset, (go) =>
                 {
