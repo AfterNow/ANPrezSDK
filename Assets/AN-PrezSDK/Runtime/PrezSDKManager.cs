@@ -180,7 +180,6 @@ class PrezSDKManager : MonoBehaviour
         ClearObjects();
 
         //slideCount = PrezStates.Presentation.locations[0].slides.Count;
-        Debug.Log("Slidecount " + slideCount);
         Debug.Log("CurrentSlide " + PrezStates.CurrentSlide);
         int targetSlide = slideCount == PrezStates.CurrentSlide + 1 ? 0 : PrezStates.CurrentSlide + 1;
         Debug.Log("targetSlide " + targetSlide);
@@ -195,9 +194,9 @@ class PrezSDKManager : MonoBehaviour
             ClearObjects();
 
             //slideCount = PrezStates.Presentation.locations[0].slides.Count;
-            Debug.Log("slidecount " + slideCount);
             Debug.Log("CurrentSlide " + PrezStates.CurrentSlide);
             int targetSlide = PrezStates.CurrentSlide == 0 ? slideCount - 1 : PrezStates.CurrentSlide - 1;
+            Debug.Log("targetSlide " + targetSlide);
             GoToSlide(targetSlide);
         }
     }
@@ -206,12 +205,12 @@ class PrezSDKManager : MonoBehaviour
     {
         if (isPlaying)
         {
-            Debug.Log("isPlaying");
+            Debug.Log("isSlidePlaying");
             NextStepLogic();
         }
         else if (isDone)
         {
-            Debug.Log("isDone");
+            Debug.Log("isSlideDone");
             TransitionSlide(1, -1);
         }
     }
@@ -288,8 +287,6 @@ class PrezSDKManager : MonoBehaviour
                 }
                 else if (nextSlide == -1)
                 {
-                    Debug.Log("nextslide is -1");
-
                     if (_slideTracker.Count > 1)
                     {
                         targetSlideIdx = _slideTracker.Last.Previous.Value;
@@ -302,8 +299,6 @@ class PrezSDKManager : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("nextslide is something");
-
                     //targetSlideIdx = slideIdx.Value;
                     targetSlideIdx = slideIdx;
                 }
@@ -332,8 +327,6 @@ class PrezSDKManager : MonoBehaviour
                 {
                     StopSlide(false, () =>
                     {
-                        Debug.Log("targetSlideIdx : " + targetSlideIdx);
-                        Debug.Log("slides counts : " + _manager._location.slides.Count);
                         if (targetSlideIdx != _manager._location.slides.Count)
                         {
                             //   slideIdx.Value = targetSlideIdx;
@@ -698,13 +691,11 @@ class PrezSDKManager : MonoBehaviour
         SlideLoadingStatusText.text = "";
 
         PresentationManager.assets = previousSlide.Slide.assets;
-        Debug.Log("PresentationManager.assets count : " + PresentationManager.assets.Count);
         //then play slide animations
         //StartCoroutine(PlayAssetAnimations());
 
         // Setup animation groups
         List<ARPTransition> pTransitions = PresentationManager.assetTransitions;
-        Debug.Log("PresentationManager.assetTransitions.Count : " + PresentationManager.assetTransitions.Count);
 
         List<AnimationGroup> animationGroups = new List<AnimationGroup>();
         AnimationGroup currentGroup = null;
@@ -720,7 +711,7 @@ class PrezSDKManager : MonoBehaviour
             }
             _asset = PresentationManager._slide.Slide.assets.Find(x => x.id == transition.assetId);
             _transition = transition;
-            Debug.Log("a : " + _asset.FileName() + " :: " + "t : " + _transition.animation + " :: " + _transition.startType);
+            Debug.Log("assetname : " + _asset.FileName() + " :: " + " animation type : " + _transition.animation + " animation startType " + _transition.startType);
 
             currentGroup.AddAnimation(_transition, _asset);
 
@@ -737,29 +728,6 @@ class PrezSDKManager : MonoBehaviour
         animationTimeline.OnGroupCompleted += OnGroupEnd;
         animationTimeline.OnTimelineComplete += TimelineComplete;
 
-        /*for (int i = 0; i < assets.Count; i++)
-        {
-            yield return new WaitForSeconds(1f);
-
-            if (loadedObjects.TryGetValue(_assets[i], out _go))
-            {
-                go = _go;
-            }
-            else
-            {
-                Debug.LogErrorFormat("Cannot find {0} ", _assets[i].FileName());
-            }
-
-            go.SetActive(true);
-            if (_assets[i].type == ANPAssetType.VIDEO)
-            {
-                yield return null;
-                var videoPlayer = go.GetComponent<VideoPlayer>();
-                videoPlayer.Play();
-            }
-        }*/
-
-        Debug.Log("Before play");
         Play();
     }
 
@@ -788,7 +756,7 @@ class PrezSDKManager : MonoBehaviour
         {
             isPlaying = true;
             /*LastPlayedPoint = */
-            Debug.Log("playing new slide");
+            Debug.Log("Playing new slide");
             animationTimeline.Play(groupNum);
         }
         else
@@ -802,11 +770,8 @@ class PrezSDKManager : MonoBehaviour
 
     void UpdateSlideCount()
     {
-        Debug.Log("Writing text");
         CurrentSlideText.text = (PrezStates.CurrentSlide + 1).ToString();
-        Debug.Log("Text written");
         slideCount = PrezStates.Presentation.locations[0].slides.Count;
-        Debug.Log("slideCount : " + slideCount);
     }
 
     private void OnGroupEnd(AnimationGroup group)

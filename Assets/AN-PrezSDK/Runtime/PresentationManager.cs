@@ -43,25 +43,6 @@ public class PresentationManager : MonoBehaviour
         _slides = new Dictionary<int, LoadedSlide>();
     }
 
-    /*public void CleanUp()
-    {
-        StartCoroutine(InternalCleanup());
-    }
-
-    private IEnumerator InternalCleanup()
-    {
-        foreach (var slide in _slides)
-        {
-            if (slide.Value != null)
-            {
-                slide.Value.CleanUp();
-            }
-        }
-        yield return null;
-        Resources.UnloadUnusedAssets();
-        GC.Collect();
-    }*/
-
     public LoadedSlide LoadSlide(int index)
     {
         Debug.Log("PresentationManager LoadSlide " + index);
@@ -71,7 +52,6 @@ public class PresentationManager : MonoBehaviour
             _slide = slide;
             _slide = new LoadedSlide(_location.slides[index], transform);
             _slides[index] = _slide;
-            Debug.Log("added slide " + _slide.Slide.name);
         }
         _slide.LoadSlide();
 
@@ -105,10 +85,6 @@ public class PresentationManager : MonoBehaviour
         PrezAPIHelper.StopDownload();
 
         //delete files
-        /*foreach (var file in Directory.EnumerateFiles(InitializeSDK.DownloadFolderPath))
-        {
-            System.IO.File.Delete(file);
-        }*/
         DirectoryInfo directoryInfo = new DirectoryInfo(InitializeSDK.DownloadFolderPath);
 
         foreach (var item in directoryInfo.EnumerateFiles())
@@ -137,28 +113,14 @@ public class PresentationManager : MonoBehaviour
             assetTransitions = slide.assetTransitions;
 
             _assets = new Dictionary<ARPAsset, LoadedAsset>();
-            Debug.Log("slidename " + slide.name);
+
             foreach (var asset in slide.assets)
             {
                 _assets[asset] = new LoadedAsset(asset, anchor, () =>
                 {
                     loadedCount++;
-                    //Debug.Log("loadedCount : " + loadedCount + "assetsCount : " + _assets.Count);
-
-                    if (loadedCount == _assets.Count)
-                    {
-                        Debug.Log("HasSlideLoaded : TRUE");
-                    }
-                    else
-                    {
-                        Debug.Log("HasSlideLoaded : FALSE");
-                    }
                 });
-
-
             }
-
-            //Debug.Log("slidetransitionanimation " + slide.transition.animation);
             Slide = slide;
         }
 
@@ -175,20 +137,14 @@ public class PresentationManager : MonoBehaviour
             DestroyLoadedObjects();
             PrezSDKManager.ClearObjects();
             onObjectsDestroyed();
-            Debug.Log("aa");
             GC.Collect();
-            Debug.Log("bb");
             Resources.UnloadUnusedAssets();
-            Debug.Log("cc");
             AssetBundleManager.Cleanup();
-            Debug.Log("dd");
             foreach (Transform child in _instance.transform)
             {
                 Destroy(child.gameObject);
             }
-            Debug.Log("ee");
             loadedCount = 0;
-            Debug.Log("loadedCount : " + loadedCount);
         }
 
         public void DestroyLoadedObjects()
@@ -231,8 +187,6 @@ public class PresentationManager : MonoBehaviour
 
             public IEnumerator LoadAssetInternal()
             {
-                Debug.Log("LoadAssetInternal");
-                Debug.Log("assetfilename " + _asset.FileName());
                 if (_asset.type != ANPAssetType.TEXT && !IsFileDownloaded)
                 {
                     string replacement = null;
@@ -250,20 +204,12 @@ public class PresentationManager : MonoBehaviour
 
                 yield return AssetLoader.OnLoadAsset(_asset, (go) =>
                 {
-                    Debug.Log("asset : " + _asset.FileName() + " go : " + go.name);
-
                     if (go != null)
                     {
-                        Debug.Log("gonamename " + go.name);
                         _loadedObject = go;
                         _loadedObject.transform.SetParent(_anchor);
-                        Debug.Log("parented " + _loadedObject.name + " to " + _anchor.name);
-                        //_loadedObject.transform.localPosition = Vector3.zero;
-
                         _loadedObject.SetInitialPosition(_asset.itemTransform);
-
                         _asset.itemTransform.SetTransform(_loadedObject.transform);
-
                         _loadedObject.SetActive(false);
                         _onLoaded?.Invoke();
 
@@ -273,8 +219,6 @@ public class PresentationManager : MonoBehaviour
                             if (!PrezSDKManager.uDictionaryExample.prezAssets.ContainsKey(_asset.text.value))
                             {
                                 PrezSDKManager.uDictionaryExample.prezAssets.Add(_asset.text.value, _loadedObject);
-
-                                //Debug.Log("Adding " + "key : " + _asset.text.value + " " + "value : " + _loadedObject.name);
                             }
                         }
                         else
@@ -283,8 +227,6 @@ public class PresentationManager : MonoBehaviour
                             if (!PrezSDKManager.uDictionaryExample.prezAssets.ContainsKey(_asset.FileName()))
                             {
                                 PrezSDKManager.uDictionaryExample.prezAssets.Add(_asset.FileName(), _loadedObject);
-
-                                //Debug.Log("Adding " + "key : " + _asset.FileName() + " " + "value : " + _loadedObject.name);
                             }
                         }
 
@@ -304,8 +246,6 @@ public class PresentationManager : MonoBehaviour
             public void ShowAsset()
             {
                 _loadedObject.SetActive(true);
-
-                //onSlideLoaded();
             }
 
             public void CleanUp()
@@ -316,7 +256,6 @@ public class PresentationManager : MonoBehaviour
                     DestroyImmediate(_loadedObject);
                 }
             }
-
         }
     }
 

@@ -51,7 +51,7 @@ public static class AssetLoader
                 //yield return null;
 
                 onLoaded(_text);
-                Debug.Log("objectLoaded : " + _text.name + " TYPE : TEXT");
+                Debug.Log("objectloaded : " + _text.name + " type : TEXT");
                 break;
 
             case ANPAssetType.IMAGE:
@@ -63,7 +63,7 @@ public static class AssetLoader
                 // Load image in to the child of the loaded asset (that's the one which has 'MeshRenderer')
                 CoroutineRunner.Instance.StartCoroutine(LoadImage(_image.transform.GetChild(0).gameObject, assetPath));
                 onLoaded(_image);
-                Debug.Log("objectLoaded : " + _image.name + " TYPE : IMAGE");
+                Debug.Log("objectloaded : " + _image.name + " type : IMAGE");
                 break;
 
             case ANPAssetType.VIDEO:
@@ -105,7 +105,7 @@ public static class AssetLoader
                 PrezSDKManager.loadComplete = true;
 
                 onLoaded(_video);
-                Debug.Log("objectLoaded : " + _video.name + " TYPE : VIDEO");
+                Debug.Log("objectloaded : " + _video.name + " type : VIDEO");
                 break;
 
             case ANPAssetType.OBJECT:
@@ -165,7 +165,7 @@ public static class AssetLoader
                         UnityEngine.Object.Destroy(assetGo.transform.Find("Root"));
                     }*/
                     onLoaded(assetGo);
-                    Debug.Log("objectLoaded : " + assetGo.name + " TYPE : GLB");
+                    Debug.Log("objectloaded : " + assetGo.name + " type : GLB");
 
                     if (exception != null)
                     {
@@ -183,7 +183,7 @@ public static class AssetLoader
                     {
                         bundle.name = asset.FileName();
                         onLoaded(bundle);
-                        Debug.Log("objectLoaded : " + bundle.name + " TYPE : ASSETBUNDLE");
+                        Debug.Log("objectloaded : " + bundle.name + " type : ASSETBUNDLE");
                     });
                 }
                 break;
@@ -210,7 +210,7 @@ public static class AssetLoader
                 }
 
                 onLoaded(_audio);
-                Debug.Log("objectLoaded : " + _audio.name + " TYPE : AUDIO");
+                Debug.Log("objectloaded : " + _audio.name + " type : AUDIO");
 
                 break;
         }

@@ -25,91 +25,13 @@ public class ANPAnimation
         totalLength = _pDelay + _transition.animationDuration;
         asset = _asset;
 
-        /*switch (asset.type)
-        {
-            case ANPAssetType.OBJECT:
-                // Consider extra timing for assetbundle, glb, videos, and audio assets
-                if (go.name != "GLTF")
-                {
-                    // AssetBundle animation clip length (expect only one clip)
-                    if (go.GetComponent<Animator>())
-                    {
-                        Animator ac = go.GetComponent<Animator>();
-                        if (ac != null)
-                        {
-                            RuntimeAnimatorController rac = ac.runtimeAnimatorController;
-                            if (rac != null && rac.animationClips.Length > 0)
-                            {
-                                totalLength += rac.animationClips[0].length;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    // GLB animation length length (expect only one for now, but future would allow multiple)
-                    isGLB = true;
-                    Animation anim = go.GetComponentInChildren<Animation>();
-                    if (anim != null && anim.clip != null && !string.IsNullOrEmpty(model.internalAnimation))
-                    {
-                        AnimationClip clip = anim.GetClip(model.internalAnimation);
-                        totalLength += clip.length;
-                    }
-                }
-                break;
-            case ANPAssetType.AUDIO:
-                //if (go.GetComponent<AudioSource>().clip != null)
-                    //totalLength += go.GetComponent<AudioSource>().clip.length;
-                break;
-            case ANPAssetType.VIDEO:
-                totalLength += (float)assetController.player.length;
-                break;
-        }*/
-
         callback = _pCallback;
-
     }
 
     public void Play(bool gotoInitial, bool skipToEnd = false, bool stopAudio = true)
     {
         Debug.Log("ANPAnimation Play");
 
-        /*if (asset != null)
-        {
-            Debug.Log("assetfilename : " + asset.FileName());
-        }
-        else
-        {
-            Debug.LogError("asset is null");
-        }*/
-
-        ////GameObject pAssetGO = go;
-        /*go = PresentationManager.loadedObjects[asset];
-        go.SetActive(true);*/
-        //pAssetGO = GameObject.Find(asset.FileName());
-
-        /*foreach (var prezAsset in GameObject.FindObjectOfType<PrezSDKManager>().prezAssets)
-        {
-            if (asset.type == ANPAssetType.TEXT)
-            {
-                //Debug.Log("asset : " + asset.text.value + " prezAsset : " + prezAsset.name);
-                if (asset.text.value.Equals(prezAsset.name))
-                {
-                    assetGO = prezAsset;
-                }
-            }
-            else
-            {
-                //Debug.Log("asset : " + asset.text.value + " prezAsset : " + prezAsset.name);
-                if (asset.FileName().Equals(prezAsset.name))
-                {
-                    assetGO = prezAsset;
-                }
-            }
-        }*/
-
-
-        //if (GameObject.FindObjectOfType<PrezSDKManager>().prezAssets.TryGetValue(asset.FileName(), out GameObject go))
         if (asset.type == ANPAssetType.TEXT)
         {
             //Debug.Log("asset : " + asset.text.value + " prezAsset : " + prezAsset.name);
@@ -148,21 +70,19 @@ public class ANPAnimation
             }
         }
 
-
-
         LeanTween.delayedCall(assetGO, _delay, () =>
         {
-                //Debug.Log("pAssetGO : " + assetGO.name + " delay : " + _delay + " duration : " + _animationDuration);
+            //Debug.Log("pAssetGO : " + assetGO.name + " delay : " + _delay + " duration : " + _animationDuration);
 
-                //if (gotoInitial) assetController.GoToInitialTransform();
+            //if (gotoInitial) assetController.GoToInitialTransform();
 
-                if (model.animation == AnimationType.None)
+            if (model.animation == AnimationType.None)
             {
                 return;
             }
 
-                //ResetTransform();
-                assetGO.SetActive(true);
+            //ResetTransform();
+            assetGO.SetActive(true);
 
             PrezSDKManager._instance.OnAssetLoaded(asset, assetGO);
 
@@ -185,8 +105,8 @@ public class ANPAnimation
                     assetGO.GetComponentInChildren<Renderer>().material.DisableKeyword("_USEMAINCOLOR_ON");
 
                 }
-                    //go.GetComponent<Renderer>().material.SetFloat("_UseMainColor", useMainColor);
-                }
+                //go.GetComponent<Renderer>().material.SetFloat("_UseMainColor", useMainColor);
+            }
 
             if (!string.IsNullOrEmpty(model.internalAnimation))
             {
@@ -232,15 +152,6 @@ public class ANPAnimation
         PresentationManager.initialScale = PrezAssetHelper.GetVector(modelData.itemTransform.localScale);
 
         Debug.Log("data " + modelData.FileName() + " " + " localScale " + modelData.itemTransform.localScale);
-
-        /*if (!PrezSDKManager._instance.initialScales.ContainsKey(modelData))
-        {
-            PrezSDKManager._instance.initialScales.Add(modelData, modelData.itemTransform.localScale);
-        }
-        else
-        {
-            Debug.LogError(modelData + " key already exists");
-        }*/
 
         PrezSDKManager.uDictionaryExample.initialScales.Add(modelData, modelData.itemTransform.localScale);
 
