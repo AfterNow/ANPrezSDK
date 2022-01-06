@@ -12,7 +12,7 @@ using UnityEngine.Video;
 
 public static class AssetLoader
 {
-    private static GameObject assetGo; // The relating PrezSDKManager.objectLoaded that corresponds to the type of asset (Image, Video, Audio, GLTF).
+    private static GameObject assetGo; // The relating objectLoaded that corresponds to the type of asset (Image, Video, Audio, GLTF).
 
     private static float imageFator = 0.4f;
     private static int loadVideoFrame = 1;
@@ -20,7 +20,7 @@ public static class AssetLoader
 
     static AudioSource audioChannelVideo;
     private static AnimationClip[] animationClips;
-    //static GameObject PrezSDKManager.objectLoaded;
+    //static GameObject objectLoaded;
     private static string assetname;
     private static PlayableDirector director;
 
@@ -36,42 +36,47 @@ public static class AssetLoader
                 ARPText txt = asset.text;
                 var request = Resources.LoadAsync<GameObject>("PrezTextAsset");
                 yield return request;
-                PrezSDKManager.objectLoaded = (GameObject)UnityEngine.Object.Instantiate(request.asset);
-                PrezSDKManager.objectLoaded.name = txt.value;
-                TextMeshPro tm = PrezSDKManager.objectLoaded.GetComponentInChildren<TextMeshPro>();
+                GameObject _text = (GameObject)UnityEngine.Object.Instantiate(request.asset);
+                _text.name = txt.value;
+                TextMeshPro tm = _text.GetComponentInChildren<TextMeshPro>();
                 tm.text = txt.value;
                 tm.font = txt.GetFontAsset();
                 tm.alignment = txt.GetTMPAlignment();
                 tm.color = PrezAssetHelper.GetColor(txt.color);
                 tm.faceColor = tm.color;
                 //yield return null;
-                var collider = PrezSDKManager.objectLoaded.AddComponent<BoxCollider>();
+                var collider = _text.AddComponent<BoxCollider>();
                 collider.center = Vector3.zero;
                 collider.size = new Vector3(collider.size.x, collider.size.y, 0.005f);
                 //yield return null;
-                onLoaded(PrezSDKManager.objectLoaded);
+
+                onLoaded(_text);
+                Debug.Log("objectLoaded : " + _text.name + " TYPE : TEXT");
                 break;
 
             case ANPAssetType.IMAGE:
                 request = Resources.LoadAsync<GameObject>("PrezImageAsset");
                 yield return request;
-                PrezSDKManager.objectLoaded = (GameObject)UnityEngine.Object.Instantiate(request.asset);
-                PrezSDKManager.objectLoaded.name = fileName;
+                GameObject _image = (GameObject)UnityEngine.Object.Instantiate(request.asset);
+                _image.name = fileName;
 
                 // Load image in to the child of the loaded asset (that's the one which has 'MeshRenderer')
-                CoroutineRunner.Instance.StartCoroutine(LoadImage(PrezSDKManager.objectLoaded.transform.GetChild(0).gameObject, assetPath));
-                onLoaded(PrezSDKManager.objectLoaded);
+                CoroutineRunner.Instance.StartCoroutine(LoadImage(_image.transform.GetChild(0).gameObject, assetPath));
+                onLoaded(_image);
+                Debug.Log("objectLoaded : " + _image.name + " TYPE : IMAGE");
                 break;
 
             case ANPAssetType.VIDEO:
 
                 request = Resources.LoadAsync<GameObject>("PrezVideoAsset");
                 yield return request;
-                PrezSDKManager.objectLoaded = (GameObject)UnityEngine.Object.Instantiate(request.asset);
-                PrezSDKManager.objectLoaded.name = fileName;
+                GameObject _video = (GameObject)UnityEngine.Object.Instantiate(request.asset);
+                _video.name = fileName;
 
                 if (PrezSDKManager.player == null)
-                    PrezSDKManager.player = PrezSDKManager.objectLoaded.GetComponent<VideoPlayer>();
+                {
+                    PrezSDKManager.player = _video.GetComponent<VideoPlayer>();
+                }
 
                 bool transVideo = Path.GetFileNameWithoutExtension(fileName).Substring(fileName.LastIndexOf('-') + 1).Equals("alpha");
 
@@ -82,7 +87,7 @@ public static class AssetLoader
                 PrezSDKManager.player.prepareCompleted += (vPlayer) =>
                 {
                     vPlayer.frame = loadVideoFrame;
-                        /*** fixing the on video aspect ratio issue ***/
+                    /*** fixing the on video aspect ratio issue ***/
                     Vector3 _VPLocalScale = vPlayer.transform.localScale;
                     _VPLocalScale.x = ((float)vPlayer.texture.width / (float)vPlayer.texture.width);
                     _VPLocalScale.y = ((float)vPlayer.texture.height / (float)vPlayer.texture.width);
@@ -99,7 +104,8 @@ public static class AssetLoader
                 HandleVideoPlayer(true);
                 PrezSDKManager.loadComplete = true;
 
-                onLoaded(PrezSDKManager.objectLoaded);
+                onLoaded(_video);
+                Debug.Log("objectLoaded : " + _video.name + " TYPE : VIDEO");
                 break;
 
             case ANPAssetType.OBJECT:
@@ -139,7 +145,6 @@ public static class AssetLoader
                     finishedAsync = true;
 
                     glb.name = fileName;
-                    Debug.Log("goname : " + glb.name);
                     glb.transform.SetParent(assetGo.transform, false);
 
 
@@ -160,45 +165,7 @@ public static class AssetLoader
                         UnityEngine.Object.Destroy(assetGo.transform.Find("Root"));
                     }*/
                     onLoaded(assetGo);
-
-                    /*Importer.ImportGLBAsync(File.ReadAllBytes(assetPath), new ImportSettings() { useLegacyClips = true }, (obj, clips) =>
-                    {
-                        IsGLBLoading = false;
-                        finishedAsync = true;
-
-                        glb = obj;
-
-                        glb.name = fileName;
-                        assetGo = new GameObject();
-                        assetGo.name = glb.name;
-                        glb.transform.SetParent(assetGo.transform, false);
-                        glb.transform.localPosition = Vector3.zero;
-
-                        Camera[] cameras = glb.GetComponentsInChildren<Camera>();
-                        foreach (var cam in cameras)
-                        {
-                            if (cam)
-                            {
-                                cam.enabled = false;
-                                UnityEngine.Object.Destroy(cam.gameObject);
-                            }
-                        }
-                        AdjustObjectScale(glb);
-
-                        if (assetGo.transform.Find("Root") != null)
-                        {
-                            UnityEngine.Object.Destroy(assetGo.transform.Find("Root"));
-                        }
-
-                        animationClips = clips;
-
-                        onLoaded(assetGo);
-                    }, null,
-                        (ex) =>
-                        {
-                            exception = ex;
-                            finishedAsync = true;
-                        });*/
+                    Debug.Log("objectLoaded : " + assetGo.name + " TYPE : GLB");
 
                     if (exception != null)
                     {
@@ -216,6 +183,7 @@ public static class AssetLoader
                     {
                         bundle.name = asset.FileName();
                         onLoaded(bundle);
+                        Debug.Log("objectLoaded : " + bundle.name + " TYPE : ASSETBUNDLE");
                     });
                 }
                 break;
@@ -223,9 +191,9 @@ public static class AssetLoader
             case ANPAssetType.AUDIO:
                 request = Resources.LoadAsync<GameObject>("PrezAudioAsset");
                 yield return request;
-                PrezSDKManager.objectLoaded = (GameObject)UnityEngine.Object.Instantiate(request.asset);
-                PrezSDKManager.objectLoaded.name = fileName;
-                var audioSource = PrezSDKManager.objectLoaded.GetComponent<AudioSource>();
+                GameObject _audio = (GameObject)UnityEngine.Object.Instantiate(request.asset);
+                _audio.name = fileName;
+                var audioSource = _audio.GetComponent<AudioSource>();
                 using (UnityWebRequest uwr = UnityWebRequestMultimedia.GetAudioClip(assetPath, AudioType.UNKNOWN))
                 {
                     yield return uwr.SendWebRequest();
@@ -240,7 +208,9 @@ public static class AssetLoader
                         Debug.Log(uwr.error);
                     }
                 }
-                onLoaded(PrezSDKManager.objectLoaded);
+
+                onLoaded(_audio);
+                Debug.Log("objectLoaded : " + _audio.name + " TYPE : AUDIO");
 
                 break;
         }
@@ -341,24 +311,6 @@ public static class AssetLoader
                 _gameObject.transform.localScale = _ImageLocalScale;
             }
         }
-
-        /*using (WWW www = new WWW(url))
-        {
-            yield return www;
-            if (www.error != null)
-            {
-                Debug.LogError("Error : " + www.error);
-            }
-            else
-            {
-                www.LoadImageIntoTexture(tex);
-                Vector3 _ImageLocalScale = _gameObject.transform.localScale;
-                _ImageLocalScale.x = ((float)tex.width / (float)tex.width) * (imageFator);
-                _ImageLocalScale.y = ((float)tex.height / (float)tex.width) * (imageFator);
-                _gameObject.transform.localScale = _ImageLocalScale;
-                _gameObject.GetComponent<Renderer>().material.mainTexture = tex;
-            }
-        }*/
     }
 
 }

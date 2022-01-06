@@ -8,7 +8,7 @@ public class PresentationManager : MonoBehaviour
 {
     public static LoadedSlide _slide;
     public Location _location;
-    public Dictionary<int, LoadedSlide> _slides;
+    public static Dictionary<int, LoadedSlide> _slides;
 
     public static PresentationManager _instance;
 
@@ -65,15 +65,18 @@ public class PresentationManager : MonoBehaviour
     public LoadedSlide LoadSlide(int index)
     {
         Debug.Log("PresentationManager LoadSlide " + index);
+
         if (!_slides.TryGetValue(index, out LoadedSlide slide))
         {
             _slide = slide;
             _slide = new LoadedSlide(_location.slides[index], transform);
             _slides[index] = _slide;
+            Debug.Log("added slide " + _slide.Slide.name);
         }
         _slide.LoadSlide();
 
         assetTransitions = _slide.Slide.assetTransitions;
+        Debug.Log("slide name : " + _slide.Slide.name);
         Debug.Log("assetTransitions.Count " + assetTransitions.Count);
         //StartCoroutine(InternalLoadSlide(slide));
         return _slide;
@@ -134,6 +137,7 @@ public class PresentationManager : MonoBehaviour
             assetTransitions = slide.assetTransitions;
 
             _assets = new Dictionary<ARPAsset, LoadedAsset>();
+            Debug.Log("slidename " + slide.name);
             foreach (var asset in slide.assets)
             {
                 _assets[asset] = new LoadedAsset(asset, anchor, () =>
@@ -228,6 +232,7 @@ public class PresentationManager : MonoBehaviour
             public IEnumerator LoadAssetInternal()
             {
                 Debug.Log("LoadAssetInternal");
+                Debug.Log("assetfilename " + _asset.FileName());
                 if (_asset.type != ANPAssetType.TEXT && !IsFileDownloaded)
                 {
                     string replacement = null;
@@ -245,10 +250,14 @@ public class PresentationManager : MonoBehaviour
 
                 yield return AssetLoader.OnLoadAsset(_asset, (go) =>
                 {
+                    Debug.Log("asset : " + _asset.FileName() + " go : " + go.name);
+
                     if (go != null)
                     {
+                        Debug.Log("gonamename " + go.name);
                         _loadedObject = go;
                         _loadedObject.transform.SetParent(_anchor);
+                        Debug.Log("parented " + _loadedObject.name + " to " + _anchor.name);
                         //_loadedObject.transform.localPosition = Vector3.zero;
 
                         _loadedObject.SetInitialPosition(_asset.itemTransform);

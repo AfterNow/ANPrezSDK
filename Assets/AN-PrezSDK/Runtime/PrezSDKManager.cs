@@ -36,7 +36,6 @@ class PrezSDKManager : MonoBehaviour
     public static List<ARPAsset> _assets = new List<ARPAsset>();
     ARPTransition _transition;
     List<ARPTransition> _transitions = new List<ARPTransition>();
-    public static GameObject objectLoaded;
 
     float delay = 0;
     public bool isPlaying;
@@ -278,7 +277,7 @@ class PrezSDKManager : MonoBehaviour
                     //targetSlideIdx = slideIdx.Value + 1;
                     targetSlideIdx = slideIdx + 1;
 
-                    if (targetSlideIdx == _manager._slides.Count)
+                    if (targetSlideIdx == PresentationManager._slides.Count)
                     {
                         _slideTracker.Clear();
                     }
@@ -322,7 +321,7 @@ class PrezSDKManager : MonoBehaviour
 
 
 
-            if (targetSlideIdx < _manager._slides.Count && targetSlideIdx >= 0)
+            if (targetSlideIdx < PresentationManager._slides.Count && targetSlideIdx >= 0)
             {
                 //Coroutine slideLoader = GotoSlidePlayMode(targetSlideIdx);
 
@@ -422,6 +421,11 @@ class PrezSDKManager : MonoBehaviour
         if (PresentationManager.loadedObjects.Count > 0)
         {
             PresentationManager.loadedObjects.Clear();
+        }
+
+        if (PresentationManager._slides.Count > 0)
+        {
+            PresentationManager._slides.Clear();
         }
 
         if (_assets.Count > 0)
@@ -714,7 +718,6 @@ class PrezSDKManager : MonoBehaviour
                 animationGroups.Add(currentGroup);
 
             }
-
             _asset = PresentationManager._slide.Slide.assets.Find(x => x.id == transition.assetId);
             _transition = transition;
             Debug.Log("a : " + _asset.FileName() + " :: " + "t : " + _transition.animation + " :: " + _transition.startType);

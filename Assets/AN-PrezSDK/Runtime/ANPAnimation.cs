@@ -115,7 +115,6 @@ public class ANPAnimation
             //Debug.Log("asset : " + asset.text.value + " prezAsset : " + prezAsset.name);
             if (PrezSDKManager.uDictionaryExample.prezAssets.TryGetValue(asset.text.value, out GameObject go))
             {
-                Debug.Log("ASSET VALUE : " + asset.text.value);
                 if (asset.text.value.Equals(go.name))
                 {
                     assetGO = go;
@@ -124,15 +123,11 @@ public class ANPAnimation
         }
         else
         {
-            Debug.Log("prezAssets count : " + PrezSDKManager.uDictionaryExample.prezAssets.Count);
             if (asset != null)
             {
-                Debug.Log("assetname : " + asset.FileName());
 
                 if (PrezSDKManager.uDictionaryExample.prezAssets.TryGetValue(asset.FileName(), out GameObject go))
                 {
-                    Debug.Log("ASSET VALUE : " + asset.FileName());
-
                     if (go != null && asset.FileName().Equals(go.name))
                     {
                         assetGO = go;
