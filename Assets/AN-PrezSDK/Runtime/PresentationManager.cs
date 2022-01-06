@@ -124,7 +124,7 @@ public class PresentationManager : MonoBehaviour
     {
         public Slide Slide;
         private Dictionary<ARPAsset, LoadedAsset> _assets;
-        private int loadedCount = 0;
+        public int loadedCount = 0;
 
         public bool HasSlideLoaded => loadedCount == _assets.Count;
 
@@ -139,7 +139,7 @@ public class PresentationManager : MonoBehaviour
                 _assets[asset] = new LoadedAsset(asset, anchor, () =>
                 {
                     loadedCount++;
-                    Debug.Log("loadedCount : " + loadedCount + "assetsCount : " + _assets.Count);
+                    //Debug.Log("loadedCount : " + loadedCount + "assetsCount : " + _assets.Count);
 
                     if (loadedCount == _assets.Count)
                     {
@@ -171,15 +171,20 @@ public class PresentationManager : MonoBehaviour
             DestroyLoadedObjects();
             PrezSDKManager.ClearObjects();
             onObjectsDestroyed();
-
+            Debug.Log("aa");
             GC.Collect();
+            Debug.Log("bb");
             Resources.UnloadUnusedAssets();
+            Debug.Log("cc");
             AssetBundleManager.Cleanup();
+            Debug.Log("dd");
             foreach (Transform child in _instance.transform)
             {
                 Destroy(child.gameObject);
             }
+            Debug.Log("ee");
             loadedCount = 0;
+            Debug.Log("loadedCount : " + loadedCount);
         }
 
         public void DestroyLoadedObjects()

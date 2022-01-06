@@ -22,6 +22,7 @@ class PrezSDKManager : MonoBehaviour
 
     [SerializeField] TMP_Text PresentationIDText;
     [SerializeField] TMP_Text CurrentSlideText;
+    [SerializeField] TMP_Text SlideLoadingStatusText;
 
     [HideInInspector]
     public PresentationManager _manager;
@@ -191,8 +192,8 @@ class PrezSDKManager : MonoBehaviour
     {
         if (PrezStates.CurrentSlide != 0)
         {
-            //ClearObjects();
-            previousSlide.CleanUp();
+            previousSlide.DestroyLoadedObjects();
+            ClearObjects();
 
             //slideCount = PrezStates.Presentation.locations[0].slides.Count;
             Debug.Log("slidecount " + slideCount);
@@ -683,10 +684,15 @@ class PrezSDKManager : MonoBehaviour
         //Wait till the slide completely loads
         while (!previousSlide.HasSlideLoaded)
         {
-            Debug.Log("LOADING SLIDE");
+            //Debug.Log("LOADING SLIDE");
+            SlideLoadingStatusText.text = "Loading slide...";
             yield return null;
         }
-        Debug.Log("LOADED SLIDE");
+        //Debug.Log("LOADED SLIDE");
+        SlideLoadingStatusText.text = "Slide loaded";
+        yield return new WaitForSeconds(2f);
+        SlideLoadingStatusText.text = "";
+
         PresentationManager.assets = previousSlide.Slide.assets;
         Debug.Log("PresentationManager.assets count : " + PresentationManager.assets.Count);
         //then play slide animations
