@@ -467,14 +467,7 @@ class PrezSDKManager : MonoBehaviour
 
 
         // Animate children out
-        //ARPSlideTransition slideTransition = _slide.Slide.transition;
-        //ARPSlideTransition slideTransition = _manager._location.slides[targetSlideIdx].transition;
-
-        ARPSlideTransition slideTransition = new ARPSlideTransition();
-        slideTransition.animation = SlideAnimationType.ScaleOut;
-        slideTransition.animationDuration = 5;
-        //Debug.Log("slideTransition animation : " + slideTransition.animation);
-        //Debug.Log("slideTransition animationDuration : " + slideTransition.animationDuration);
+        ARPSlideTransition slideTransition = previousSlide.Slide.transition;
 
         switch (slideTransition.animation)
         {
@@ -627,6 +620,9 @@ class PrezSDKManager : MonoBehaviour
                 if (prez != null)
                 {
                     PrezStates.Presentation = prez;
+
+                    Debug.Log("prezdata " + prez.locations[0].slides[0].transition.animation);
+
                     LoadPresentation(prez);
 
                     _manager = presentationAnchor.AddComponent<PresentationManager>();
