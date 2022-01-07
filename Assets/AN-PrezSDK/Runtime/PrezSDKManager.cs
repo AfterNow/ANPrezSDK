@@ -276,7 +276,7 @@ class PrezSDKManager : MonoBehaviour
                     //targetSlideIdx = slideIdx.Value + 1;
                     targetSlideIdx = slideIdx + 1;
 
-                    if (targetSlideIdx == PresentationManager._slides.Count)
+                    if (targetSlideIdx == _manager._location.slides.Count)
                     {
                         _slideTracker.Clear();
                     }
@@ -315,14 +315,18 @@ class PrezSDKManager : MonoBehaviour
             }
 
 
-
-            if (targetSlideIdx < PresentationManager._slides.Count && targetSlideIdx >= 0)
+            //Debug.Log("targetSlideIdx : " + targetSlideIdx + " _manager._location.slides.Count : " + _manager._location.slides.Count);
+            Debug.Log("targetSlideIdx : " + targetSlideIdx + " slides.Count : " + _manager._location.slides.Count);
+            if (targetSlideIdx < _manager._location.slides.Count && targetSlideIdx >= 0)
             {
+                Debug.Log("index : 1");
                 //Coroutine slideLoader = GotoSlidePlayMode(targetSlideIdx);
 
                 //if (_slide.Slide.DownloadProgress == 1f) //if current slide is loaded, animate it out
                 //{
                 bool hasSlideStopped = false;
+                Debug.Log("delay : " + _manager._location.slides[targetSlideIdx].transition.delay);
+
                 LeanTween.value(presentationAnchor, 0, 1, /*_manager._location.slides[targetSlideIdx].transition.delay*/0).setOnComplete(() =>
                 {
                     StopSlide(false, () =>
@@ -346,18 +350,18 @@ class PrezSDKManager : MonoBehaviour
                 OnSlideTransition(targetSlideIdx);
                 CanReset = true;
             }
-            /*else if (targetSlideIdx == Location.slides.Count)
+            else if (targetSlideIdx == _manager._location.slides.Count)
             {
-                if (targetSlideIdx != Location.slides.Count)
-                    slideIdx.Value = targetSlideIdx;
+                Debug.Log("index : 2");
+                if (targetSlideIdx != _manager._location.slides.Count)
+                    slideIdx = targetSlideIdx;
                 // Last slide, let it do the transition..
-                if (currentSlide != null)
-                {
-                    shouldTrySync = false;
-                    currentSlide.GetComponent<SlideController>().StopSlide(false, () =>
+                //if (currentSlide != null)
+                //{
+                    /*shouldTrySync = false;
+                    StopSlide(false, () =>
                     {
                         isPlaying = false;
-                        ResetLocation();
                         AppManager.Instance.slideNo.Value = 0;
                         eventUpdatePresValues();
                         eventUpdateMenuLayout(AppManager.Instance.appMode);
@@ -366,17 +370,17 @@ class PrezSDKManager : MonoBehaviour
                             AppNetworkController.Instance.SelectPresentationMode(AppManager.Instance.presentationState.Value);
                         }
                         CanReset = true;
-                    });
-                }
-
-                else if (shouldTrySync)
+                    });*/
+                //}
+                /*else if (shouldTrySync)
                 {
                     SyncSlide(targetSlideIdx, progressionType);
-                }
+                }*/
             }
             else
             {
-                currentSlide.StopSlide(false, () =>
+                Debug.Log("index : 3");
+                /*currentSlide.StopSlide(false, () =>
                 {
                     isPlaying = false;
                     ResetLocation();
@@ -390,8 +394,8 @@ class PrezSDKManager : MonoBehaviour
                     CanReset = true;
                     if (targetSlideIdx != Location.slides.Count)
                         slideIdx.Value = targetSlideIdx;
-                });
-            }*/
+                });*/
+            }
         }
         slideTransition = null;
         yield return null;
@@ -409,17 +413,17 @@ class PrezSDKManager : MonoBehaviour
     }
 
 
-    public static void ClearObjects()
+    public void ClearObjects()
     {
         if (PresentationManager.loadedObjects.Count > 0)
         {
             PresentationManager.loadedObjects.Clear();
         }
 
-        if (PresentationManager._slides.Count > 0)
+        /*if (_manager._location.slides.Count > 0)
         {
-            PresentationManager._slides.Clear();
-        }
+            _manager._location.slides.Clear();
+        }*/
 
         if (_assets.Count > 0)
         {
@@ -468,6 +472,8 @@ class PrezSDKManager : MonoBehaviour
 
         // Animate children out
         ARPSlideTransition slideTransition = previousSlide.Slide.transition;
+
+        Debug.Log("animation : " + slideTransition.animation);
 
         switch (slideTransition.animation)
         {
@@ -620,8 +626,6 @@ class PrezSDKManager : MonoBehaviour
                 if (prez != null)
                 {
                     PrezStates.Presentation = prez;
-
-                    Debug.Log("prezdata " + prez.locations[0].slides[0].transition.animation);
 
                     LoadPresentation(prez);
 

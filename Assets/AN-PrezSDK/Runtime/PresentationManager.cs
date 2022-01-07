@@ -135,7 +135,7 @@ public class PresentationManager : MonoBehaviour
         public void CleanUp()
         {
             DestroyLoadedObjects();
-            PrezSDKManager.ClearObjects();
+            FindObjectOfType<PrezSDKManager>().ClearObjects();
             onObjectsDestroyed();
             GC.Collect();
             Resources.UnloadUnusedAssets();
