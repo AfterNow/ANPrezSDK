@@ -142,6 +142,7 @@ public class PresentationManager : MonoBehaviour
             GC.Collect();
             Resources.UnloadUnusedAssets();
             AssetBundleManager.Cleanup();
+
             foreach (Transform child in _instance.transform)
             {
                 Destroy(child.gameObject);

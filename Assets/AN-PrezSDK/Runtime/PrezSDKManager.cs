@@ -150,11 +150,16 @@ class PrezSDKManager : MonoBehaviour
             //do cleanup
             PrezStates.Reset();
 
-            //Destroy parent on quit
-            if (_manager.gameObject != null)
+            //Destroy assets on quit
+            foreach (var asset in uDictionaryExample.prezAssets)
             {
-                Destroy(_manager.gameObject);
+                Destroy(asset.Value.gameObject);
             }
+
+            uDictionaryExample.prezAssets.Clear();
+            uDictionaryExample.initialScales.Clear();
+            _manager._location = null;
+
         };
 
 

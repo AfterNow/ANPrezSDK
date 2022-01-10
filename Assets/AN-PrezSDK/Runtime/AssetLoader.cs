@@ -138,47 +138,50 @@ public static class AssetLoader
 
                     glb = glbLoader.Result;
 
-                    if (glb == null)
+                    if (glb != null)
+                    {
+                        IsGLBLoading = false;
+                        finishedAsync = true;
+
+                        //glb.name = fileName;
+                        glb.transform.SetParent(assetGo.transform, false);
+
+                        //glb.transform.localPosition = Vector3.zero;
+
+                        Camera[] cameras = glb.GetComponentsInChildren<Camera>();
+                        foreach (var cam in cameras)
+                        {
+                            if (cam)
+                            {
+                                cam.enabled = false;
+                                UnityEngine.Object.Destroy(cam.gameObject);
+                            }
+                        }
+                        AdjustObjectScale(glb);
+                        /*if (assetGo.transform.Find("Root") != null)
+                        {
+                            UnityEngine.Object.Destroy(assetGo.transform.Find("Root"));
+                        }*/
+                        onLoaded(assetGo);
+                        Debug.Log("objectloaded : " + assetGo.name + " type : GLB");
+
+                        if (exception != null)
+                        {
+                            Debug.LogException(exception);
+                        }
+
+                        while (IsGLBLoading)
+                        {
+                            yield return null;
+                        }
+                        
+                    }
+                    else
                     {
                         Debug.LogError("GLB not loaded");
-                        yield return null;
+                        PresentationManager._slide.loadedCount++;
                     }
 
-                    IsGLBLoading = false;
-                    finishedAsync = true;
-
-                    //glb.name = fileName;
-                    glb.transform.SetParent(assetGo.transform, false);
-
-
-                    //glb.transform.localPosition = Vector3.zero;
-
-                    Camera[] cameras = glb.GetComponentsInChildren<Camera>();
-                    foreach (var cam in cameras)
-                    {
-                        if (cam)
-                        {
-                            cam.enabled = false;
-                            UnityEngine.Object.Destroy(cam.gameObject);
-                        }
-                    }
-                    AdjustObjectScale(glb);
-                    /*if (assetGo.transform.Find("Root") != null)
-                    {
-                        UnityEngine.Object.Destroy(assetGo.transform.Find("Root"));
-                    }*/
-                    onLoaded(assetGo);
-                    Debug.Log("objectloaded : " + assetGo.name + " type : GLB");
-
-                    if (exception != null)
-                    {
-                        Debug.LogException(exception);
-                    }
-
-                    while (IsGLBLoading)
-                    {
-                        yield return null;
-                    }
                 }
                 else if (fileExtention == SDKConstants.ASSETBUNDLE || fileExtention == SDKConstants.UNITYPACKAGE)
                 {
