@@ -178,7 +178,8 @@ public static class AssetLoader
                     }
                     else
                     {
-                        Debug.LogError("GLB not loaded");
+                        Debug.LogError(fileName + " not loaded");
+
                         PresentationManager._slide.loadedCount++;
                     }
 
@@ -231,6 +232,7 @@ public static class AssetLoader
         }
         yield return null;
     }
+
 
     // ONLY used for GLB Re Scaling
     private static void AdjustObjectScale(GameObject glbObject)

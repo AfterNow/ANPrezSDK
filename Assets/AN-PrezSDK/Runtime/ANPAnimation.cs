@@ -31,6 +31,7 @@ public class ANPAnimation
     public void Play(bool gotoInitial, bool skipToEnd = false, bool stopAudio = true)
     {
         Debug.Log("ANPAnimation Play");
+        Debug.Log("assetfilename " + asset.FileName());
 
         if (asset.type == ANPAssetType.TEXT)
         {
@@ -73,7 +74,8 @@ public class ANPAnimation
             }
             else
             {
-                Debug.Log("assetGo is null");
+                var prezSDKManager = UnityEngine.Object.FindObjectOfType<PrezSDKManager>();
+                CoroutineRunner.Instance.StartCoroutine(prezSDKManager.ShowErrors(asset.FileName() + " not loaded", Color.red));
             }
         }
 

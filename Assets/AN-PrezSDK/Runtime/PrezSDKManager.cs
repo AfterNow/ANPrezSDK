@@ -23,6 +23,7 @@ class PrezSDKManager : MonoBehaviour
     [SerializeField] TMP_Text PresentationIDText;
     [SerializeField] TMP_Text CurrentSlideText;
     [SerializeField] TMP_Text SlideLoadingStatusText;
+    [SerializeField] public TMP_Text AssetLoadingStatusText;
 
     [HideInInspector]
     public PresentationManager _manager;
@@ -793,5 +794,15 @@ class PrezSDKManager : MonoBehaviour
     public void OnSyncTimeline(int num)
     {
         OnSyncGroup(num);
+    }
+    public IEnumerator ShowErrors(string value, Color color)
+    {
+        AssetLoadingStatusText.text = value;
+        AssetLoadingStatusText.color = color;
+
+        yield return new WaitForSeconds(3f);
+
+        AssetLoadingStatusText.text = string.Empty;
+        AssetLoadingStatusText.color = Color.white;
     }
 }
