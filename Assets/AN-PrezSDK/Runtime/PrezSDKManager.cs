@@ -685,6 +685,7 @@ class PrezSDKManager : MonoBehaviour
             SlideLoadingStatusText.text = "Loading slide...";
             yield return null;
         }
+
         //Debug.Log("LOADED SLIDE");
         SlideLoadingStatusText.text = "Slide loaded";
         yield return new WaitForSeconds(2f);

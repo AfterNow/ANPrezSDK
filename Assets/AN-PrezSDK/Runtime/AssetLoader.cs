@@ -184,9 +184,18 @@ public static class AssetLoader
                 {
                     yield return AssetBundleManager.LoadAssetBundle(assetPath, (bundle) =>
                     {
-                        bundle.name = asset.FileName();
-                        onLoaded(bundle);
-                        Debug.Log("objectloaded : " + bundle.name + " type : ASSETBUNDLE");
+                        if (bundle != null)
+                        {
+                            bundle.name = asset.FileName();
+                            bundle.transform.SetParent(assetGo.transform, false);
+                            onLoaded(assetGo);
+                            Debug.Log("objectloaded : " + bundle.name + " type : ASSETBUNDLE");
+                        }
+                        else
+                        {
+                            PresentationManager._slide.loadedCount++;
+                            UnityEngine.Object.Destroy(assetGo);
+                        }
                     });
                 }
                 break;

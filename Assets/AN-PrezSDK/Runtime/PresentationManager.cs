@@ -119,8 +119,10 @@ public class PresentationManager : MonoBehaviour
                 _assets[asset] = new LoadedAsset(asset, anchor, () =>
                 {
                     loadedCount++;
+                    Debug.Log("loadedCount " + loadedCount + " assetsCount " + _assets.Count);
                 });
             }
+
             Slide = slide;
         }
 

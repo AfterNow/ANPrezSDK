@@ -63,10 +63,17 @@ public class ANPAnimation
 
         if (skipToEnd)
         {
-            LeanTween.cancel(assetGO, false);
-            if (stopAudio && asset.type == ANPAssetType.AUDIO)
+            if (assetGO != null)
             {
-                assetGO.GetComponent<AudioSource>().Stop();
+                LeanTween.cancel(assetGO, false);
+                if (stopAudio && asset.type == ANPAssetType.AUDIO)
+                {
+                    assetGO.GetComponent<AudioSource>().Stop();
+                }
+            }
+            else
+            {
+                Debug.Log("assetGo is null");
             }
         }
 

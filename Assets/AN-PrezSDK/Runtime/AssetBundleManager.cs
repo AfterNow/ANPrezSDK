@@ -46,7 +46,6 @@ public class AssetBundleManager : MonoBehaviour
         else
         {
             string localPath = UriBuilderExtension.UriPath(path);
-            Debug.Log("localPath : " + localPath);
             UnityWebRequest unityWebRequest = UnityWebRequestAssetBundle.GetAssetBundle(localPath);
             yield return unityWebRequest.SendWebRequest();
             if (string.IsNullOrEmpty(unityWebRequest.error))
