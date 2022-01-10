@@ -71,7 +71,10 @@ public static class AssetLoader
                 request = Resources.LoadAsync<GameObject>("PrezVideoAsset");
                 yield return request;
                 GameObject _video = (GameObject)UnityEngine.Object.Instantiate(request.asset);
-                _video.name = fileName;
+
+                GameObject videoParent = new GameObject();
+                _video.transform.parent = videoParent.transform;
+                videoParent.name = fileName;
 
                 if (PrezSDKManager.player == null)
                 {
@@ -104,8 +107,8 @@ public static class AssetLoader
                 HandleVideoPlayer(true);
                 PrezSDKManager.loadComplete = true;
 
-                onLoaded(_video);
-                Debug.Log("objectloaded : " + _video.name + " type : VIDEO");
+                onLoaded(videoParent);
+                Debug.Log("objectloaded : " + videoParent.name + " type : VIDEO");
                 break;
 
             case ANPAssetType.OBJECT:
@@ -144,7 +147,7 @@ public static class AssetLoader
                     IsGLBLoading = false;
                     finishedAsync = true;
 
-                    glb.name = fileName;
+                    //glb.name = fileName;
                     glb.transform.SetParent(assetGo.transform, false);
 
 
@@ -223,7 +226,12 @@ public static class AssetLoader
         assetGo.SetActive(true);
 
         Bounds GLBBounds = CalculateLocalBounds(assetGo.transform);
+        GLBBounds.center = GLBBounds.center / 2;
+        GLBBounds.size = GLBBounds.size / 2;
+
         BoxCollider GLBBoxCollider = assetGo.AddComponent<BoxCollider>();
+
+        Debug.Log("glbbounds" + GLBBounds.size);
 
         float largest = Mathf.Max(GLBBounds.size.x, GLBBounds.size.y, GLBBounds.size.z) / defaultSizeFactor;
         if (largest != 0)
