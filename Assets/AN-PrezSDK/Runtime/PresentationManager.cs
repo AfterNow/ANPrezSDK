@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 public class PresentationManager : MonoBehaviour
@@ -46,6 +47,11 @@ public class PresentationManager : MonoBehaviour
     public LoadedSlide LoadSlide(int index)
     {
         Debug.Log("PresentationManager LoadSlide " + index);
+
+        if (index == 0)
+        {
+            _slides.Clear();
+        }
 
         if (!_slides.TryGetValue(index, out LoadedSlide slide))
         {
@@ -128,6 +134,7 @@ public class PresentationManager : MonoBehaviour
 
         public void LoadSlide()
         {
+            Debug.Log("Slidedata slidename " + Slide.name);
             foreach (var asset in _assets)
             {
                 asset.Value.LoadAsset();
@@ -190,6 +197,8 @@ public class PresentationManager : MonoBehaviour
 
             public IEnumerator LoadAssetInternal()
             {
+                Debug.Log("Slidedata assetname " + _asset.FileName());
+
                 if (_asset.type != ANPAssetType.TEXT && !IsFileDownloaded)
                 {
                     string replacement = null;
