@@ -12,8 +12,6 @@ using UnityEngine.Video;
 
 public static class AssetLoader
 {
-    private static GameObject assetGo; // The relating objectLoaded that corresponds to the type of asset (Image, Video, Audio, GLTF).
-
     private static float imageFator = 0.4f;
     private static int loadVideoFrame = 1;
     private static float defaultSizeFactor = 1;
@@ -114,9 +112,9 @@ public static class AssetLoader
             case ANPAssetType.OBJECT:
                 request = Resources.LoadAsync<GameObject>("PrezObjectAsset");
                 yield return request;
-                assetGo = (GameObject)UnityEngine.Object.Instantiate(request.asset);
-                assetGo.name = fileName;
-                assetGo.gameObject.SetActive(true);
+                GameObject _object = (GameObject)UnityEngine.Object.Instantiate(request.asset);
+                _object.name = fileName;
+                _object.gameObject.SetActive(true);
 
                 bool IsGLBLoading = false;
                 bool finishedAsync = false;
@@ -133,7 +131,7 @@ public static class AssetLoader
                     }
 
                     IsGLBLoading = true;
-                    var glbLoader = GLBLoader.LoadGLTF(File.ReadAllBytes(assetPath), assetPath, assetGo.transform);
+                    var glbLoader = GLBLoader.LoadGLTF(File.ReadAllBytes(assetPath), assetPath, _object.transform);
                     yield return new WaitForTask(glbLoader);
 
                     glb = glbLoader.Result;
@@ -144,7 +142,7 @@ public static class AssetLoader
                         finishedAsync = true;
 
                         //glb.name = fileName;
-                        glb.transform.SetParent(assetGo.transform, false);
+                        glb.transform.SetParent(_object.transform, false);
 
                         //glb.transform.localPosition = Vector3.zero;
 
@@ -162,8 +160,8 @@ public static class AssetLoader
                         {
                             UnityEngine.Object.Destroy(assetGo.transform.Find("Root"));
                         }*/
-                        onLoaded(assetGo);
-                        Debug.Log("objectloaded : " + assetGo.name + " type : GLB");
+                        onLoaded(_object);
+                        Debug.Log("objectloaded : " + _object.name + " type : GLB");
 
                         if (exception != null)
                         {
@@ -179,7 +177,7 @@ public static class AssetLoader
                     else
                     {
                         Debug.LogError(fileName + " not loaded");
-
+                        UnityEngine.Object.Destroy(_object);
                         PresentationManager._slide.loadedCount++;
                     }
 
@@ -191,14 +189,14 @@ public static class AssetLoader
                         if (bundle != null)
                         {
                             bundle.name = asset.FileName();
-                            bundle.transform.SetParent(assetGo.transform, false);
-                            onLoaded(assetGo);
+                            bundle.transform.SetParent(_object.transform, false);
+                            onLoaded(_object);
                             Debug.Log("objectloaded : " + bundle.name + " type : ASSETBUNDLE");
                         }
                         else
                         {
                             PresentationManager._slide.loadedCount++;
-                            UnityEngine.Object.Destroy(assetGo);
+                            UnityEngine.Object.Destroy(_object);
                         }
                     });
                 }
@@ -237,20 +235,20 @@ public static class AssetLoader
     // ONLY used for GLB Re Scaling
     private static void AdjustObjectScale(GameObject glbObject)
     {
-        assetGo.SetActive(true);
+        glbObject.SetActive(true);
 
-        Bounds GLBBounds = CalculateLocalBounds(assetGo.transform);
+        Bounds GLBBounds = CalculateLocalBounds(glbObject.transform);
         GLBBounds.center = GLBBounds.center / 2;
         GLBBounds.size = GLBBounds.size / 2;
 
-        BoxCollider GLBBoxCollider = assetGo.AddComponent<BoxCollider>();
+        BoxCollider GLBBoxCollider = glbObject.AddComponent<BoxCollider>();
 
         Debug.Log("glbbounds" + GLBBounds.size);
 
         float largest = Mathf.Max(GLBBounds.size.x, GLBBounds.size.y, GLBBounds.size.z) / defaultSizeFactor;
         if (largest != 0)
         {
-            Transform child0 = assetGo.transform.GetChild(0);
+            Transform child0 = glbObject.transform.GetChild(0);
             if (child0)
             {
                 child0.localScale /= largest;
