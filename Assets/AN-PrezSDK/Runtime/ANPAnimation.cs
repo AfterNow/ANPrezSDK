@@ -155,7 +155,7 @@ public class ANPAnimation
     {
         Debug.Log("DoRegAnim");
         ARPAsset modelData = asset;
-
+        Rotate rotate = pAssetGO.GetComponent<Rotate>();
         PresentationManager.initialPos = PrezAssetHelper.GetVector(modelData.itemTransform.position);
         PresentationManager.initialScale = PrezAssetHelper.GetVector(modelData.itemTransform.localScale);
 
@@ -576,18 +576,18 @@ public class ANPAnimation
                 });
                 break;
             case AnimationType.StartRotationRight:
-                /*assetController.rotate.shouldUpdate = true;
-                assetController.rotate.speed = model.animationDuration;
-                Complete();*/
+                rotate.shouldUpdate = true;
+                rotate.speed = model.animationDuration;
+                Complete();
                 break;
             case AnimationType.StopRotation:
-                /*assetController.rotate.shouldUpdate = false;
-                Complete();*/
+                rotate.shouldUpdate = false;
+                Complete();
                 break;
             case AnimationType.StartRotationLeft:
-                /*assetController.rotate.shouldUpdate = true;
-                assetController.rotate.speed = -model.animationDuration;
-                Complete();*/
+                rotate.shouldUpdate = true;
+                rotate.speed = -model.animationDuration;
+                Complete();
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
