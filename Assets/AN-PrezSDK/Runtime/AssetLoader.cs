@@ -219,7 +219,7 @@ public static class AssetLoader
                     }
                     else
                     {
-                        Debug.Log(uwr.error);
+                        Debug.Log("Audio error : " + uwr.error);
                     }
                 }
 

@@ -70,12 +70,10 @@ class PrezSDKManager : MonoBehaviour
     public Material transMat;
 
     //public List<GameObject> prezAssets = new List<GameObject>();
-    //[SerializeField] public static Dictionary<string, GameObject> prezAssets = new Dictionary<string, GameObject>();
-    public static UDictionaryExample uDictionaryExample { get; private set; }
+    public static Dictionary<string, GameObject> prezAssets = new Dictionary<string, GameObject>();
 
     public static bool loadComplete = false;
 
-    public Dictionary<ARPAsset, PrezVector3> initialScales = new Dictionary<ARPAsset, PrezVector3>();
 
     #region enums
 
@@ -100,8 +98,6 @@ class PrezSDKManager : MonoBehaviour
 
     private void ObjectsDestroyed()
     {
-        Debug.Log("All objects destroyed");
-        //Play();
         Next_Slide();
     }
 
@@ -134,8 +130,6 @@ class PrezSDKManager : MonoBehaviour
     {
         _instance = this;
 
-        uDictionaryExample = GetComponent<UDictionaryExample>();
-
         prezController = GetComponent<IPrezController>();
         prezController.OnNextSlide += Next_Slide;
         prezController.OnPrevSlide += Previous_Slide;
@@ -152,13 +146,12 @@ class PrezSDKManager : MonoBehaviour
             PrezStates.Reset();
 
             //Destroy assets on quit
-            foreach (var asset in uDictionaryExample.prezAssets)
+            foreach (var asset in prezAssets)
             {
                 Destroy(asset.Value.gameObject);
             }
 
-            uDictionaryExample.prezAssets.Clear();
-            uDictionaryExample.initialScales.Clear();
+            prezAssets.Clear();
             _manager._location = null;
 
         };
@@ -325,13 +318,11 @@ class PrezSDKManager : MonoBehaviour
             Debug.Log("targetSlideIdx : " + targetSlideIdx + " slides.Count : " + _manager._location.slides.Count);
             if (targetSlideIdx < _manager._location.slides.Count && targetSlideIdx >= 0)
             {
-                Debug.Log("index : 1");
                 //Coroutine slideLoader = GotoSlidePlayMode(targetSlideIdx);
 
                 //if (_slide.Slide.DownloadProgress == 1f) //if current slide is loaded, animate it out
                 //{
                 bool hasSlideStopped = false;
-                Debug.Log("delay : " + _manager._location.slides[targetSlideIdx].transition.delay);
 
                 LeanTween.value(presentationAnchor, 0, 1, /*_manager._location.slides[targetSlideIdx].transition.delay*/0).setOnComplete(() =>
                 {
@@ -436,16 +427,9 @@ class PrezSDKManager : MonoBehaviour
             _assets.Clear();
         }
 
-        if (uDictionaryExample.prezAssets.Count > 0)
+        if (prezAssets.Count > 0)
         {
-            uDictionaryExample.prezAssets.Clear();
-            Debug.Log("Cleared prezAssets");
-        }
-
-        if (uDictionaryExample.initialScales.Count > 0)
-        {
-            uDictionaryExample.initialScales.Clear();
-            Debug.Log("Cleared initialScales");
+            prezAssets.Clear();
         }
     }
 
@@ -530,9 +514,9 @@ class PrezSDKManager : MonoBehaviour
                 GameObject go = null;
                 foreach (var asset in PresentationManager.assets)
                 {
-                    /*Debug.Log("prezAssets count : " + uDictionaryExample.prezAssets.Count);
+                    /*Debug.Log("prezAssets count : " + prezAssets.Count);
                     string output = "";
-                    foreach (KeyValuePair<string, GameObject> kvp in uDictionaryExample.prezAssets)
+                    foreach (KeyValuePair<string, GameObject> kvp in prezAssets)
                     {
                         output += string.Format("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
                         output += "\n";
@@ -541,7 +525,7 @@ class PrezSDKManager : MonoBehaviour
                     if (asset.type == ANPAssetType.TEXT)
                     {
                         //Debug.Log("assetfilename : " + asset.text.value);
-                        if (uDictionaryExample.prezAssets.TryGetValue(asset.text.value, out GameObject _go))
+                        if (prezAssets.TryGetValue(asset.text.value, out GameObject _go))
                         {
                             go = _go;
                             //Debug.Log("goname : " + go.name);
@@ -550,7 +534,7 @@ class PrezSDKManager : MonoBehaviour
                     else
                     {
                         //Debug.Log("assetfilename : " + asset.FileName());
-                        if (uDictionaryExample.prezAssets.TryGetValue(asset.FileName(), out GameObject _go))
+                        if (prezAssets.TryGetValue(asset.FileName(), out GameObject _go))
                         {
                             go = _go;
                             //Debug.Log("goname : " + go.name);
@@ -673,13 +657,6 @@ class PrezSDKManager : MonoBehaviour
 
     IEnumerator LoadSlide(int slideNo)
     {
-        Debug.Log("PrezSDKManager LoadSlide " + slideNo);
-        /*if (previousSlide != null)
-        {
-            //Debug.Log("cleanup initiated for slide " + PrezStates.CurrentSlide);
-            previousSlide.CleanUp();
-            yield return null;
-        }*/
         PrezStates.CurrentSlide = slideNo;
         previousSlide = _manager.LoadSlide(slideNo);
         UpdateSlideCount();

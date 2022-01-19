@@ -98,7 +98,6 @@ using UnityEngine;
         /// <returns></returns>
         public int Play(int pointNum, bool nextStep = true)
         {
-            Debug.Log("AnimationTimeline Play");
             if (pointNum < 0)
             {
                 if (!FirstElementAutomatic)
@@ -167,14 +166,12 @@ using UnityEngine;
             if (groupToFinish != null)
             {
                 groupToFinish.Finish(stopAudio);
-                Debug.Log("Finish2");
                 //Debug.LogError("Force finishing group");
                 //Debug.Log("AnimationGroupCompleted(groupToFinish)");
                 AnimationGroupCompleted(groupToFinish); //when we go to previous step, we dont need to do finish callback
             }
             else if (groupToPlay != null)
             {
-                Debug.Log("groupToPlay");
                 groupToPlay.Play();
             }
             return pointNum;

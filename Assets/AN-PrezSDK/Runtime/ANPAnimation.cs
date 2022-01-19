@@ -30,13 +30,12 @@ public class ANPAnimation
 
     public void Play(bool gotoInitial, bool skipToEnd = false, bool stopAudio = true)
     {
-        Debug.Log("ANPAnimation Play");
         Debug.Log("assetfilename " + asset.FileName());
 
         if (asset.type == ANPAssetType.TEXT)
         {
             //Debug.Log("asset : " + asset.text.value + " prezAsset : " + prezAsset.name);
-            if (PrezSDKManager.uDictionaryExample.prezAssets.TryGetValue(asset.text.value, out GameObject go))
+            if (PrezSDKManager.prezAssets.TryGetValue(asset.text.value, out GameObject go))
             {
                 if (asset.text.value.Equals(go.name))
                 {
@@ -49,7 +48,7 @@ public class ANPAnimation
             if (asset != null)
             {
 
-                if (PrezSDKManager.uDictionaryExample.prezAssets.TryGetValue(asset.FileName(), out GameObject go))
+                if (PrezSDKManager.prezAssets.TryGetValue(asset.FileName(), out GameObject go))
                 {
                     if (go != null && asset.FileName().Equals(go.name))
                     {
@@ -159,10 +158,6 @@ public class ANPAnimation
 
         PresentationManager.initialPos = PrezAssetHelper.GetVector(modelData.itemTransform.position);
         PresentationManager.initialScale = PrezAssetHelper.GetVector(modelData.itemTransform.localScale);
-
-        Debug.Log("data " + modelData.FileName() + " " + " localScale " + modelData.itemTransform.localScale);
-
-        PrezSDKManager.uDictionaryExample.initialScales.Add(modelData, modelData.itemTransform.localScale);
 
         switch (model.animation)
         {

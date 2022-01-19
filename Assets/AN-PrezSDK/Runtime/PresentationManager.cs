@@ -46,8 +46,6 @@ public class PresentationManager : MonoBehaviour
 
     public LoadedSlide LoadSlide(int index)
     {
-        Debug.Log("PresentationManager LoadSlide " + index);
-
         if (index == 0)
         {
             _slides.Clear();
@@ -125,7 +123,6 @@ public class PresentationManager : MonoBehaviour
                 _assets[asset] = new LoadedAsset(asset, anchor, () =>
                 {
                     loadedCount++;
-                    Debug.Log("loadedCount " + loadedCount + " assetsCount " + _assets.Count);
                 });
             }
 
@@ -228,17 +225,17 @@ public class PresentationManager : MonoBehaviour
                         if (_asset.type == ANPAssetType.TEXT)
                         {
                             //FindObjectOfType<PrezSDKManager>().prezAssets.Add(_asset.text.value, _loadedObject);
-                            if (!PrezSDKManager.uDictionaryExample.prezAssets.ContainsKey(_asset.text.value))
+                            if (!PrezSDKManager.prezAssets.ContainsKey(_asset.text.value))
                             {
-                                PrezSDKManager.uDictionaryExample.prezAssets.Add(_asset.text.value, _loadedObject);
+                                PrezSDKManager.prezAssets.Add(_asset.text.value, _loadedObject);
                             }
                         }
                         else
                         {
                             //FindObjectOfType<PrezSDKManager>().prezAssets.Add(_asset.FileName(), _loadedObject);
-                            if (!PrezSDKManager.uDictionaryExample.prezAssets.ContainsKey(_asset.FileName()))
+                            if (!PrezSDKManager.prezAssets.ContainsKey(_asset.FileName()))
                             {
-                                PrezSDKManager.uDictionaryExample.prezAssets.Add(_asset.FileName(), _loadedObject);
+                                PrezSDKManager.prezAssets.Add(_asset.FileName(), _loadedObject);
                             }
                         }
 
@@ -264,7 +261,6 @@ public class PresentationManager : MonoBehaviour
             {
                 if (_loadedObject)
                 {
-                    Debug.Log("destroying " + _loadedObject.name);
                     DestroyImmediate(_loadedObject);
                 }
             }
