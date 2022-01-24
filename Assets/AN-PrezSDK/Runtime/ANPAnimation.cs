@@ -66,16 +66,6 @@ public class ANPAnimation
             if (assetGO != null)
             {
                 LeanTween.cancel(assetGO, false);
-
-                PresentationManager.initialPos = PrezAssetHelper.GetVector(asset.itemTransform.position);
-                PresentationManager.initialRot = PrezAssetHelper.GetQuaternion(asset.itemTransform.rotation);
-                PresentationManager.initialScale = PrezAssetHelper.GetVector(asset.itemTransform.localScale);
-
-                Debug.Log("transform " + assetGO.name + " initialPos " + PresentationManager.initialPos + " initialRot " + PresentationManager.initialRot + " initialScale " + PresentationManager.initialScale);
-                assetGO.transform.localPosition = PresentationManager.initialPos;
-                assetGO.transform.localRotation = PresentationManager.initialRot;
-                assetGO.transform.localScale = PresentationManager.initialScale;
-
                 if (stopAudio && asset.type == ANPAssetType.AUDIO)
                 {
                     assetGO.GetComponent<AudioSource>().Stop();
@@ -93,15 +83,6 @@ public class ANPAnimation
             //Debug.Log("pAssetGO : " + assetGO.name + " delay : " + _delay + " duration : " + _animationDuration);
 
             //if (gotoInitial) assetController.GoToInitialTransform();
-
-            PresentationManager.initialPos = PrezAssetHelper.GetVector(asset.itemTransform.position);
-            PresentationManager.initialRot = PrezAssetHelper.GetQuaternion(asset.itemTransform.rotation);
-            PresentationManager.initialScale = PrezAssetHelper.GetVector(asset.itemTransform.localScale);
-
-            Debug.Log("transform " + assetGO.name + " initialPos " + PresentationManager.initialPos + " initialRot " + PresentationManager.initialRot + " initialScale " + PresentationManager.initialScale);
-            assetGO.transform.localPosition = PresentationManager.initialPos;
-            assetGO.transform.localRotation = PresentationManager.initialRot;
-            assetGO.transform.localScale = PresentationManager.initialScale;
 
             if (model.animation == AnimationType.None)
             {
@@ -155,8 +136,12 @@ public class ANPAnimation
         }
         else
         {
+            if (assetGO.GetComponent<Animation>() == null)
+            {
+                assetGO.AddComponent<Animation>();
+            }
+
             Animation anim = assetGO.GetComponentInChildren<Animation>();
-            Debug.Log("anim " + model.internalAnimation);
             anim.clip = anim.GetClip(model.internalAnimation);
             anim.wrapMode = model.GetWrapMode();
             anim.Play();
