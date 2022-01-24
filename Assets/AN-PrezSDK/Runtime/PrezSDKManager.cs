@@ -5,6 +5,8 @@ using UnityEngine.UI;
 using UnityEngine.Video;
 using TMPro;
 using System;
+using Unity.Linq;
+using System.Linq;
 
 /// <summary>
 /// Sample class on how to Authenticate to server, join a presentation and Navigate through the presentation
@@ -73,6 +75,7 @@ class PrezSDKManager : MonoBehaviour
     public static Dictionary<string, GameObject> prezAssets = new Dictionary<string, GameObject>();
 
     public static bool loadComplete = false;
+    private List<AudioSource> audioSources = new List<AudioSource>();
 
 
     #region enums
@@ -463,8 +466,6 @@ class PrezSDKManager : MonoBehaviour
         // Animate children out
         ARPSlideTransition slideTransition = previousSlide.Slide.transition;
 
-        Debug.Log("animation : " + slideTransition.animation);
-
         switch (slideTransition.animation)
         {
             case SlideAnimationType.Disappear:
@@ -488,7 +489,7 @@ class PrezSDKManager : MonoBehaviour
 
             case SlideAnimationType.ScaleOut:
                 isAnimating = true;
-                /*foreach (var audioSource in audioSources)
+                foreach (var audioSource in audioSources)
                 {
                     if (audioSource)
                         LeanTween.value(gameObject, 1, 0, slideTransition.animationDuration).setOnUpdate((float val) =>
@@ -500,7 +501,7 @@ class PrezSDKManager : MonoBehaviour
                             if (audioSource)
                                 audioSource.volume = 1;
                         });
-                }*/
+                }
 
                 /*foreach (var prezAsset in prezAssets)
                 {
@@ -677,6 +678,13 @@ class PrezSDKManager : MonoBehaviour
         PresentationManager.assets = previousSlide.Slide.assets;
         //then play slide animations
         //StartCoroutine(PlayAssetAnimations());
+
+
+        IEnumerable<GameObject> audioSourceGOs = gameObject.DescendantsAndSelf().Where(x => x.GetComponent<AudioSource>());
+        foreach (GameObject audioSourceGO in audioSourceGOs)
+        {
+            audioSources.Add(audioSourceGO.GetComponent<AudioSource>());
+        }
 
         // Setup animation groups
         List<ARPTransition> pTransitions = PresentationManager.assetTransitions;

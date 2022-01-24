@@ -235,6 +235,7 @@ public static class AssetLoader
                     if (string.IsNullOrEmpty(uwr.error))
                     {
                         var clip = DownloadHandlerAudioClip.GetContent(uwr);
+                        audioSource.volume = asset.volumn;
                         audioSource.clip = clip;
                         audioSource.Play();
                     }
