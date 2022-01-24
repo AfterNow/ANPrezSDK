@@ -73,6 +73,10 @@ public static class AssetLoader
                 GameObject videoParent = new GameObject();
                 _video.transform.parent = videoParent.transform;
                 videoParent.name = fileName;
+                if (videoParent.GetComponent<Rotate>() == null)
+                    videoParent.AddComponent<Rotate>();
+                else { }
+
 
                 if (PrezSDKManager.player == null)
                 {
