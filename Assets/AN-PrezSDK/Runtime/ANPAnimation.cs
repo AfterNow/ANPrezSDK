@@ -136,11 +136,6 @@ public class ANPAnimation
         }
         else
         {
-            if (assetGO.GetComponent<Animation>() == null)
-            {
-                assetGO.AddComponent<Animation>();
-            }
-
             Animation anim = assetGO.GetComponentInChildren<Animation>();
             anim.clip = anim.GetClip(model.internalAnimation);
             anim.wrapMode = model.GetWrapMode();

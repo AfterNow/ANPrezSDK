@@ -142,6 +142,23 @@ public static class AssetLoader
 
                     if (glb != null)
                     {
+                        Animation animation = null;
+                        
+                        if (glb.GetComponent<Animation>() == null)
+                        {
+                            animation = glb.AddComponent<Animation>();
+                        }
+                        else 
+                        {
+                            animation = glb.GetComponent<Animation>();
+                        }
+
+                        animation.playAutomatically = false;
+                        if (asset != null && asset.animations != null && asset.animations.Count > 0)
+                        {
+                            animation.clip = null;
+                        }
+
                         IsGLBLoading = false;
                         finishedAsync = true;
 
