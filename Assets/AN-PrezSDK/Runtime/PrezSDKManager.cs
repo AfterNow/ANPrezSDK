@@ -205,20 +205,28 @@ class PrezSDKManager : MonoBehaviour
 
     void Next_Step()
     {
+        if (isSlideStop)
+        {
+            previousSlide.CleanUp();
+            isSlideStop = false;
+           // Next_Slide();
+            return;
+        }
+
         if (isPlaying)
         {
-            Debug.Log("isSlidePlaying");
+            Debug.Log("nextstep isPlaying");
             NextStepLogic();
         }
         else if (isDone)
         {
-            Debug.Log("isSlideDone");
+            Debug.Log("nextstep isDone");
             TransitionSlide(1, -1);
         }
     }
 
     void NextStepLogic()
-    {
+    {        
         if (isPlaying)
         {
             if (!animationTimeline.FirstElementAutomatic && LastPlayedPoint == -1)
@@ -250,6 +258,7 @@ class PrezSDKManager : MonoBehaviour
     {
         if (slideTransition != null)
         {
+            Debug.Log("stopping coroutine");
             StopCoroutine(slideTransition);
         }
         slideTransition = StartCoroutine(StartTransitionSlide(nextSlide, targetSlideIdx, shouldTrySync, clickable, OnFinish));
@@ -277,7 +286,6 @@ class PrezSDKManager : MonoBehaviour
                 {
                     //targetSlideIdx = slideIdx.Value + 1;
                     targetSlideIdx = slideIdx + 1;
-
                     if (targetSlideIdx == _manager._location.slides.Count)
                     {
                         _slideTracker.Clear();
@@ -316,12 +324,11 @@ class PrezSDKManager : MonoBehaviour
                 yield return null;
             }
 
-
             //Debug.Log("targetSlideIdx : " + targetSlideIdx + " _manager._location.slides.Count : " + _manager._location.slides.Count);
             Debug.Log("targetSlideIdx : " + targetSlideIdx + " slides.Count : " + _manager._location.slides.Count);
             if (targetSlideIdx < _manager._location.slides.Count && targetSlideIdx >= 0)
             {
-                //Coroutine slideLoader = GotoSlidePlayMode(targetSlideIdx);
+                Coroutine slideLoader = GotoSlidePlayMode(targetSlideIdx);
 
                 //if (_slide.Slide.DownloadProgress == 1f) //if current slide is loaded, animate it out
                 //{
@@ -341,12 +348,11 @@ class PrezSDKManager : MonoBehaviour
                 });
                 while (!hasSlideStopped) yield return null;
                 //}
-                //yield return slideLoader;
+                yield return slideLoader;
                 //yield return StartCoroutine(UpdateVRBackground(newSlideController.Slide.BackgroundTexture, newSlideController.Slide.backgroundOrientation));
 
                 //only after new slide has loaded, and old slide has finished
                 //Play();
-
                 OnSlideTransition(targetSlideIdx);
                 CanReset = true;
             }
@@ -446,6 +452,8 @@ class PrezSDKManager : MonoBehaviour
 
     public void StopSlide(bool now = false, Action action = null)
     {
+        isSlideStop = true;
+
         // If stop instantly, don't do animation and just hide children
         if (now || isAnimating)
         {
@@ -503,47 +511,25 @@ class PrezSDKManager : MonoBehaviour
                         });
                 }
 
-                /*foreach (var prezAsset in prezAssets)
-                {
-                    prezAsset.transform.localScale = initialScale;
-                    LeanTween.scale(prezAsset, Vector3.zero, slideTransition.animationDuration).setOnComplete(_ =>
-                    {
-                        ShowChild(false, prezAsset);
-                    });
-                }*/
-
                 GameObject go = null;
                 foreach (var asset in PresentationManager.assets)
                 {
-                    /*Debug.Log("prezAssets count : " + prezAssets.Count);
-                    string output = "";
-                    foreach (KeyValuePair<string, GameObject> kvp in prezAssets)
-                    {
-                        output += string.Format("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
-                        output += "\n";
-                    }
-                    Debug.Log(output);*/
                     if (asset.type == ANPAssetType.TEXT)
                     {
-                        //Debug.Log("assetfilename : " + asset.text.value);
                         if (prezAssets.TryGetValue(asset.text.value, out GameObject _go))
                         {
                             go = _go;
-                            //Debug.Log("goname : " + go.name);
                         }
                     }
                     else
                     {
-                        //Debug.Log("assetfilename : " + asset.FileName());
                         if (prezAssets.TryGetValue(asset.FileName(), out GameObject _go))
                         {
                             go = _go;
-                            //Debug.Log("goname : " + go.name);
                         }
                     }
 
                     var initialScale = PrezAssetHelper.GetVector(asset.itemTransform.localScale);
-                    //Debug.Log("initialScale : " + initialScale);
                     if (go != null)
                     {
                         go.transform.localScale = initialScale;
@@ -575,6 +561,7 @@ class PrezSDKManager : MonoBehaviour
                         isDone = true;
                     }
                 });
+
                 break;
         }
 
@@ -586,6 +573,7 @@ class PrezSDKManager : MonoBehaviour
         {
             if (!show)
             {
+                Debug.Log("scaling out " + _prezAsset.name);
                 LeanTween.cancel(_prezAsset);
             }
             _prezAsset.SetActive(show);
@@ -655,6 +643,7 @@ class PrezSDKManager : MonoBehaviour
     GameObject go = null;
     private GameObject _go;
     private bool isAnimating = false;
+    private bool isSlideStop = false;
 
     IEnumerator LoadSlide(int slideNo)
     {
