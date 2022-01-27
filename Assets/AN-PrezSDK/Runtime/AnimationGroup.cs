@@ -79,7 +79,7 @@ public class AnimationGroup
 
     public void Play()
     {
-        Debug.Log("AnimationGroup Play");
+        //Debug.Log("AnimationGroup Play");
         if (animations.Count == 0)
         {
             //Debug.Log("animations are 0");

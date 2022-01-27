@@ -30,16 +30,19 @@ public class ANPAnimation
 
     public void Play(bool gotoInitial, bool skipToEnd = false, bool stopAudio = true)
     {
-        Debug.Log("assetfilename " + asset.FileName());
+        //Debug.Log("assetfilename " + asset.FileName());
 
         if (asset.type == ANPAssetType.TEXT)
         {
             //Debug.Log("asset : " + asset.text.value + " prezAsset : " + prezAsset.name);
             if (PrezSDKManager.prezAssets.TryGetValue(asset.text.value, out GameObject go))
             {
-                if (asset.text.value.Equals(go.name))
+                if (go != null)
                 {
-                    assetGO = go;
+                    if (asset.text.value.Equals(go.name))
+                    {
+                        assetGO = go;
+                    }
                 }
             }
         }
@@ -148,7 +151,7 @@ public class ANPAnimation
     //returns whether animation happened or it got completed
     private void DoRegAnim(GameObject pAssetGO, bool skipToEnd, float _delay, float _animationDuration)
     {
-        Debug.Log("DoRegAnim");
+        //Debug.Log("DoRegAnim");
         ARPAsset modelData = asset;
         Rotate rotate = pAssetGO.GetComponent<Rotate>();
         PresentationManager.initialPos = PrezAssetHelper.GetVector(modelData.itemTransform.position);

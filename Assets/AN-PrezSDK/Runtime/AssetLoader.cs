@@ -49,7 +49,7 @@ public static class AssetLoader
                 //yield return null;
 
                 onLoaded(_text);
-                Debug.Log("objectloaded : " + _text.name + " type : TEXT");
+                //Debug.Log("objectloaded : " + _text.name + " type : TEXT");
                 break;
 
             case ANPAssetType.IMAGE:
@@ -61,7 +61,7 @@ public static class AssetLoader
                 // Load image in to the child of the loaded asset (that's the one which has 'MeshRenderer')
                 CoroutineRunner.Instance.StartCoroutine(LoadImage(_image.transform.GetChild(0).gameObject, assetPath));
                 onLoaded(_image);
-                Debug.Log("objectloaded : " + _image.name + " type : IMAGE");
+                //Debug.Log("objectloaded : " + _image.name + " type : IMAGE");
                 break;
 
             case ANPAssetType.VIDEO:
@@ -110,7 +110,7 @@ public static class AssetLoader
                 PrezSDKManager.loadComplete = true;
 
                 onLoaded(videoParent);
-                Debug.Log("objectloaded : " + videoParent.name + " type : VIDEO");
+                //Debug.Log("objectloaded : " + videoParent.name + " type : VIDEO");
                 break;
 
             case ANPAssetType.OBJECT:
@@ -182,7 +182,7 @@ public static class AssetLoader
                             UnityEngine.Object.Destroy(assetGo.transform.Find("Root"));
                         }*/
                         onLoaded(_object);
-                        Debug.Log("objectloaded : " + _object.name + " type : GLB");
+                        //Debug.Log("objectloaded : " + _object.name + " type : GLB");
 
                         if (exception != null)
                         {
@@ -212,7 +212,7 @@ public static class AssetLoader
                             bundle.name = asset.FileName();
                             bundle.transform.SetParent(_object.transform, false);
                             onLoaded(_object);
-                            Debug.Log("objectloaded : " + bundle.name + " type : ASSETBUNDLE");
+                            //Debug.Log("objectloaded : " + bundle.name + " type : ASSETBUNDLE");
                         }
                         else
                         {
@@ -246,7 +246,7 @@ public static class AssetLoader
                 }
 
                 onLoaded(_audio);
-                Debug.Log("objectloaded : " + _audio.name + " type : AUDIO");
+                //Debug.Log("objectloaded : " + _audio.name + " type : AUDIO");
 
                 break;
         }
@@ -264,8 +264,6 @@ public static class AssetLoader
         GLBBounds.size = GLBBounds.size / 2;
 
         BoxCollider GLBBoxCollider = glbObject.AddComponent<BoxCollider>();
-
-        Debug.Log("glbbounds" + GLBBounds.size);
 
         float largest = Mathf.Max(GLBBounds.size.x, GLBBounds.size.y, GLBBounds.size.z) / defaultSizeFactor;
         if (largest != 0)
@@ -346,11 +344,14 @@ public static class AssetLoader
             else
             {
                 var texture = DownloadHandlerTexture.GetContent(webReq);
-                _gameObject.GetComponent<Renderer>().material.mainTexture = texture;
-                Vector3 _ImageLocalScale = _gameObject.transform.localScale;
-                _ImageLocalScale.x = ((float)texture.width / (float)texture.width) * (imageFator);
-                _ImageLocalScale.y = ((float)texture.height / (float)texture.width) * (imageFator);
-                _gameObject.transform.localScale = _ImageLocalScale;
+                if (_gameObject != null)
+                {
+                    _gameObject.GetComponent<Renderer>().material.mainTexture = texture;
+                    Vector3 _ImageLocalScale = _gameObject.transform.localScale;
+                    _ImageLocalScale.x = ((float)texture.width / (float)texture.width) * (imageFator);
+                    _ImageLocalScale.y = ((float)texture.height / (float)texture.width) * (imageFator);
+                    _gameObject.transform.localScale = _ImageLocalScale;
+                }
             }
         }
     }

@@ -60,9 +60,8 @@ public class PresentationManager : MonoBehaviour
         _slide.LoadSlide();
 
         assetTransitions = _slide.Slide.assetTransitions;
-        Debug.Log("slide name : " + _slide.Slide.name);
-        Debug.Log("assetTransitions.Count " + assetTransitions.Count);
-        //StartCoroutine(InternalLoadSlide(slide));
+        //Debug.Log("slide name : " + _slide.Slide.name);
+        //Debug.Log("assetTransitions.Count " + assetTransitions.Count);
         return _slide;
     }
 
@@ -131,7 +130,7 @@ public class PresentationManager : MonoBehaviour
 
         public void LoadSlide()
         {
-            Debug.Log("Slidedata slidename " + Slide.name);
+            //Debug.Log("Slidedata slidename " + Slide.name);
             foreach (var asset in _assets)
             {
                 asset.Value.LoadAsset();
@@ -194,7 +193,7 @@ public class PresentationManager : MonoBehaviour
 
             public IEnumerator LoadAssetInternal()
             {
-                Debug.Log("Slidedata assetname " + _asset.FileName());
+                //Debug.Log("Slidedata assetname " + _asset.FileName());
 
                 if (_asset.type != ANPAssetType.TEXT && !IsFileDownloaded)
                 {

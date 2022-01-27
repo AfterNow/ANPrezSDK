@@ -42,7 +42,6 @@ class PrezSDKManager : MonoBehaviour
 
     float delay = 0;
     public bool isPlaying;
-
     public AnimationTimeline animationTimeline;
     int SlidePoint = -1;
     public bool isDone = false;
@@ -205,11 +204,16 @@ class PrezSDKManager : MonoBehaviour
 
     void Next_Step()
     {
-        if (isSlideStop)
+        if (isSlideEnded)
         {
-            previousSlide.CleanUp();
-            isSlideStop = false;
-           // Next_Slide();
+            Debug.Log("nextstep isSlideEnded");
+            //previousSlide.CleanUp();
+
+            foreach (Transform child in PresentationManager._instance.transform)
+            {
+                Destroy(child.gameObject);
+            }
+            isSlideEnded = false;
             return;
         }
 
@@ -226,7 +230,7 @@ class PrezSDKManager : MonoBehaviour
     }
 
     void NextStepLogic()
-    {        
+    {
         if (isPlaying)
         {
             if (!animationTimeline.FirstElementAutomatic && LastPlayedPoint == -1)
@@ -276,10 +280,11 @@ class PrezSDKManager : MonoBehaviour
             bool show = targetSlideIdx == -1;
         }
 
-        isPlaying = true;
 
-        if (isPlaying)
-        {
+        //isPlaying = true;
+
+        //if (isPlaying)
+        //{
             if (targetSlideIdx == -1)
             {
                 if (nextSlide == 1)
@@ -364,19 +369,19 @@ class PrezSDKManager : MonoBehaviour
                 // Last slide, let it do the transition..
                 //if (currentSlide != null)
                 //{
-                    /*shouldTrySync = false;
-                    StopSlide(false, () =>
+                /*shouldTrySync = false;
+                StopSlide(false, () =>
+                {
+                    isPlaying = false;
+                    AppManager.Instance.slideNo.Value = 0;
+                    eventUpdatePresValues();
+                    eventUpdateMenuLayout(AppManager.Instance.appMode);
+                    if (AppManager.Instance.isPresenter && AppNetworkController.Instance.channel.Value != null)
                     {
-                        isPlaying = false;
-                        AppManager.Instance.slideNo.Value = 0;
-                        eventUpdatePresValues();
-                        eventUpdateMenuLayout(AppManager.Instance.appMode);
-                        if (AppManager.Instance.isPresenter && AppNetworkController.Instance.channel.Value != null)
-                        {
-                            AppNetworkController.Instance.SelectPresentationMode(AppManager.Instance.presentationState.Value);
-                        }
-                        CanReset = true;
-                    });*/
+                        AppNetworkController.Instance.SelectPresentationMode(AppManager.Instance.presentationState.Value);
+                    }
+                    CanReset = true;
+                });*/
                 //}
                 /*else if (shouldTrySync)
                 {
@@ -402,7 +407,7 @@ class PrezSDKManager : MonoBehaviour
                         slideIdx.Value = targetSlideIdx;
                 });*/
             }
-        }
+        //}
         slideTransition = null;
         yield return null;
         //ClearActiveSlide(false);
@@ -452,8 +457,6 @@ class PrezSDKManager : MonoBehaviour
 
     public void StopSlide(bool now = false, Action action = null)
     {
-        isSlideStop = true;
-
         // If stop instantly, don't do animation and just hide children
         if (now || isAnimating)
         {
@@ -477,6 +480,7 @@ class PrezSDKManager : MonoBehaviour
         switch (slideTransition.animation)
         {
             case SlideAnimationType.Disappear:
+                isSlideEnded = true;
                 // Wait until after duration to disappear
                 isAnimating = true;
                 LeanTween.delayedCall(gameObject, slideTransition.animationDuration, () =>
@@ -496,6 +500,7 @@ class PrezSDKManager : MonoBehaviour
                 break;
 
             case SlideAnimationType.ScaleOut:
+                isSlideEnded = true;
                 isAnimating = true;
                 foreach (var audioSource in audioSources)
                 {
@@ -643,7 +648,7 @@ class PrezSDKManager : MonoBehaviour
     GameObject go = null;
     private GameObject _go;
     private bool isAnimating = false;
-    private bool isSlideStop = false;
+    public bool isSlideEnded = false;
 
     IEnumerator LoadSlide(int slideNo)
     {
@@ -692,7 +697,7 @@ class PrezSDKManager : MonoBehaviour
             }
             _asset = PresentationManager._slide.Slide.assets.Find(x => x.id == transition.assetId);
             _transition = transition;
-            Debug.Log("assetname : " + _asset.FileName() + " :: " + " animation type : " + _transition.animation + " animation startType " + _transition.startType);
+            //Debug.Log("assetname : " + _asset.FileName() + " :: " + " animation type : " + _transition.animation + " animation startType " + _transition.startType);
 
             currentGroup.AddAnimation(_transition, _asset);
 
@@ -720,9 +725,8 @@ class PrezSDKManager : MonoBehaviour
 
     public void Play(int groupNum = -1)
     {
-        Debug.Log("PrezSDKManager Play");
-        //Debug.LogError(groupNum);
-
+        //Debug.Log("PrezSDKManager Play");
+        
         SlidePoint = groupNum;
         isDone = false;
 
@@ -736,8 +740,7 @@ class PrezSDKManager : MonoBehaviour
         if (animationTimeline != null)
         {
             isPlaying = true;
-            /*LastPlayedPoint = */
-            Debug.Log("Playing new slide");
+            //Debug.Log("Playing new slide");
             animationTimeline.Play(groupNum);
         }
         else
