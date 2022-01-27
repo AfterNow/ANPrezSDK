@@ -76,6 +76,8 @@ class PrezSDKManager : MonoBehaviour
     public static bool loadComplete = false;
     private List<AudioSource> audioSources = new List<AudioSource>();
 
+    public static event Action OnPresentationEnded;
+
 
     #region enums
 
@@ -175,15 +177,27 @@ class PrezSDKManager : MonoBehaviour
         });
     }
 
+    int targetSlide = 0;
+
     void Next_Slide()
     {
         previousSlide.DestroyLoadedObjects();
         ClearObjects();
 
         //slideCount = PrezStates.Presentation.locations[0].slides.Count;
-        Debug.Log("CurrentSlide " + PrezStates.CurrentSlide);
-        int targetSlide = slideCount == PrezStates.CurrentSlide + 1 ? 0 : PrezStates.CurrentSlide + 1;
-        Debug.Log("targetSlide " + targetSlide);
+        //Debug.Log("CurrentSlide " + PrezStates.CurrentSlide);
+        if (slideCount == PrezStates.CurrentSlide + 1)
+        {
+            PrezStates.CurrentSlide = 0;
+            targetSlide = 0;
+            slideIdx = -1;
+            OnPresentationEnded.Invoke();
+        }
+        else
+        {
+            targetSlide = PrezStates.CurrentSlide + 1;
+        }
+        //Debug.Log("targetSlide " + targetSlide);
         GoToSlide(targetSlide);
     }
 
@@ -195,9 +209,9 @@ class PrezSDKManager : MonoBehaviour
             ClearObjects();
 
             //slideCount = PrezStates.Presentation.locations[0].slides.Count;
-            Debug.Log("CurrentSlide " + PrezStates.CurrentSlide);
+            //Debug.Log("CurrentSlide " + PrezStates.CurrentSlide);
             int targetSlide = PrezStates.CurrentSlide == 0 ? slideCount - 1 : PrezStates.CurrentSlide - 1;
-            Debug.Log("targetSlide " + targetSlide);
+            //Debug.Log("targetSlide " + targetSlide);
             GoToSlide(targetSlide);
         }
     }
@@ -206,9 +220,7 @@ class PrezSDKManager : MonoBehaviour
     {
         if (isSlideEnded)
         {
-            Debug.Log("nextstep isSlideEnded");
-            //previousSlide.CleanUp();
-
+            //Debug.Log("nextstep isSlideEnded");
             foreach (Transform child in PresentationManager._instance.transform)
             {
                 Destroy(child.gameObject);
@@ -219,12 +231,12 @@ class PrezSDKManager : MonoBehaviour
 
         if (isPlaying)
         {
-            Debug.Log("nextstep isPlaying");
+            //Debug.Log("nextstep isPlaying");
             NextStepLogic();
         }
         else if (isDone)
         {
-            Debug.Log("nextstep isDone");
+            //Debug.Log("nextstep isDone");
             TransitionSlide(1, -1);
         }
     }
@@ -262,7 +274,7 @@ class PrezSDKManager : MonoBehaviour
     {
         if (slideTransition != null)
         {
-            Debug.Log("stopping coroutine");
+            //Debug.Log("stopping coroutine");
             StopCoroutine(slideTransition);
         }
         slideTransition = StartCoroutine(StartTransitionSlide(nextSlide, targetSlideIdx, shouldTrySync, clickable, OnFinish));
@@ -285,128 +297,126 @@ class PrezSDKManager : MonoBehaviour
 
         //if (isPlaying)
         //{
-            if (targetSlideIdx == -1)
+        if (targetSlideIdx == -1)
+        {
+            if (nextSlide == 1)
             {
-                if (nextSlide == 1)
+                //targetSlideIdx = slideIdx.Value + 1;
+                targetSlideIdx = slideIdx + 1;
+                if (targetSlideIdx == _manager._location.slides.Count)
                 {
-                    //targetSlideIdx = slideIdx.Value + 1;
-                    targetSlideIdx = slideIdx + 1;
-                    if (targetSlideIdx == _manager._location.slides.Count)
-                    {
-                        _slideTracker.Clear();
-                    }
-                    else
-                    {
-                        _slideTracker.AddLast(targetSlideIdx);
-                    }
-                }
-                else if (nextSlide == -1)
-                {
-                    if (_slideTracker.Count > 1)
-                    {
-                        targetSlideIdx = _slideTracker.Last.Previous.Value;
-                        _slideTracker.RemoveLast();
-                    }
-                    else
-                    {
-                        targetSlideIdx = -1;
-                    }
+                    _slideTracker.Clear();
                 }
                 else
                 {
-                    //targetSlideIdx = slideIdx.Value;
-                    targetSlideIdx = slideIdx;
+                    _slideTracker.AddLast(targetSlideIdx);
                 }
             }
-            else if (clickable)
+            else if (nextSlide == -1)
             {
-                _slideTracker.AddLast(targetSlideIdx);
-            }
-
-            if (nextSlide == 0)
-            {
-                //ClearActiveSlide(true);
-                yield return null;
-            }
-
-            //Debug.Log("targetSlideIdx : " + targetSlideIdx + " _manager._location.slides.Count : " + _manager._location.slides.Count);
-            Debug.Log("targetSlideIdx : " + targetSlideIdx + " slides.Count : " + _manager._location.slides.Count);
-            if (targetSlideIdx < _manager._location.slides.Count && targetSlideIdx >= 0)
-            {
-                Coroutine slideLoader = GotoSlidePlayMode(targetSlideIdx);
-
-                //if (_slide.Slide.DownloadProgress == 1f) //if current slide is loaded, animate it out
-                //{
-                bool hasSlideStopped = false;
-
-                LeanTween.value(presentationAnchor, 0, 1, /*_manager._location.slides[targetSlideIdx].transition.delay*/0).setOnComplete(() =>
+                if (_slideTracker.Count > 1)
                 {
-                    StopSlide(false, () =>
-                    {
-                        if (targetSlideIdx != _manager._location.slides.Count)
-                        {
-                            //   slideIdx.Value = targetSlideIdx;
-                            slideIdx = targetSlideIdx;
-                        }
-                        hasSlideStopped = true;
-                    });
-                });
-                while (!hasSlideStopped) yield return null;
-                //}
-                yield return slideLoader;
-                //yield return StartCoroutine(UpdateVRBackground(newSlideController.Slide.BackgroundTexture, newSlideController.Slide.backgroundOrientation));
-
-                //only after new slide has loaded, and old slide has finished
-                //Play();
-                OnSlideTransition(targetSlideIdx);
-                CanReset = true;
-            }
-            else if (targetSlideIdx == _manager._location.slides.Count)
-            {
-                Debug.Log("index : 2");
-                if (targetSlideIdx != _manager._location.slides.Count)
-                    slideIdx = targetSlideIdx;
-                // Last slide, let it do the transition..
-                //if (currentSlide != null)
-                //{
-                /*shouldTrySync = false;
-                StopSlide(false, () =>
+                    targetSlideIdx = _slideTracker.Last.Previous.Value;
+                    _slideTracker.RemoveLast();
+                }
+                else
                 {
-                    isPlaying = false;
-                    AppManager.Instance.slideNo.Value = 0;
-                    eventUpdatePresValues();
-                    eventUpdateMenuLayout(AppManager.Instance.appMode);
-                    if (AppManager.Instance.isPresenter && AppNetworkController.Instance.channel.Value != null)
-                    {
-                        AppNetworkController.Instance.SelectPresentationMode(AppManager.Instance.presentationState.Value);
-                    }
-                    CanReset = true;
-                });*/
-                //}
-                /*else if (shouldTrySync)
-                {
-                    SyncSlide(targetSlideIdx, progressionType);
-                }*/
+                    targetSlideIdx = -1;
+                }
             }
             else
             {
-                Debug.Log("index : 3");
-                /*currentSlide.StopSlide(false, () =>
-                {
-                    isPlaying = false;
-                    ResetLocation();
-                    AppManager.Instance.slideNo.Value = 0;
-                    eventUpdatePresValues();
-                    eventUpdateMenuLayout(AppManager.Instance.appMode);
-                    if (AppManager.Instance.isPresenter && AppNetworkController.Instance.channel.Value != null)
-                    {
-                        AppNetworkController.Instance.SelectPresentationMode(AppManager.Instance.presentationState.Value);
-                    }
-                    CanReset = true;
-                    if (targetSlideIdx != Location.slides.Count)
-                        slideIdx.Value = targetSlideIdx;
-                });*/
+                //targetSlideIdx = slideIdx.Value;
+                targetSlideIdx = slideIdx;
             }
+        }
+        else if (clickable)
+        {
+            _slideTracker.AddLast(targetSlideIdx);
+        }
+
+        if (nextSlide == 0)
+        {
+            //ClearActiveSlide(true);
+            yield return null;
+        }
+
+        //Debug.Log("targetSlideIdx : " + targetSlideIdx + " _manager._location.slides.Count : " + _manager._location.slides.Count);
+        //Debug.Log("targetSlideIdx : " + targetSlideIdx + " slides.Count : " + _manager._location.slides.Count);
+        if (targetSlideIdx < _manager._location.slides.Count && targetSlideIdx >= 0)
+        {
+            Coroutine slideLoader = GotoSlidePlayMode(targetSlideIdx);
+
+            //if (_slide.Slide.DownloadProgress == 1f) //if current slide is loaded, animate it out
+            //{
+            bool hasSlideStopped = false;
+
+            LeanTween.value(presentationAnchor, 0, 1, /*_manager._location.slides[targetSlideIdx].transition.delay*/0).setOnComplete(() =>
+            {
+                StopSlide(false, () =>
+                {
+                    if (targetSlideIdx != _manager._location.slides.Count)
+                    {
+                            //   slideIdx.Value = targetSlideIdx;
+                            slideIdx = targetSlideIdx;
+                    }
+                    hasSlideStopped = true;
+                });
+            });
+            while (!hasSlideStopped) yield return null;
+            //}
+            yield return slideLoader;
+            //yield return StartCoroutine(UpdateVRBackground(newSlideController.Slide.BackgroundTexture, newSlideController.Slide.backgroundOrientation));
+
+            //only after new slide has loaded, and old slide has finished
+            //Play();
+            OnSlideTransition(targetSlideIdx);
+            CanReset = true;
+        }
+        else if (targetSlideIdx == _manager._location.slides.Count)
+        {
+            /*if (targetSlideIdx != _manager._location.slides.Count)
+                slideIdx = targetSlideIdx;*/
+            // Last slide, let it do the transition..
+            //if (currentSlide != null)
+            //{
+            /*shouldTrySync = false;
+            StopSlide(false, () =>
+            {
+                isPlaying = false;
+                AppManager.Instance.slideNo.Value = 0;
+                eventUpdatePresValues();
+                eventUpdateMenuLayout(AppManager.Instance.appMode);
+                if (AppManager.Instance.isPresenter && AppNetworkController.Instance.channel.Value != null)
+                {
+                    AppNetworkController.Instance.SelectPresentationMode(AppManager.Instance.presentationState.Value);
+                }
+                CanReset = true;
+            });*/
+            //}
+            /*else if (shouldTrySync)
+            {
+                SyncSlide(targetSlideIdx, progressionType);
+            }*/
+        }
+        else
+        {
+            /*currentSlide.StopSlide(false, () =>
+            {
+                isPlaying = false;
+                ResetLocation();
+                AppManager.Instance.slideNo.Value = 0;
+                eventUpdatePresValues();
+                eventUpdateMenuLayout(AppManager.Instance.appMode);
+                if (AppManager.Instance.isPresenter && AppNetworkController.Instance.channel.Value != null)
+                {
+                    AppNetworkController.Instance.SelectPresentationMode(AppManager.Instance.presentationState.Value);
+                }
+                CanReset = true;
+                if (targetSlideIdx != Location.slides.Count)
+                    slideIdx.Value = targetSlideIdx;
+            });*/
+        }
         //}
         slideTransition = null;
         yield return null;
@@ -430,11 +440,6 @@ class PrezSDKManager : MonoBehaviour
         {
             PresentationManager.loadedObjects.Clear();
         }
-
-        /*if (_manager._location.slides.Count > 0)
-        {
-            _manager._location.slides.Clear();
-        }*/
 
         if (_assets.Count > 0)
         {
@@ -480,7 +485,7 @@ class PrezSDKManager : MonoBehaviour
         switch (slideTransition.animation)
         {
             case SlideAnimationType.Disappear:
-                isSlideEnded = true;
+                isSlideEnded = false;
                 // Wait until after duration to disappear
                 isAnimating = true;
                 LeanTween.delayedCall(gameObject, slideTransition.animationDuration, () =>
@@ -578,7 +583,7 @@ class PrezSDKManager : MonoBehaviour
         {
             if (!show)
             {
-                Debug.Log("scaling out " + _prezAsset.name);
+                //Debug.Log("scaling out " + _prezAsset.name);
                 LeanTween.cancel(_prezAsset);
             }
             _prezAsset.SetActive(show);
@@ -600,6 +605,7 @@ class PrezSDKManager : MonoBehaviour
 
     public void OnStartPresentation(string presentationID)
     {
+        slideIdx = -1;
         hasLoggedIn = 0;
 
         //StatusText.text = null;
@@ -652,6 +658,7 @@ class PrezSDKManager : MonoBehaviour
 
     IEnumerator LoadSlide(int slideNo)
     {
+        isSlideEnded = false;
         PrezStates.CurrentSlide = slideNo;
         previousSlide = _manager.LoadSlide(slideNo);
         UpdateSlideCount();
@@ -726,7 +733,7 @@ class PrezSDKManager : MonoBehaviour
     public void Play(int groupNum = -1)
     {
         //Debug.Log("PrezSDKManager Play");
-        
+
         SlidePoint = groupNum;
         isDone = false;
 
@@ -782,4 +789,5 @@ class PrezSDKManager : MonoBehaviour
         AssetLoadingStatusText.text = string.Empty;
         AssetLoadingStatusText.color = Color.white;
     }
+
 }

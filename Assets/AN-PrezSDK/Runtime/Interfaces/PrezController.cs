@@ -9,7 +9,8 @@ using UnityEngine;
         event Action OnNextSlide;
         event Action OnPrevSlide;
         event Action OnQuit;
-        //Action<bool> OnAuthorized { get; }
-        event Func<bool> OnAuthorized;
+        event Action OnPresentationEnded;
+    //Action<bool> OnAuthorized { get; }
+    event Func<bool> OnAuthorized;
         event Func<int> OnSessionJoin;
     }
