@@ -83,8 +83,6 @@ public class PresentationManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        Resources.UnloadUnusedAssets();
-        GC.Collect();
         PrezAPIHelper.StopDownload();
 
         //delete files
@@ -142,8 +140,6 @@ public class PresentationManager : MonoBehaviour
             DestroyLoadedObjects();
             FindObjectOfType<PrezSDKManager>().ClearObjects();
             onObjectsDestroyed();
-            GC.Collect();
-            Resources.UnloadUnusedAssets();
             AssetBundleManager.Cleanup();
 
             foreach (Transform child in _instance.transform)
@@ -151,6 +147,8 @@ public class PresentationManager : MonoBehaviour
                 Destroy(child.gameObject);
             }
             loadedCount = 0;
+
+            GLBLoader.DisposeGltf();
         }
 
         public void DestroyLoadedObjects()

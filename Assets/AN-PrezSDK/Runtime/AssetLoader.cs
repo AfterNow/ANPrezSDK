@@ -135,7 +135,8 @@ public static class AssetLoader
                     }
 
                     IsGLBLoading = true;
-                    var glbLoader = GLBLoader.LoadGLTF(File.ReadAllBytes(assetPath), assetPath, _object.transform);
+
+                    var glbLoader = GLBLoader.LoadGLTFFromURL(new Uri(assetPath).ToString(), _object.transform);
                     yield return new WaitForTask(glbLoader);
 
                     glb = glbLoader.Result;
