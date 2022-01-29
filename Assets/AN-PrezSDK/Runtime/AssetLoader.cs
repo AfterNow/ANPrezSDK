@@ -17,10 +17,12 @@ public static class AssetLoader
     private static float defaultSizeFactor = 1;
 
     static AudioSource audioChannelVideo;
-    private static AnimationClip[] animationClips;
     //static GameObject objectLoaded;
     private static string assetname;
     private static PlayableDirector director;
+
+    public static readonly List<Texture2D> textures = new List<Texture2D>();
+    public static readonly List<AudioClip> audioClips = new List<AudioClip>();
 
     public static IEnumerator OnLoadAsset(ARPAsset asset, Action<GameObject> onLoaded)
     {
@@ -239,6 +241,8 @@ public static class AssetLoader
                         audioSource.volume = asset.volumn;
                         audioSource.clip = clip;
                         audioSource.Play();
+
+                        audioClips.Add(clip);
                     }
                     else
                     {
@@ -353,6 +357,8 @@ public static class AssetLoader
                     _ImageLocalScale.y = ((float)texture.height / (float)texture.width) * (imageFator);
                     _gameObject.transform.localScale = _ImageLocalScale;
                 }
+
+                textures.Add(texture);
             }
         }
     }

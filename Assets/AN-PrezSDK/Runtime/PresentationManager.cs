@@ -148,7 +148,15 @@ public class PresentationManager : MonoBehaviour
             }
             loadedCount = 0;
 
+            //Dispose glb models
             GLBLoader.DisposeGltf();
+
+            //Dispose Textures
+            DisposeTextures();
+
+            //Dispose Audioclips
+            DisposeAudioClips();
+
         }
 
         public void DestroyLoadedObjects()
@@ -272,5 +280,20 @@ public class PresentationManager : MonoBehaviour
 
     }
 
+    static void DisposeTextures()
+    {
+        foreach (var texture in AssetLoader.textures)
+        {
+            DestroyImmediate(texture, true);
+        }
+    }
+
+    static void DisposeAudioClips()
+    {
+        foreach (var audioClip in AssetLoader.audioClips)
+        {
+            DestroyImmediate(audioClip, true);
+        }
+    }
 }
 
