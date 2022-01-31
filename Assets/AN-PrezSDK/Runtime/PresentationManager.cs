@@ -148,14 +148,7 @@ public class PresentationManager : MonoBehaviour
             }
             loadedCount = 0;
 
-            //Dispose glb models
             GLBLoader.DisposeGltf();
-
-            //Dispose textures
-            AssetLoader.DisposeTextures();
-
-            //Dispose audios
-            AssetLoader.DisposeAudioClips();
         }
 
         public void DestroyLoadedObjects()

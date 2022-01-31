@@ -22,9 +22,6 @@ public static class AssetLoader
     private static string assetname;
     private static PlayableDirector director;
 
-    public static List<Texture2D> textures = new List<Texture2D>();
-    public static List<AudioClip> audioClips = new List<AudioClip>();
-
     public static IEnumerator OnLoadAsset(ARPAsset asset, Action<GameObject> onLoaded)
     {
 
@@ -242,8 +239,6 @@ public static class AssetLoader
                         audioSource.volume = asset.volumn;
                         audioSource.clip = clip;
                         audioSource.Play();
-
-                        audioClips.Add(clip);
                     }
                     else
                     {
@@ -358,28 +353,8 @@ public static class AssetLoader
                     _ImageLocalScale.y = ((float)texture.height / (float)texture.width) * (imageFator);
                     _gameObject.transform.localScale = _ImageLocalScale;
                 }
-
-                textures.Add(texture);
             }
         }
-    }
-
-    public static void DisposeTextures()
-    {
-        foreach (var _texture in textures)
-        {
-            UnityEngine.Object.DestroyImmediate(_texture, true);
-        }
-        textures.Clear();
-    }
-
-    public static void DisposeAudioClips()
-    {
-        foreach (var _audioClip in audioClips)
-        {
-            UnityEngine.Object.DestroyImmediate(_audioClip, true);
-        }
-        audioClips.Clear();
     }
 
 }
