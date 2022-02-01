@@ -1,4 +1,6 @@
-﻿    public class SDKConstants
+﻿namespace AfterNow.PrezSDK.Internal.Helpers
+{
+    public class SDKConstants
     {
         internal const string BASE_URL = "https://api.anprez-staging.afternow.io/api";
         internal const string GuestEmail = "spatialape_user@afternow.io";
@@ -24,3 +26,4 @@
 
         #endregion
     }
+}

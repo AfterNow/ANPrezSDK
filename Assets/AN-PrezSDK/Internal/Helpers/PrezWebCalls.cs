@@ -1,6 +1,10 @@
-﻿using System;
+﻿using AfterNow.PrezSDK.Internal.Views;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
+namespace AfterNow.PrezSDK.Internal.Helpers
+{
     public static class PrezWebCalls
     {
         /// <summary>
@@ -18,10 +22,10 @@ using System.Threading.Tasks;
                     password = SDKConstants.GuestPassword
                 };
                 string responseJson = await PrezAPIHelper.Post(SDKConstants.LOGIN_API, PrezSerializer.SerializeObject(prezLogin));
-                if(!string.IsNullOrEmpty(responseJson))
+                if (!string.IsNullOrEmpty(responseJson))
                 {
                     LoginResponse response = PrezSerializer.DeserializeObject<LoginResponse>(responseJson);
-                    if(response != null)
+                    if (response != null)
                     {
                         InternalStates.AccessToken = response.id;
                         InternalStates.UserID = response.userId;
@@ -29,7 +33,7 @@ using System.Threading.Tasks;
                     }
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 PrezDebugger.Exception(e);
                 OnAuthenticate(false);
@@ -51,7 +55,7 @@ using System.Threading.Tasks;
                 string currentFilterString = Uri.EscapeUriString(PrezSerializer.Serialize(filter));
                 string url = SDKConstants.BASE_URL + SDKConstants.MATCH_FLITER + currentFilterString + SDKConstants.ACC_TOKEN + InternalStates.AccessToken;
                 string responseJson = await PrezAPIHelper.Get(url);
-                if(!string.IsNullOrEmpty(responseJson))
+                if (!string.IsNullOrEmpty(responseJson))
                 {
                     MatchIdResponse response = PrezSerializer.DeserializeObject<MatchIdResponse>(responseJson);
                     int presentationID = int.Parse(response.presentationId);
@@ -59,7 +63,7 @@ using System.Threading.Tasks;
                     var currentFilter = new PresentationFilter(presentationID, new string[] { "locations", "match" });
                     string prezJsonUrl = SDKConstants.BASE_URL + SDKConstants.PRESENTER + presenterID + SDKConstants.PREZ_FILTER + Uri.EscapeUriString(PrezSerializer.Serialize(currentFilter)) + SDKConstants.ACC_TOKEN + InternalStates.AccessToken;
                     var prezJson = await PrezAPIHelper.Get(prezJsonUrl);
-                    if(!string.IsNullOrEmpty(prezJson))
+                    if (!string.IsNullOrEmpty(prezJson))
                     {
                         prezJson = "{\"presentations\":" + prezJson + "}";
                         PresentationList prez = PrezSerializer.DeserializeObject<PresentationList>(prezJson);
@@ -67,7 +71,7 @@ using System.Threading.Tasks;
                     }
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 PrezDebugger.Exception(e);
                 OnPresentation(null);
@@ -80,3 +84,4 @@ using System.Threading.Tasks;
             return PrezAPIHelper.Download(asset.Url(replacement), downloadPath);
         }
     }
+}

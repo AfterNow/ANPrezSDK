@@ -1,5 +1,8 @@
-﻿    public static class PrezStates
-    {        
+﻿
+namespace AfterNow.PrezSDK.Internal.Views
+{
+    public static class PrezStates
+    {
         public static Presentation Presentation;
 
         /// <summary>
@@ -17,3 +20,4 @@
             PresenterID = 0;
         }
     }
+}

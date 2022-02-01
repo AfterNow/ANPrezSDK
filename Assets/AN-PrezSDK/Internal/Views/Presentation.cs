@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+namespace AfterNow.PrezSDK.Internal.Views
+{
     [Serializable]
     public class Presentation
     {
@@ -46,3 +48,4 @@ using System.Collections.Generic;
     {
         public Presentation[] presentation;
     }
+}

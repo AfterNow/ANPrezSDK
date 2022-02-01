@@ -1,4 +1,7 @@
-﻿    public static class InternalStates
+﻿
+namespace AfterNow.PrezSDK.Internal.Helpers
+{
+    public static class InternalStates
     {
         internal static int UserID;
         internal static string AccessToken;
@@ -19,3 +22,4 @@
             AssetPath = path;
         }
     }
+}

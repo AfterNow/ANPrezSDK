@@ -1,5 +1,7 @@
 ﻿using System;
 
+namespace AfterNow.PrezSDK.Internal.Helpers
+{
     public static class PrezSerializer
     {
         internal static Func<object, string> Serialize;
@@ -21,3 +23,4 @@
             return Serialize(value);
         }
     }
+}

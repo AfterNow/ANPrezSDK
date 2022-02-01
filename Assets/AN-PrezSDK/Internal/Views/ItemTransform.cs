@@ -1,5 +1,7 @@
 ﻿using System;
 
+namespace AfterNow.PrezSDK.Internal.Views
+{
     [Serializable]
     public class ItemTransform
     {
@@ -45,7 +47,7 @@
         public float z;
         public float w;
 
-        public PrezQuaternion(float x,float y,float z, float w)
+        public PrezQuaternion(float x, float y, float z, float w)
         {
             this.x = x;
             this.y = y;
@@ -53,3 +55,4 @@
             this.w = w;
         }
     }
+}

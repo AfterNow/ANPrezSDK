@@ -1,5 +1,7 @@
 ﻿using System;
 
+namespace AfterNow.PrezSDK.Internal.Helpers
+{
     public static class PrezDebugger
     {
         internal static event Action<object> OnLog;
@@ -35,4 +37,4 @@
             OnException?.Invoke(exception);
         }
     }
-
+}

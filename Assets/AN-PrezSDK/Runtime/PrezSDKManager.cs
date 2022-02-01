@@ -7,6 +7,8 @@ using TMPro;
 using System;
 using Unity.Linq;
 using System.Linq;
+using AfterNow.PrezSDK.Internal.Helpers;
+using AfterNow.PrezSDK.Internal.Views;
 
 /// <summary>
 /// Sample class on how to Authenticate to server, join a presentation and Navigate through the presentation

@@ -3,8 +3,9 @@
 #if USE_NEWTONSOFT
 using Newtonsoft.Json;
 #endif
+using AfterNow.PrezSDK.Internal.Helpers;
 using UnityEngine;
-    class InitializeSDK
+class InitializeSDK
     {
         public static string DownloadFolderPath { get; private set; }
         /// <summary>

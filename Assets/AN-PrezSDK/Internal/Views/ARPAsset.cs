@@ -1,7 +1,10 @@
-﻿using System;
+﻿using AfterNow.PrezSDK.Internal.Helpers;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
+namespace AfterNow.PrezSDK.Internal.Views
+{
     [Serializable]
     public class ARPAsset
     {
@@ -105,3 +108,4 @@ using System.IO;
     public enum ARPFont { Brandon, KievitslabOT, Lato, Montserrat, Roboto, SourceSansPro }
     public enum ARPFontStyle { Regular, RegularItalic, Bold, BoldItalic, Light, LightItalic, Black, BlackItalic }
     public enum ARPFontAlignment { LEFT, CENTER, RIGHT }
+}

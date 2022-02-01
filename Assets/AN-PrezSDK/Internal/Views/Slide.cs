@@ -1,6 +1,9 @@
-﻿using System;
+﻿using AfterNow.PrezSDK.Internal.Helpers;
+using System;
 using System.Collections.Generic;
 
+namespace AfterNow.PrezSDK.Internal.Views
+{
     [Serializable]
     public class Slide
     {
@@ -84,4 +87,4 @@ using System.Collections.Generic;
             Finished
         }
     }
-
+}

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+namespace AfterNow.PrezSDK.Internal.Views
+{
     [Serializable]
     public class PresentationFilter
     {
@@ -91,3 +93,4 @@ using System.Collections.Generic;
     {
         public List<Presentation> presentations;
     }
+}

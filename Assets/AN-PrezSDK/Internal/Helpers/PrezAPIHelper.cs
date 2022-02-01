@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+namespace AfterNow.PrezSDK.Internal.Helpers
+{
     public static class PrezAPIHelper
     {
         internal static List<WebClient> downloadHandler = new List<WebClient>();
@@ -24,13 +26,13 @@ using System.Threading.Tasks;
                     return await reader.ReadToEndAsync();
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 PrezDebugger.Exception(e);
                 return null;
             }
         }
-        
+
         internal static async Task Download(string url, string path)
         {
             var client = new WebClient();
@@ -51,14 +53,14 @@ using System.Threading.Tasks;
             try
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
-                _=client.DownloadFileTaskAsync(url, path);
+                _ = client.DownloadFileTaskAsync(url, path);
                 await semaphoreSlim.WaitAsync();
-                
+
                 //OnDownload(true);
             }
             catch (Exception e)
             {
-                PrezDebugger.Error($"Failed to download asset from url : {url}\n{e}" );
+                PrezDebugger.Error($"Failed to download asset from url : {url}\n{e}");
                 semaphoreSlim.Release();
                 //PrezDebugger.Exception(e);
                 //OnDownload(false);
@@ -89,7 +91,7 @@ using System.Threading.Tasks;
                     return await reader.ReadToEndAsync();
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 PrezDebugger.Exception(e);
                 return null;
@@ -106,4 +108,4 @@ using System.Threading.Tasks;
             downloadHandler.Clear();
         }
     }
-
+}
