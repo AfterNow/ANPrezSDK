@@ -59,10 +59,16 @@ public class PresentationManager : MonoBehaviour
             _slide = new LoadedSlide(_location.slides[index], transform);
             _slides[index] = _slide;
         }
+        else if (_slides.TryGetValue(index, out LoadedSlide loadedSlide))
+        {
+            _slide = loadedSlide;
+        }
+
         _slide.LoadSlide();
 
         assetTransitions = _slide.Slide.assetTransitions;
-        //Debug.Log("slide name : " + _slide.Slide.name);
+        Debug.Log("slide name : " + _slide.Slide.name);
+        Debug.Log("slide assets : " + _slide.Slide.assets.Count);
         //Debug.Log("assetTransitions.Count " + assetTransitions.Count);
         return _slide;
     }
@@ -72,14 +78,6 @@ public class PresentationManager : MonoBehaviour
         if (!_slides.TryGetValue(i, out LoadedSlide slide))
             return null;
         return slide;
-    }
-    private IEnumerator InternalLoadSlide(LoadedSlide slide)
-    {
-        while (!slide.HasSlideLoaded)
-        {
-            yield return null;
-        }
-        slide.ShowAssets();
     }
 
 
@@ -105,7 +103,7 @@ public class PresentationManager : MonoBehaviour
     public class LoadedSlide
     {
         public Slide Slide;
-        private Dictionary<ARPAsset, LoadedAsset> _assets;
+        public Dictionary<ARPAsset, LoadedAsset> _assets;
         public int loadedCount = 0;
 
         public bool HasSlideLoaded => loadedCount == _assets.Count;
@@ -122,6 +120,7 @@ public class PresentationManager : MonoBehaviour
                 _assets[asset] = new LoadedAsset(asset, anchor, () =>
                 {
                     loadedCount++;
+                    Debug.Log("loadedCount " + loadedCount);
                 });
             }
 
@@ -177,9 +176,9 @@ public class PresentationManager : MonoBehaviour
             }
         }
 
-        private class LoadedAsset
+        public class LoadedAsset
         {
-            private ARPAsset _asset;
+            public ARPAsset _asset;
             private GameObject _loadedObject;
             private Transform _anchor;
             private Action _onLoaded;

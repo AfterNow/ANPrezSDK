@@ -81,7 +81,6 @@ public class AnimationTimeline
             currentGroup = nextAnimationGroup;
             // Play animation group automatically since first animation plays automatically
             nextAnimationGroup.Play();
-            Debug.Log("nextAnimationGroup");
 
         }
         else if (nextAnimationGroup.animations[0].model.startType == AnimationStartType.OnCommand)

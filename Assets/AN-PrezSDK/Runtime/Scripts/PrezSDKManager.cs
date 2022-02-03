@@ -187,7 +187,6 @@ class PrezSDKManager : MonoBehaviour
         ClearObjects();
 
         //slideCount = PrezStates.Presentation.locations[0].slides.Count;
-        //Debug.Log("CurrentSlide " + PrezStates.CurrentSlide);
         if (slideCount == PrezStates.CurrentSlide + 1)
         {
             PrezStates.CurrentSlide = 0;
@@ -199,7 +198,6 @@ class PrezSDKManager : MonoBehaviour
         {
             targetSlide = PrezStates.CurrentSlide + 1;
         }
-        //Debug.Log("targetSlide " + targetSlide);
         GoToSlide(targetSlide);
     }
 
@@ -207,13 +205,12 @@ class PrezSDKManager : MonoBehaviour
     {
         if (PrezStates.CurrentSlide != 0)
         {
+            //PresentationManager._slides.Remove(PrezStates.CurrentSlide);
             previousSlide.DestroyLoadedObjects();
             ClearObjects();
 
             //slideCount = PrezStates.Presentation.locations[0].slides.Count;
-            //Debug.Log("CurrentSlide " + PrezStates.CurrentSlide);
-            int targetSlide = PrezStates.CurrentSlide == 0 ? slideCount - 1 : PrezStates.CurrentSlide - 1;
-            //Debug.Log("targetSlide " + targetSlide);
+            targetSlide = PrezStates.CurrentSlide == 0 ? slideCount - 1 : PrezStates.CurrentSlide - 1;
             GoToSlide(targetSlide);
         }
     }
@@ -347,7 +344,7 @@ class PrezSDKManager : MonoBehaviour
         //Debug.Log("targetSlideIdx : " + targetSlideIdx + " slides.Count : " + _manager._location.slides.Count);
         if (targetSlideIdx < _manager._location.slides.Count && targetSlideIdx >= 0)
         {
-            Coroutine slideLoader = GotoSlidePlayMode(targetSlideIdx);
+            //Coroutine slideLoader = GotoSlidePlayMode(targetSlideIdx);
 
             //if (_slide.Slide.DownloadProgress == 1f) //if current slide is loaded, animate it out
             //{
@@ -367,7 +364,7 @@ class PrezSDKManager : MonoBehaviour
             });
             while (!hasSlideStopped) yield return null;
             //}
-            yield return slideLoader;
+            //yield return slideLoader;
             //yield return StartCoroutine(UpdateVRBackground(newSlideController.Slide.BackgroundTexture, newSlideController.Slide.backgroundOrientation));
 
             //only after new slide has loaded, and old slide has finished
@@ -663,7 +660,13 @@ class PrezSDKManager : MonoBehaviour
         isSlideEnded = false;
         PrezStates.CurrentSlide = slideNo;
         previousSlide = _manager.LoadSlide(slideNo);
+
+        previousSlide.loadedCount = 0;
+
         UpdateSlideCount();
+
+        Debug.Log("_assetscount : " + previousSlide._assets.Count);
+        Debug.Log("loadedcount : " + previousSlide.loadedCount);
 
         //Wait till the slide completely loads
         while (!previousSlide.HasSlideLoaded)
