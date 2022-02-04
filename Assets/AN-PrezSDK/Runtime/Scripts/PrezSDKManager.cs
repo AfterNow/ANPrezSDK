@@ -148,6 +148,9 @@ class PrezSDKManager : MonoBehaviour
 
         prezController.OnQuit += () =>
         {
+            //Terminate the asset loading process
+            AssetLoader.StopLoadingAssets();
+
             //do cleanup
             PrezStates.Reset();
 
