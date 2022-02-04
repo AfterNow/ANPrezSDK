@@ -183,8 +183,7 @@ class PrezSDKManager : MonoBehaviour
 
     void Next_Slide()
     {
-        previousSlide.DestroyLoadedObjects();
-        ClearObjects();
+        ClearPresentSlide();
 
         //slideCount = PrezStates.Presentation.locations[0].slides.Count;
         if (slideCount == PrezStates.CurrentSlide + 1)
@@ -205,6 +204,8 @@ class PrezSDKManager : MonoBehaviour
     {
         if (PrezStates.CurrentSlide != 0)
         {
+            ClearPresentSlide();
+     
             //PresentationManager._slides.Remove(PrezStates.CurrentSlide);
             previousSlide.DestroyLoadedObjects();
             ClearObjects();
@@ -258,6 +259,21 @@ class PrezSDKManager : MonoBehaviour
         {
             Play();
         }
+    }
+
+    /// <summary>
+    /// Clear the data related to the present slide if User decides to change to another slide
+    /// </summary>
+    private void ClearPresentSlide()
+    {
+        //Terminate the asset loading process
+        AssetLoader.StopLoadingAssets();
+
+        //Destroy the already loaded assets
+        previousSlide.DestroyLoadedObjects();
+
+        //Clear lists of assets
+        ClearObjects();
     }
 
     private Coroutine slideTransition;
@@ -356,8 +372,8 @@ class PrezSDKManager : MonoBehaviour
                 {
                     if (targetSlideIdx != _manager._location.slides.Count)
                     {
-                            //   slideIdx.Value = targetSlideIdx;
-                            slideIdx = targetSlideIdx;
+                        //   slideIdx.Value = targetSlideIdx;
+                        slideIdx = targetSlideIdx;
                     }
                     hasSlideStopped = true;
                 });
@@ -664,9 +680,6 @@ class PrezSDKManager : MonoBehaviour
         previousSlide.loadedCount = 0;
 
         UpdateSlideCount();
-
-        Debug.Log("_assetscount : " + previousSlide._assets.Count);
-        Debug.Log("loadedcount : " + previousSlide.loadedCount);
 
         //Wait till the slide completely loads
         while (!previousSlide.HasSlideLoaded)

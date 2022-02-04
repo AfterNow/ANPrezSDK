@@ -67,9 +67,6 @@ public class PresentationManager : MonoBehaviour
         _slide.LoadSlide();
 
         assetTransitions = _slide.Slide.assetTransitions;
-        Debug.Log("slide name : " + _slide.Slide.name);
-        Debug.Log("slide assets : " + _slide.Slide.assets.Count);
-        //Debug.Log("assetTransitions.Count " + assetTransitions.Count);
         return _slide;
     }
 
@@ -120,7 +117,6 @@ public class PresentationManager : MonoBehaviour
                 _assets[asset] = new LoadedAsset(asset, anchor, () =>
                 {
                     loadedCount++;
-                    Debug.Log("loadedCount " + loadedCount);
                 });
             }
 

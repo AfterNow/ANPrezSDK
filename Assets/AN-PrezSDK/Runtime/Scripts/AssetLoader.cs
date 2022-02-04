@@ -26,6 +26,11 @@ public static class AssetLoader
     public static readonly List<Texture2D> textures = new List<Texture2D>();
     public static readonly List<AudioClip> audioClips = new List<AudioClip>();
 
+    public static void StopLoadingAssets()
+    {
+        CoroutineRunner.Instance.StopAllCoroutines();
+    }
+
     public static IEnumerator OnLoadAsset(ARPAsset asset, Action<GameObject> onLoaded)
     {
 
