@@ -40,6 +40,7 @@ public class ExampleController : MonoBehaviour, IPrezController
         OnQuit?.Invoke();
         LoginUI.SetActive(true);
         PresentationUI.SetActive(false);
+        Login.interactable = true;
     }
 
     private void Start()
@@ -81,6 +82,10 @@ public class ExampleController : MonoBehaviour, IPrezController
             {
                 StatusText.text = "Presentation ID should bonly contain numbers";
             }
+
+            //Set button uninteractable after first click
+            Login.interactable = false;
+
         });
 
 
