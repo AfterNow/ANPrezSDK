@@ -30,11 +30,6 @@ public class PresentationManager : MonoBehaviour
     public delegate void OnSlideLoaded();
     public static event OnSlideLoaded onSlideLoaded;
 
-
-    public delegate void OnObjectsDestroyed();
-    public static event OnObjectsDestroyed onObjectsDestroyed;
-
-
     private void Awake()
     {
         _instance = this;
@@ -136,7 +131,6 @@ public class PresentationManager : MonoBehaviour
         {
             DestroyLoadedObjects();
             FindObjectOfType<PrezSDKManager>().ClearObjects();
-            onObjectsDestroyed();
             AssetBundleManager.Cleanup();
 
             foreach (Transform child in _instance.transform)
