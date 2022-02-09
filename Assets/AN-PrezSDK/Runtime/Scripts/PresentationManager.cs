@@ -213,7 +213,7 @@ public class PresentationManager : MonoBehaviour
                     {
                         _loadedObject = go;
                         _loadedObject.transform.SetParent(_anchor);
-                        _loadedObject.SetInitialPosition(_asset.itemTransform);
+                        _loadedObject.SetInitialTransform(_asset.itemTransform);
                         _asset.itemTransform.SetTransform(_loadedObject.transform);
                         _loadedObject.SetActive(false);
                         _onLoaded?.Invoke();

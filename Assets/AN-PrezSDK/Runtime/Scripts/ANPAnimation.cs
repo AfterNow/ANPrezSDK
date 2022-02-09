@@ -86,7 +86,10 @@ public class ANPAnimation
         {
             //Debug.Log("pAssetGO : " + assetGO.name + " delay : " + _delay + " duration : " + _animationDuration);
 
-            //if (gotoInitial) assetController.GoToInitialTransform();
+            if (gotoInitial)
+            {
+                PrezAssetHelper.SetInitialTransform(assetGO, asset.itemTransform);
+            }
 
             if (model.animation == AnimationType.None)
             {
