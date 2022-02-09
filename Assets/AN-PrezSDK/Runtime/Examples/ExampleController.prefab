@@ -168,7 +168,6 @@ RectTransform:
   m_Children:
   - {fileID: 5051317054588666705}
   - {fileID: 5051317055074644460}
-  - {fileID: 5051317054828410597}
   m_Father: {fileID: 5051317055659541989}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1252,85 +1251,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!1 &5051317054828410598
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5051317054828410597}
-  - component: {fileID: 5051317054828410595}
-  - component: {fileID: 5051317054828410596}
-  m_Layer: 5
-  m_Name: Presentation Load Status
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &5051317054828410597
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5051317054828410598}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 5051317054217683730}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 268.5833, y: 30}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &5051317054828410595
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5051317054828410598}
-  m_CullTransparentMesh: 1
---- !u!114 &5051317054828410596
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5051317054828410598}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 10
-    m_FontStyle: 0
-    m_BestFit: 0
-    m_MinSize: 7
-    m_MaxSize: 40
-    m_Alignment: 4
-    m_AlignByGeometry: 0
-    m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
-    m_LineSpacing: 1
-  m_Text: 
 --- !u!1 &5051317054907238706
 GameObject:
   m_ObjectHideFlags: 0
@@ -1513,15 +1433,15 @@ MonoBehaviour:
   PresentationIDText: {fileID: 5051317054907238704}
   CurrentSlideText: {fileID: 5051317054437617513}
   SlideLoadingStatusText: {fileID: 1104793472975881503}
+  StatusText: {fileID: 0}
   nextSlide: {fileID: 5051317054605212807}
   previousSlide: {fileID: 5051317054777221796}
   nextStep: {fileID: 5051317055796215161}
-  LoginUI: {fileID: 5051317054217683731}
-  PresentationUI: {fileID: 5051317055338781738}
   Quit: {fileID: 5051317054822044615}
   Login: {fileID: 5051317055074644459}
+  LoginUI: {fileID: 5051317054217683731}
+  PresentationUI: {fileID: 5051317055338781738}
   PresentationID: {fileID: 5051317054588666704}
-  StatusText: {fileID: 5051317054828410596}
 --- !u!1 &5051317055023985187
 GameObject:
   m_ObjectHideFlags: 0

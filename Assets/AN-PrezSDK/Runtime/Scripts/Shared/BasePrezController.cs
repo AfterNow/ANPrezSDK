@@ -8,13 +8,25 @@ namespace AfterNow.PrezSDK.Shared
     {
         /// <summary>
         /// Call this function with Presentation ID after Authorization is successful.
-        /// Returns false if presentation cannot be joined at the moment.
+        /// Returns false if presentation cannot be joined at the moment. 
+        /// Returns true if the request has been taken into consideration.
         /// </summary>
         /// <param name="presentationID"></param>
         /// <returns></returns>
-        public bool JoinPresentation(string presentationID)
+        public bool JoinPresentationSafe(string presentationID)
         {
             return _onJoinPresentation(presentationID);
+        }
+
+        /// <summary>
+        /// Call this function with Presentation ID after authorization is successful.
+        /// Does not impact the presentation if presentation cannot be joined at the moment.
+        /// This function can also be called from Unity's inspector
+        /// </summary>
+        /// <param name="presentationID"></param>
+        public void JoinPresentation(string presentationID)
+        {
+            _onJoinPresentation(presentationID);
         }
 
         /// <summary>

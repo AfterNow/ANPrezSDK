@@ -11,17 +11,17 @@ public class ExampleController : BasePrezController
     [SerializeField] TMP_Text PresentationIDText;
     [SerializeField] TMP_Text CurrentSlideText;
     [SerializeField] TMP_Text SlideLoadingStatusText;
+    [SerializeField] Text StatusText;
 
     [SerializeField] Button nextSlide;
     [SerializeField] Button previousSlide;
     [SerializeField] Button nextStep;
+    [SerializeField] Button Quit;
+    [SerializeField] Button Login;
 
     [SerializeField] GameObject LoginUI;
     [SerializeField] GameObject PresentationUI;
-    [SerializeField] Button Quit;
-    [SerializeField] Button Login;
     [SerializeField] InputField PresentationID;
-    [SerializeField] Text StatusText;
 
     public override void Callback_OnPresentationEnd()
     {
