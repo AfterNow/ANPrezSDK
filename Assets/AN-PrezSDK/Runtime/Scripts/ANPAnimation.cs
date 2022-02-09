@@ -96,7 +96,7 @@ public class ANPAnimation
             //ResetTransform();
             assetGO.SetActive(true);
 
-            PrezSDKManager._instance.OnAssetLoaded(asset, assetGO);
+            AssetLoader.OnAssetLoaded(asset, assetGO);
 
             if (skipToEnd)
             {

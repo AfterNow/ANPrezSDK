@@ -15,39 +15,71 @@ using AfterNow.PrezSDK.Internal.Views;
 /// </summary>
 class PrezSDKManager : MonoBehaviour
 {
-    //public IntReactiveProperty slideIdx = new IntReactiveProperty(-1);
-    public int slideIdx = -1;
 
-    public static VideoPlayer player;
-    private int loadVideoFrame = 1;
+    #region private variables
 
+    private int slideIdx = -1;
+    private int slideCount = 0;
+    private int SlidePoint = -1;
+    private int _lastPlayedPoint = -1;
+    private bool hasbeenAuthorized = false;
+    private int hasLoggedIn = 0;
+    private bool isPlaying;
+    private bool isDone = false;
+    private bool isAnimating = false;
+    private bool isSlideEnded = false;
+    private int targetSlide = 0;
+    private bool CanReset = false;
+    private int targetSlideIdx = 0;
+
+    private PresentationManager.LoadedSlide previousSlide;
+    private IPrezController prezController;
+    private Coroutine slideTransition;
+    private ARPAsset _asset;
+    private ARPTransition _transition;
+    private List<ARPAsset> _assets = new List<ARPAsset>();
+    private List<ARPTransition> _transitions = new List<ARPTransition>();
+    private List<AudioSource> audioSources = new List<AudioSource>();
+    private readonly LinkedList<int> _slideTracker = new LinkedList<int>();
+
+    #endregion
+
+    #region public variables
+
+
+    public GameObject presentationAnchor;
+    public AnimationTimeline animationTimeline;
     public static PrezSDKManager _instance = null;
+    [HideInInspector] public PresentationManager _manager;
+    public static Dictionary<string, GameObject> prezAssets = new Dictionary<string, GameObject>();
 
+    #endregion
+
+    #region UI
 
     [SerializeField] TMP_Text PresentationIDText;
     [SerializeField] TMP_Text CurrentSlideText;
     [SerializeField] TMP_Text SlideLoadingStatusText;
     [SerializeField] public TMP_Text AssetLoadingStatusText;
 
-    [HideInInspector]
-    public PresentationManager _manager;
-    public GameObject presentationAnchor;
+    #endregion
 
-    int slideCount = 0;
+    #region private properties
 
-    IPrezController prezController;
+    bool IsAuthorized()
+    {
+        return hasbeenAuthorized;
+    }
 
-    ARPAsset _asset;
-    public static List<ARPAsset> _assets = new List<ARPAsset>();
-    ARPTransition _transition;
-    List<ARPTransition> _transitions = new List<ARPTransition>();
+    int HasLoggedIn()
+    {
+        return hasLoggedIn;
+    }
 
-    float delay = 0;
-    public bool isPlaying;
-    public AnimationTimeline animationTimeline;
-    int SlidePoint = -1;
-    public bool isDone = false;
-    private int _lastPlayedPoint = -1;
+    #endregion
+
+    #region public properties
+
     public int LastPlayedPoint
     {
         get => _lastPlayedPoint;
@@ -56,30 +88,15 @@ class PrezSDKManager : MonoBehaviour
             _lastPlayedPoint = value;
         }
     }
-
     public float? PlayStartTime { get; private set; }
 
-    bool hasbeenAuthorized = false;
-    bool IsAuthorized()
-    {
-        return hasbeenAuthorized;
-    }
+    #endregion
 
-    int hasLoggedIn = 0;
-    int HasLoggedIn()
-    {
-        return hasLoggedIn;
-    }
-    public Material transMat;
-
-    //public List<GameObject> prezAssets = new List<GameObject>();
-    public static Dictionary<string, GameObject> prezAssets = new Dictionary<string, GameObject>();
-
-    public static bool loadComplete = false;
-    private List<AudioSource> audioSources = new List<AudioSource>();
+    #region public events
 
     public static event Action OnPresentationEnded;
 
+    #endregion
 
     #region enums
 
@@ -90,47 +107,8 @@ class PrezSDKManager : MonoBehaviour
         ResetSlide = 0,
         NextSlide = 1
     }
+
     #endregion
-
-    private void OnEnable()
-    {
-        PresentationManager.onObjectsDestroyed += ObjectsDestroyed;
-    }
-
-    private void OnDisable()
-    {
-        PresentationManager.onObjectsDestroyed -= ObjectsDestroyed;
-    }
-
-    private void ObjectsDestroyed()
-    {
-        Next_Slide();
-    }
-
-    public void OnAssetLoaded(ARPAsset _arpAsset, GameObject _objectLoaded)
-    {
-        if (loadComplete)
-        {
-            if (_arpAsset.type == ANPAssetType.AUDIO)
-            {
-                _objectLoaded.GetComponent<AudioSource>().Play();
-                _objectLoaded.GetComponent<SpriteRenderer>().enabled = false;
-            }
-            else if (_arpAsset.type == ANPAssetType.VIDEO)
-            {
-                if (player)
-                {
-                    player.frame = loadVideoFrame;
-                    player.gameObject.GetComponent<AudioSource>().volume = _arpAsset.volumn;
-                    player.Stop();
-                    player.Play();
-                }
-            }
-            else if (_arpAsset.type == ANPAssetType.OBJECT)
-            {
-            }
-        }
-    }
 
     private void Awake()
     {
@@ -182,13 +160,12 @@ class PrezSDKManager : MonoBehaviour
         });
     }
 
-    int targetSlide = 0;
 
     void Next_Slide()
     {
+        //Clear present slide data before playing another slide
         ClearPresentSlide();
 
-        //slideCount = PrezStates.Presentation.locations[0].slides.Count;
         if (slideCount == PrezStates.CurrentSlide + 1)
         {
             PrezStates.CurrentSlide = 0;
@@ -207,13 +184,9 @@ class PrezSDKManager : MonoBehaviour
     {
         if (PrezStates.CurrentSlide != 0)
         {
+            //Clear present slide data before playing another slide
             ClearPresentSlide();
-     
-            //PresentationManager._slides.Remove(PrezStates.CurrentSlide);
-            previousSlide.DestroyLoadedObjects();
-            ClearObjects();
 
-            //slideCount = PrezStates.Presentation.locations[0].slides.Count;
             targetSlide = PrezStates.CurrentSlide == 0 ? slideCount - 1 : PrezStates.CurrentSlide - 1;
             GoToSlide(targetSlide);
         }
@@ -279,9 +252,6 @@ class PrezSDKManager : MonoBehaviour
         ClearObjects();
     }
 
-    private Coroutine slideTransition;
-    private bool CanReset = false;
-    private readonly LinkedList<int> _slideTracker = new LinkedList<int>();
 
     /// <summary>
     /// The most inporttant function
@@ -298,7 +268,6 @@ class PrezSDKManager : MonoBehaviour
         slideTransition = StartCoroutine(StartTransitionSlide(nextSlide, targetSlideIdx, shouldTrySync, clickable, OnFinish));
     }
 
-    private int targetSlideIdx = 0;
     private IEnumerator StartTransitionSlide(int nextSlide, int _targetSlideIdx, bool shouldTrySync, bool clickable, Action OnFinish)
     {
         targetSlideIdx = _targetSlideIdx;
@@ -517,8 +486,8 @@ class PrezSDKManager : MonoBehaviour
                     ResetTimeline();
                     isPlaying = false;
                     isDone = true;
-                    //_manager.CleanUp();
                     previousSlide.CleanUp();
+                    Next_Slide();
                 });
                 break;
 
@@ -584,8 +553,8 @@ class PrezSDKManager : MonoBehaviour
                         }
                         ResetTimeline();
                         isPlaying = false;
-                        //_manager.CleanUp();
                         previousSlide.CleanUp();
+                        Next_Slide();
                         isDone = true;
                     }
                 });
@@ -664,15 +633,6 @@ class PrezSDKManager : MonoBehaviour
         PrezStates.CurrentSlide = slideNo;
         StartCoroutine(LoadSlide(slideNo));
     }
-
-    public PresentationManager.LoadedSlide previousSlide;
-    private bool onCommand = true;
-    private int presentIndex = 0;
-    private int nextIndex = 0;
-    GameObject go = null;
-    private GameObject _go;
-    private bool isAnimating = false;
-    public bool isSlideEnded = false;
 
     IEnumerator LoadSlide(int slideNo)
     {

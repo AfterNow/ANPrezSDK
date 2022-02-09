@@ -17,11 +17,9 @@ public static class AssetLoader
     private static float imageFator = 0.4f;
     private static int loadVideoFrame = 1;
     private static float defaultSizeFactor = 1;
+    public static bool loadComplete = false;
 
     static AudioSource audioChannelVideo;
-    //static GameObject objectLoaded;
-    private static string assetname;
-    private static PlayableDirector director;
 
     public static readonly List<Texture2D> textures = new List<Texture2D>();
     public static readonly List<AudioClip> audioClips = new List<AudioClip>();
@@ -33,7 +31,6 @@ public static class AssetLoader
 
     public static IEnumerator OnLoadAsset(ARPAsset asset, Action<GameObject> onLoaded)
     {
-
         string assetPath = asset.type != ANPAssetType.TEXT ? asset.AbsoluteDownloadPath(InitializeSDK.DownloadFolderPath) : null;
         string fileName = Path.GetFileName(assetPath);
 
@@ -86,37 +83,8 @@ public static class AssetLoader
                     videoParent.AddComponent<Rotate>();
                 else { }
 
-
-                if (PrezSDKManager.player == null)
-                {
-                    PrezSDKManager.player = _video.GetComponent<VideoPlayer>();
-                }
-
-                bool transVideo = Path.GetFileNameWithoutExtension(fileName).Substring(fileName.LastIndexOf('-') + 1).Equals("alpha");
-
-                if (transVideo)
-                {
-                    PrezSDKManager.player.GetComponent<Renderer>().material = GameObject.FindObjectOfType<PrezSDKManager>().transMat;
-                }
-                PrezSDKManager.player.prepareCompleted += (vPlayer) =>
-                {
-                    vPlayer.frame = loadVideoFrame;
-                    /*** fixing the on video aspect ratio issue ***/
-                    Vector3 _VPLocalScale = vPlayer.transform.localScale;
-                    _VPLocalScale.x = ((float)vPlayer.texture.width / (float)vPlayer.texture.width);
-                    _VPLocalScale.y = ((float)vPlayer.texture.height / (float)vPlayer.texture.width);
-                    vPlayer.transform.localScale = _VPLocalScale;
-                };
-
-                PrezSDKManager.player.url = assetPath;
-                PrezSDKManager.player.Prepare();
-                while (!PrezSDKManager.player.isPrepared)
-                {
-                    yield return null;
-                }
-
-                HandleVideoPlayer(true);
-                PrezSDKManager.loadComplete = true;
+                CoroutineRunner.Instance.StartCoroutine(HandleVideoPlayer(_video, assetPath, true));
+                loadComplete = true;
 
                 onLoaded(videoParent);
                 //Debug.Log("objectloaded : " + videoParent.name + " type : VIDEO");
@@ -153,12 +121,12 @@ public static class AssetLoader
                     if (glb != null)
                     {
                         Animation animation = null;
-                        
+
                         if (glb.GetComponent<Animation>() == null)
                         {
                             animation = glb.AddComponent<Animation>();
                         }
-                        else 
+                        else
                         {
                             animation = glb.GetComponent<Animation>();
                         }
@@ -203,7 +171,7 @@ public static class AssetLoader
                         {
                             yield return null;
                         }
-                        
+
                     }
                     else
                     {
@@ -324,10 +292,30 @@ public static class AssetLoader
         trans.rotation = currentRotation;
         return bounds;
     }
-    private static void HandleVideoPlayer(bool OnEnable)
+
+    private static IEnumerator HandleVideoPlayer(GameObject _video, string _assetPath, bool OnEnable)
     {
-        if (PrezSDKManager.player == null || string.IsNullOrEmpty(PrezSDKManager.player.url)) return;
-        if (!audioChannelVideo) audioChannelVideo = PrezSDKManager.player.GetComponent<AudioSource>();
+        VideoPlayer player = _video.GetComponent<VideoPlayer>();
+
+        player.prepareCompleted += (vPlayer) =>
+        {
+            vPlayer.frame = loadVideoFrame;
+            /*** fixing the on video aspect ratio issue ***/
+            Vector3 _VPLocalScale = vPlayer.transform.localScale;
+            _VPLocalScale.x = ((float)vPlayer.texture.width / (float)vPlayer.texture.width);
+            _VPLocalScale.y = ((float)vPlayer.texture.height / (float)vPlayer.texture.width);
+            vPlayer.transform.localScale = _VPLocalScale;
+        };
+
+        player.url = _assetPath;
+        player.Prepare();
+        while (!player.isPrepared)
+        {
+            yield return null;
+        }
+
+        if (player == null || string.IsNullOrEmpty(player.url)) yield return null;
+        if (!audioChannelVideo) audioChannelVideo = player.GetComponent<AudioSource>();
 
         if (OnEnable)
         {
@@ -335,8 +323,8 @@ public static class AssetLoader
         }
         else
         {
-            PrezSDKManager.player.frame = 0;
-            PrezSDKManager.player.Stop();
+            player.frame = 0;
+            player.Stop();
         }
     }
 
@@ -366,6 +354,32 @@ public static class AssetLoader
                 }
 
                 textures.Add(texture);
+            }
+        }
+    }
+
+    public static void OnAssetLoaded(ARPAsset _arpAsset, GameObject _objectLoaded)
+    {
+        if (loadComplete)
+        {
+            if (_arpAsset.type == ANPAssetType.AUDIO)
+            {
+                _objectLoaded.GetComponent<AudioSource>().Play();
+                _objectLoaded.GetComponent<SpriteRenderer>().enabled = false;
+            }
+            else if (_arpAsset.type == ANPAssetType.VIDEO)
+            {
+                VideoPlayer player = _objectLoaded.GetComponentInChildren<VideoPlayer>();
+                if (player)
+                {
+                    player.frame = loadVideoFrame;
+                    player.gameObject.GetComponent<AudioSource>().volume = _arpAsset.volumn;
+                    player.Stop();
+                    player.Play();
+                }
+            }
+            else if (_arpAsset.type == ANPAssetType.OBJECT)
+            {
             }
         }
     }
