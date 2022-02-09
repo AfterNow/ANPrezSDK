@@ -1,14 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.Video;
 using TMPro;
 using System;
 using Unity.Linq;
 using System.Linq;
 using AfterNow.PrezSDK.Internal.Helpers;
 using AfterNow.PrezSDK.Internal.Views;
+using AfterNow.PrezSDK.Shared.Enums;
 
 /// <summary>
 /// Sample class on how to Authenticate to server, join a presentation and Navigate through the presentation
@@ -22,8 +21,6 @@ class PrezSDKManager : MonoBehaviour
     private int slideCount = 0;
     private int SlidePoint = -1;
     private int _lastPlayedPoint = -1;
-    private bool hasbeenAuthorized = false;
-    private int hasLoggedIn = 0;
     private bool isPlaying;
     private bool isDone = false;
     private bool isAnimating = false;
@@ -31,9 +28,8 @@ class PrezSDKManager : MonoBehaviour
     private int targetSlide = 0;
     private bool CanReset = false;
     private int targetSlideIdx = 0;
-
+    private bool waitingForPresentationLoad;
     private PresentationManager.LoadedSlide previousSlide;
-    private IPrezController prezController;
     private Coroutine slideTransition;
     private ARPAsset _asset;
     private ARPTransition _transition;
@@ -44,10 +40,10 @@ class PrezSDKManager : MonoBehaviour
 
     #endregion
 
-    #region public variables
+    #region public/serialized variables
 
-
-    public GameObject presentationAnchor;
+    [SerializeField] AfterNow.PrezSDK.Shared.BasePrezController baseController;
+    public GameObject presentationAnchorOverride;
     public AnimationTimeline animationTimeline;
     public static PrezSDKManager _instance = null;
     [HideInInspector] public PresentationManager _manager;
@@ -57,24 +53,11 @@ class PrezSDKManager : MonoBehaviour
 
     #region UI
 
-    [SerializeField] TMP_Text PresentationIDText;
-    [SerializeField] TMP_Text CurrentSlideText;
-    [SerializeField] TMP_Text SlideLoadingStatusText;
-    [SerializeField] public TMP_Text AssetLoadingStatusText;
+
 
     #endregion
 
     #region private properties
-
-    bool IsAuthorized()
-    {
-        return hasbeenAuthorized;
-    }
-
-    int HasLoggedIn()
-    {
-        return hasLoggedIn;
-    }
 
     #endregion
 
@@ -114,35 +97,9 @@ class PrezSDKManager : MonoBehaviour
     {
         _instance = this;
 
-        prezController = GetComponent<IPrezController>();
-        prezController.OnNextSlide += Next_Slide;
-        prezController.OnPrevSlide += Previous_Slide;
-        prezController.OnNextStep += Next_Step;
-        prezController.OnPresentationJoin += OnStartPresentation;
-        prezController.OnAuthorized += IsAuthorized;
-        prezController.OnSessionJoin += HasLoggedIn;
+        baseController.AssignEvents(OnStartPresentation, Next_Step, Next_Slide, Previous_Slide, Quit);
 
         var instance = CoroutineRunner.Instance;
-
-        prezController.OnQuit += () =>
-        {
-            //Terminate the asset loading process
-            AssetLoader.StopLoadingAssets();
-
-            //do cleanup
-            PrezStates.Reset();
-
-            //Destroy assets on quit
-            foreach (var asset in prezAssets)
-            {
-                Destroy(asset.Value.gameObject);
-            }
-
-            prezAssets.Clear();
-            _manager._location = null;
-
-        };
-
 
         _ = PrezWebCalls.OnAuthenticationRequest((ev) =>
         {
@@ -150,14 +107,38 @@ class PrezSDKManager : MonoBehaviour
             {
                 if (ev)
                 {
-                    hasbeenAuthorized = true;
+                    baseController.Callback_OnAuthorized(true);
                 }
                 else
                 {
-                    Debug.LogError("Login failed");
+                    baseController.Callback_OnAuthorized(false);
                 }
             });
         });
+
+        if (presentationAnchorOverride == null)
+        {
+            presentationAnchorOverride = new GameObject("Presentation Anchor");
+            presentationAnchorOverride.transform.SetParent(transform, false);
+        }
+    }
+
+    private void Quit()
+    {
+        //Terminate the asset loading process
+        AssetLoader.StopLoadingAssets();
+
+        //do cleanup
+        PrezStates.Reset();
+
+        //Destroy assets on quit
+        foreach (var asset in prezAssets)
+        {
+            Destroy(asset.Value.gameObject);
+        }
+
+        prezAssets.Clear();
+        _manager._location = null;
     }
 
 
@@ -171,7 +152,7 @@ class PrezSDKManager : MonoBehaviour
             PrezStates.CurrentSlide = 0;
             targetSlide = 0;
             slideIdx = -1;
-            OnPresentationEnded.Invoke();
+            baseController.Callback_OnPresentationEnd();
         }
         else
         {
@@ -338,7 +319,7 @@ class PrezSDKManager : MonoBehaviour
             //{
             bool hasSlideStopped = false;
 
-            LeanTween.value(presentationAnchor, 0, 1, /*_manager._location.slides[targetSlideIdx].transition.delay*/0).setOnComplete(() =>
+            LeanTween.value(presentationAnchorOverride, 0, 1, /*_manager._location.slides[targetSlideIdx].transition.delay*/0).setOnComplete(() =>
             {
                 StopSlide(false, () =>
                 {
@@ -590,40 +571,36 @@ class PrezSDKManager : MonoBehaviour
         return SlideIndexRunner;
     }
 
-    public void OnStartPresentation(string presentationID)
+    public bool OnStartPresentation(string presentationID)
     {
         slideIdx = -1;
-        hasLoggedIn = 0;
-
+        if (waitingForPresentationLoad) return false;
         //StatusText.text = null;
+        waitingForPresentationLoad = true;
         _ = PrezWebCalls.JoinPresentation(presentationID, (prez) =>
         {
             CoroutineRunner.DispatchToMainThread(() =>
             {
+                waitingForPresentationLoad = false;
                 if (prez != null)
                 {
                     PrezStates.Presentation = prez;
 
-                    LoadPresentation(prez);
+                    UpdateSlideCount();
 
-                    _manager = presentationAnchor.AddComponent<PresentationManager>();
+                    _manager = presentationAnchorOverride.AddComponent<PresentationManager>();
                     _manager.Init(prez.locations[0]);
                     StartCoroutine(LoadSlide(PrezStates.CurrentSlide));
-                    hasLoggedIn = 1;
+                    baseController.Callback_OnPresentationJoin(PresentationJoinStatus.SUCCESS, prez.match.shortId);
                 }
                 else
                 {
                     //StatusText.text = "Invalid Presentation ID";
-                    hasLoggedIn = -1;
+                    baseController.Callback_OnPresentationJoin(PresentationJoinStatus.FAILED, null);
                 }
             });
         });
-    }
-
-    void LoadPresentation(Presentation prez)
-    {
-        PresentationIDText.text = prez.match.shortId;
-        UpdateSlideCount();
+        return true;
     }
 
     public void GoToSlide(int slideNo)
@@ -643,20 +620,15 @@ class PrezSDKManager : MonoBehaviour
         previousSlide.loadedCount = 0;
 
         UpdateSlideCount();
-
+        //Debug.Log("LOADING SLIDE");    
+        baseController.Callback_OnSlideStatusUpdate(AfterNow.PrezSDK.Shared.Enums.SlideStatusUpdate.LOADING);
         //Wait till the slide completely loads
         while (!previousSlide.HasSlideLoaded)
-        {
-            //Debug.Log("LOADING SLIDE");
-            SlideLoadingStatusText.text = "Loading slide...";
+        {   
             yield return null;
         }
 
-        //Debug.Log("LOADED SLIDE");
-        SlideLoadingStatusText.text = "Slide loaded";
-        yield return new WaitForSeconds(2f);
-        SlideLoadingStatusText.text = "";
-
+        baseController.Callback_OnSlideStatusUpdate(AfterNow.PrezSDK.Shared.Enums.SlideStatusUpdate.LOADED);
         PresentationManager.assets = previousSlide.Slide.assets;
         //then play slide animations
         //StartCoroutine(PlayAssetAnimations());
@@ -742,7 +714,7 @@ class PrezSDKManager : MonoBehaviour
 
     void UpdateSlideCount()
     {
-        CurrentSlideText.text = (PrezStates.CurrentSlide + 1).ToString();
+        baseController.Callback_OnSlideChange(PrezStates.CurrentSlide + 1);
         slideCount = PrezStates.Presentation.locations[0].slides.Count;
     }
 
@@ -760,15 +732,4 @@ class PrezSDKManager : MonoBehaviour
     {
         OnSyncGroup(num);
     }
-    public IEnumerator ShowErrors(string value, Color color)
-    {
-        AssetLoadingStatusText.text = value;
-        AssetLoadingStatusText.color = color;
-
-        yield return new WaitForSeconds(3f);
-
-        AssetLoadingStatusText.text = string.Empty;
-        AssetLoadingStatusText.color = Color.white;
-    }
-
 }

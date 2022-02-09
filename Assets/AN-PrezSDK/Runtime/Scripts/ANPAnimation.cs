@@ -77,8 +77,8 @@ public class ANPAnimation
             }
             else
             {
-                var prezSDKManager = UnityEngine.Object.FindObjectOfType<PrezSDKManager>();
-                CoroutineRunner.Instance.StartCoroutine(prezSDKManager.ShowErrors(asset.FileName() + " not loaded", Color.red));
+                //handle error at top level instead of animation
+                Debug.LogError($"Failed to load asset: {asset.FileName()}");
             }
         }
 
