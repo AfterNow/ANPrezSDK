@@ -113,7 +113,7 @@ using UnityEngine;
             return asset.itemTransform;
         }
 
-        public static void SetInitialPosition(this GameObject obj, ItemTransform itemTransform)
+        public static void SetInitialTransform(this GameObject obj, ItemTransform itemTransform)
         {
             Transform trans = obj.transform;
             trans.localPosition = itemTransform.position.GetVector();
