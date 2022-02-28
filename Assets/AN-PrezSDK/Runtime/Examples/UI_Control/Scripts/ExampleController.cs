@@ -1,11 +1,14 @@
 ﻿using AfterNow.PrezSDK.Shared;
 using AfterNow.PrezSDK.Shared.Enums;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ExampleController : BasePrezController
 {
+    [SerializeField] string username;
+    [SerializeField] string password;
     [SerializeField] string defaultPresentationID;
 
     [SerializeField] TMP_Text PresentationIDText;
@@ -45,7 +48,7 @@ public class ExampleController : BasePrezController
                 }
                 else
                 {
-                    StatusText.text = "Presentation ID should only contain numbers";
+                    Callback_OnPresentationFailed("Presentation ID should only contain numbers");
                 }
             }
             else
@@ -56,7 +59,7 @@ public class ExampleController : BasePrezController
         }
         else
         {
-            Debug.LogError("Failed to authorize to AnPrez web server. Please try again");
+            Callback_OnPresentationFailed("Failed to authorize to AnPrez web server");
         }
     }
 
@@ -71,8 +74,7 @@ public class ExampleController : BasePrezController
         }
         else
         {
-            Debug.LogError("Invalid presentation ID");
-            StatusText.text = "Presentation ID invalid";
+            Callback_OnPresentationFailed("Presentation ID invalid");
         }
     }
 
@@ -131,8 +133,19 @@ public class ExampleController : BasePrezController
             }
             else
             {
-                StatusText.text = "Presentation ID should bonly contain numbers";
+                Callback_OnPresentationFailed("Presentation ID should only contain numbers");
             }
         });
+    }
+
+    public override void Callback_OnPresentationFailed(string presentationFailedReason)
+    {
+        StatusText.text = presentationFailedReason;
+        LoginUI.SetActive(true);
+    }
+
+    public override void Callback_OnEnteredUserCredentials(Action<string,string> userCredentials)
+    {
+        userCredentials(username, password);
     }
 }

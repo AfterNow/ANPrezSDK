@@ -7,6 +7,7 @@ using Unity.Linq;
 using System.Linq;
 using AfterNow.PrezSDK.Internal.Helpers;
 using AfterNow.PrezSDK.Internal.Views;
+using AfterNow.PrezSDK.Shared;
 using AfterNow.PrezSDK.Shared.Enums;
 
 /// <summary>
@@ -14,7 +15,6 @@ using AfterNow.PrezSDK.Shared.Enums;
 /// </summary>
 class PrezSDKManager : MonoBehaviour
 {
-
     #region private variables
 
     private int slideIdx = -1;
@@ -42,7 +42,7 @@ class PrezSDKManager : MonoBehaviour
 
     #region public/serialized variables
 
-    [SerializeField] AfterNow.PrezSDK.Shared.BasePrezController baseController;
+    [SerializeField] BasePrezController baseController;
     public GameObject presentationAnchorOverride;
     public AnimationTimeline animationTimeline;
     public static PrezSDKManager _instance = null;
@@ -100,6 +100,12 @@ class PrezSDKManager : MonoBehaviour
         baseController.AssignEvents(OnStartPresentation, Next_Step, Next_Slide, Previous_Slide, Quit);
 
         var instance = CoroutineRunner.Instance;
+
+        baseController.Callback_OnEnteredUserCredentials((username,password) =>
+        {
+            PrezWebCalls.user_email = username;
+            PrezWebCalls.user_password = password;
+        });
 
         _ = PrezWebCalls.OnAuthenticationRequest((ev) =>
         {
@@ -564,6 +570,7 @@ class PrezSDKManager : MonoBehaviour
         if (waitingForPresentationLoad) return false;
         //StatusText.text = null;
         waitingForPresentationLoad = true;
+
         _ = PrezWebCalls.JoinPresentation(presentationID, (prez) =>
         {
             CoroutineRunner.DispatchToMainThread(() =>
@@ -586,6 +593,10 @@ class PrezSDKManager : MonoBehaviour
                     baseController.Callback_OnPresentationJoin(PresentationJoinStatus.FAILED, null);
                 }
             });
+        }, (prezFailed) => 
+        {
+            waitingForPresentationLoad = false;
+            baseController.Callback_OnPresentationFailed(prezFailed);
         });
         return true;
     }
