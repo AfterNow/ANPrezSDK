@@ -69,6 +69,17 @@ namespace AfterNow.PrezSDK.Shared
         public abstract void Callback_OnPresentationJoin(PresentationJoinStatus joinStatus, string presentationID);
 
         /// <summary>
+        /// This callback is invoked if the user has entered their login credentials. 
+        /// </summary>
+        public abstract void Callback_OnEnteredUserCredentials(Action<string, string> userCredentials);
+
+
+        /// <summary>
+        /// This callback is invoked if a presentation fails to load. 
+        /// </summary>
+        public abstract void Callback_OnPresentationFailed(string presentationFailedReason);
+
+        /// <summary>
         /// This callback is invoked 
         /// </summary>
         /// <param name="result"></param>
