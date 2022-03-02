@@ -2,6 +2,7 @@
 using AfterNow.PrezSDK.Shared.Enums;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class ExampleController : BasePrezController
@@ -23,18 +24,31 @@ public class ExampleController : BasePrezController
     [SerializeField] GameObject PresentationUI;
     [SerializeField] InputField PresentationID;
 
+    public UnityEvent OnPresentationEnd;
+    public UnityEvent OnSlideChange;
+    public UnityEvent OnAuthorized;
+    public UnityEvent OnPresentationJoin;
+    public UnityEvent OnSlideStatusUpdate;
+    public UnityEvent OnQuit;
+    public UnityEvent OnNextStep;
+    public UnityEvent OnNextSlide;
+    public UnityEvent OnPreviousSlide;
+
     public override void Callback_OnPresentationEnd()
     {
+        OnPresentationEnd?.Invoke();
         ReturnToLoginScreen();
     }
 
     public override void Callback_OnSlideChange(int newSlide)
     {
+        OnSlideChange?.Invoke();
         CurrentSlideText.text = newSlide.ToString();
     }
 
     public override void Callback_OnAuthorized(bool result)
     {
+        OnAuthorized?.Invoke();
         if(result)
         {
             if (!string.IsNullOrEmpty(defaultPresentationID))
@@ -62,6 +76,7 @@ public class ExampleController : BasePrezController
 
     public override void Callback_OnPresentationJoin(PresentationJoinStatus joinStatus, string presentationID)
     {
+        OnPresentationJoin?.Invoke();
         if(joinStatus == PresentationJoinStatus.SUCCESS)
         {
             LoginUI.SetActive(false);
@@ -78,6 +93,7 @@ public class ExampleController : BasePrezController
 
     public override void Callback_OnSlideStatusUpdate(SlideStatusUpdate slideStatus)
     {
+        OnSlideStatusUpdate?.Invoke();
         switch(slideStatus)
         {
             case SlideStatusUpdate.LOADING:
@@ -91,6 +107,7 @@ public class ExampleController : BasePrezController
 
     public void ReturnToLoginScreen()
     {
+        OnQuit?.Invoke();
         QuitSession();
         LoginUI.SetActive(true);
         PresentationUI.SetActive(false);
@@ -101,16 +118,19 @@ public class ExampleController : BasePrezController
     {
         nextSlide.onClick.AddListener(() =>
         {
+            OnNextSlide?.Invoke();
             NextSlide();
         });
 
         previousSlide.onClick.AddListener(() =>
         {
+            OnPreviousSlide?.Invoke();
             PreviousSlide();
         });
 
         nextStep.onClick.AddListener(() =>
         {
+            OnNextStep?.Invoke();
             NextStep();
         });
 

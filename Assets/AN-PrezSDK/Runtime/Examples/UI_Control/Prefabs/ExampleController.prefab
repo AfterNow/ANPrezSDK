@@ -1521,6 +1521,33 @@ MonoBehaviour:
   LoginUI: {fileID: 5051317054217683731}
   PresentationUI: {fileID: 5051317055338781738}
   PresentationID: {fileID: 5051317054588666704}
+  OnPresentationEnd:
+    m_PersistentCalls:
+      m_Calls: []
+  OnSlideChange:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAuthorized:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPresentationJoin:
+    m_PersistentCalls:
+      m_Calls: []
+  OnSlideStatusUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+  OnQuit:
+    m_PersistentCalls:
+      m_Calls: []
+  OnNextStep:
+    m_PersistentCalls:
+      m_Calls: []
+  OnNextSlide:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPreviousSlide:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &5051317055023985187
 GameObject:
   m_ObjectHideFlags: 0
