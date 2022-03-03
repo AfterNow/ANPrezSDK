@@ -207,7 +207,7 @@ public static class AssetLoader
                 GameObject _audio = (GameObject)UnityEngine.Object.Instantiate(request.asset);
                 _audio.name = fileName;
                 var audioSource = _audio.GetComponent<AudioSource>();
-                using (UnityWebRequest uwr = UnityWebRequestMultimedia.GetAudioClip(assetPath, AudioType.UNKNOWN))
+                using (UnityWebRequest uwr = UnityWebRequestMultimedia.GetAudioClip(UriBuilderExtension.UriPath(assetPath), AudioType.UNKNOWN))
                 {
                     yield return uwr.SendWebRequest();
                     if (string.IsNullOrEmpty(uwr.error))
@@ -334,7 +334,7 @@ public static class AssetLoader
         //Texture2D tex;
         //tex = new Texture2D(4, 4, TextureFormat.RGBA32, false);
 
-        using (UnityWebRequest webReq = UnityWebRequestTexture.GetTexture("file://" + url))
+        using (UnityWebRequest webReq = UnityWebRequestTexture.GetTexture(UriBuilderExtension.UriPath(url)))
         {
             yield return webReq.SendWebRequest();
             if (webReq.result != UnityWebRequest.Result.Success)
