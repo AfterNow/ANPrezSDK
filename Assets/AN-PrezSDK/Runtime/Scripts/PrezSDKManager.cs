@@ -101,11 +101,42 @@ class PrezSDKManager : MonoBehaviour
 
         var instance = CoroutineRunner.Instance;
 
-        baseController.Callback_OnEnteredUserCredentials((username,password) =>
+        if (presentationAnchorOverride == null)
         {
+            presentationAnchorOverride = new GameObject("Presentation Anchor");
+            presentationAnchorOverride.transform.SetParent(transform, false);
+        }
+
+        baseController.Callback_OnUserLoginFromEditor((username, password) =>
+        {
+            if (string.IsNullOrEmpty(username) && string.IsNullOrEmpty(password))
+                return;
+
             PrezWebCalls.user_email = username;
             PrezWebCalls.user_password = password;
+
+            _ = PrezWebCalls.OnAuthenticationRequest((ev) =>
+            {
+                CoroutineRunner.DispatchToMainThread(() =>
+                {
+                    if (ev)
+                    {
+                        baseController.Callback_OnAuthorized(true);
+                    }
+                    else
+                    {
+                        baseController.Callback_OnAuthorized(false);
+                    }
+                });
+            });
+
         });
+    }
+
+    public void Login(string username, string password)
+    {
+        PrezWebCalls.user_email = username;
+        PrezWebCalls.user_password = password;
 
         _ = PrezWebCalls.OnAuthenticationRequest((ev) =>
         {
@@ -121,12 +152,6 @@ class PrezSDKManager : MonoBehaviour
                 }
             });
         });
-
-        if (presentationAnchorOverride == null)
-        {
-            presentationAnchorOverride = new GameObject("Presentation Anchor");
-            presentationAnchorOverride.transform.SetParent(transform, false);
-        }
     }
 
     private void Quit()
@@ -606,7 +631,7 @@ class PrezSDKManager : MonoBehaviour
                     baseController.Callback_OnPresentationJoin(PresentationJoinStatus.FAILED, null);
                 }
             });
-        }, (prezFailed) => 
+        }, (prezFailed) =>
         {
             waitingForPresentationLoad = false;
             baseController.Callback_OnPresentationFailed(prezFailed);
@@ -635,7 +660,7 @@ class PrezSDKManager : MonoBehaviour
         baseController.Callback_OnSlideStatusUpdate(AfterNow.PrezSDK.Shared.Enums.SlideStatusUpdate.LOADING);
         //Wait till the slide completely loads
         while (!previousSlide.HasSlideLoaded)
-        {   
+        {
             yield return null;
         }
 
