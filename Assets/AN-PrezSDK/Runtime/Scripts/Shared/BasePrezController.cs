@@ -74,6 +74,11 @@ namespace AfterNow.PrezSDK.Shared
         public abstract void Callback_OnUserLoginFromEditor(Action<string, string> userCredentials);
 
         /// <summary>
+        /// This callback is invoked if the user logsout. 
+        /// </summary>
+        public abstract void Callback_OnUserLogout();
+
+        /// <summary>
         /// This callback is invoked if a presentation fails to load. 
         /// </summary>
         public abstract void Callback_OnPresentationFailed(string presentationFailedReason);

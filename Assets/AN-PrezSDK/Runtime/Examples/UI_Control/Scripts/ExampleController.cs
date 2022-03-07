@@ -1,4 +1,5 @@
-﻿using AfterNow.PrezSDK.Shared;
+﻿using AfterNow.PrezSDK.Internal.Helpers;
+using AfterNow.PrezSDK.Shared;
 using AfterNow.PrezSDK.Shared.Enums;
 using System;
 using System.Collections;
@@ -27,11 +28,12 @@ public class ExampleController : BasePrezController
     [SerializeField] Button nextStep;
     [SerializeField] Button Quit;
     [SerializeField] Button LoadPresentation;
-    [SerializeField] Button userLogin;
+    [SerializeField] Button Login;
+    [SerializeField] Button Logout;
 
     [SerializeField] GameObject LoadPresentationUI;
     [SerializeField] GameObject PlayPresentationUI;
-    [SerializeField] GameObject UserAccountLoginUI;
+    [SerializeField] GameObject UserLoginUI;
     [SerializeField] TMP_InputField PresentationID;
     
     string presentationID = null;
@@ -70,7 +72,7 @@ public class ExampleController : BasePrezController
                 Invoke("EnableLoadPresentationUI", 2f);
             }
 
-            UserAccountLoginUI.SetActive(false);
+            UserLoginUI.SetActive(false);
         }
         else
         {
@@ -127,6 +129,11 @@ public class ExampleController : BasePrezController
         prezSDKManager.Login(userEmailIdInput.text, userPasswordInput.text);
     }
 
+    public void UserLogout()
+    {
+        prezSDKManager.Logout();
+    }
+
     private void Start()
     {
         //Clear Status Texts
@@ -170,9 +177,14 @@ public class ExampleController : BasePrezController
             }
         });
 
-        userLogin.onClick.AddListener(() =>
+        Login.onClick.AddListener(() =>
         {
             UserLogin();
+        });
+
+        Logout.onClick.AddListener(() =>
+        {
+            UserLogout();
         });
     }
 
@@ -194,9 +206,16 @@ public class ExampleController : BasePrezController
         userLoginStatusText.color = Color.red;
     }
 
+    void EnableUserLoginUI()
+    {
+        UserLoginUI.SetActive(true);
+        LoadPresentationUI.SetActive(false);
+        PlayPresentationUI.SetActive(false);
+    }
+
     void EnableLoadPresentationUI()
     {
-        UserAccountLoginUI.SetActive(false);
+        UserLoginUI.SetActive(false);
         LoadPresentationUI.SetActive(true);
         PlayPresentationUI.SetActive(false);
     }
@@ -219,5 +238,24 @@ public class ExampleController : BasePrezController
             SlideLoadingStatusText.text = string.Empty;
             SlideLoadingStatusText.color = Color.white;
         }
+    }
+
+    public override void Callback_OnUserLogout()
+    {
+        InternalStates.Reset();
+
+        //Delete downloaded files
+        PrezSDKManager.DeleteDownloadedFiles();
+
+        //Clear email and password fields
+        userEmailIdInput.text = string.Empty;
+        userPasswordInput.text = string.Empty;
+
+        //Clear user login status
+        userLoginStatusText.text= string.Empty;
+        userLoginStatusText.color= Color.white;
+
+        //Enable user login screen
+        EnableUserLoginUI();
     }
 }

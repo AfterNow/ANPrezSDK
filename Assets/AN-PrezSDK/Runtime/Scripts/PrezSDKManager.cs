@@ -9,6 +9,7 @@ using AfterNow.PrezSDK.Internal.Helpers;
 using AfterNow.PrezSDK.Internal.Views;
 using AfterNow.PrezSDK.Shared;
 using AfterNow.PrezSDK.Shared.Enums;
+using System.IO;
 
 /// <summary>
 /// Sample class on how to Authenticate to server, join a presentation and Navigate through the presentation
@@ -152,6 +153,11 @@ class PrezSDKManager : MonoBehaviour
                 }
             });
         });
+    }
+
+    public void Logout()
+    {
+        baseController.Callback_OnUserLogout();
     }
 
     private void Quit()
@@ -767,5 +773,21 @@ class PrezSDKManager : MonoBehaviour
     public void OnSyncTimeline(int num)
     {
         OnSyncGroup(num);
+    }
+
+    public static void DeleteDownloadedFiles()
+    {
+        DirectoryInfo directoryInfo = new DirectoryInfo(InitializeSDK.DownloadFolderPath);
+
+        foreach (var item in directoryInfo.EnumerateFiles())
+        {
+            item.Delete();
+        }
+
+        foreach (var item in directoryInfo.EnumerateDirectories())
+        {
+            item.Delete(true);
+        }
+
     }
 }
