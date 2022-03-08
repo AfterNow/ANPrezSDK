@@ -779,11 +779,6 @@ class PrezSDKManager : MonoBehaviour
     {
         DirectoryInfo directoryInfo = new DirectoryInfo(InitializeSDK.DownloadFolderPath);
 
-        foreach (var item in directoryInfo.EnumerateFiles())
-        {
-            item.Delete();
-        }
-
         foreach (var item in directoryInfo.EnumerateDirectories())
         {
             item.Delete(true);
