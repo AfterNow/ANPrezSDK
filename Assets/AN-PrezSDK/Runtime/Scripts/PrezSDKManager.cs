@@ -7,14 +7,15 @@ using Unity.Linq;
 using System.Linq;
 using AfterNow.PrezSDK.Internal.Helpers;
 using AfterNow.PrezSDK.Internal.Views;
+using AfterNow.PrezSDK.Shared;
 using AfterNow.PrezSDK.Shared.Enums;
+using System.IO;
 
 /// <summary>
 /// Sample class on how to Authenticate to server, join a presentation and Navigate through the presentation
 /// </summary>
 class PrezSDKManager : MonoBehaviour
 {
-
     #region private variables
 
     private int slideIdx = -1;
@@ -42,7 +43,7 @@ class PrezSDKManager : MonoBehaviour
 
     #region public/serialized variables
 
-    [SerializeField] AfterNow.PrezSDK.Shared.BasePrezController baseController;
+    [SerializeField] BasePrezController baseController;
     public GameObject presentationAnchorOverride;
     public AnimationTimeline animationTimeline;
     public static PrezSDKManager _instance = null;
@@ -101,6 +102,43 @@ class PrezSDKManager : MonoBehaviour
 
         var instance = CoroutineRunner.Instance;
 
+        if (presentationAnchorOverride == null)
+        {
+            presentationAnchorOverride = new GameObject("Presentation Anchor");
+            presentationAnchorOverride.transform.SetParent(transform, false);
+        }
+
+        baseController.Callback_OnUserLoginFromEditor((username, password) =>
+        {
+            if (string.IsNullOrEmpty(username) && string.IsNullOrEmpty(password))
+                return;
+
+            PrezWebCalls.user_email = username;
+            PrezWebCalls.user_password = password;
+
+            _ = PrezWebCalls.OnAuthenticationRequest((ev) =>
+            {
+                CoroutineRunner.DispatchToMainThread(() =>
+                {
+                    if (ev)
+                    {
+                        baseController.Callback_OnAuthorized(true);
+                    }
+                    else
+                    {
+                        baseController.Callback_OnAuthorized(false);
+                    }
+                });
+            });
+
+        });
+    }
+
+    public void Login(string username, string password)
+    {
+        PrezWebCalls.user_email = username;
+        PrezWebCalls.user_password = password;
+
         _ = PrezWebCalls.OnAuthenticationRequest((ev) =>
         {
             CoroutineRunner.DispatchToMainThread(() =>
@@ -115,12 +153,11 @@ class PrezSDKManager : MonoBehaviour
                 }
             });
         });
+    }
 
-        if (presentationAnchorOverride == null)
-        {
-            presentationAnchorOverride = new GameObject("Presentation Anchor");
-            presentationAnchorOverride.transform.SetParent(transform, false);
-        }
+    public void Logout()
+    {
+        baseController.Callback_OnUserLogout();
     }
 
     private void Quit()
@@ -577,6 +614,7 @@ class PrezSDKManager : MonoBehaviour
         if (waitingForPresentationLoad) return false;
         //StatusText.text = null;
         waitingForPresentationLoad = true;
+
         _ = PrezWebCalls.JoinPresentation(presentationID, (prez) =>
         {
             CoroutineRunner.DispatchToMainThread(() =>
@@ -599,6 +637,10 @@ class PrezSDKManager : MonoBehaviour
                     baseController.Callback_OnPresentationJoin(PresentationJoinStatus.FAILED, null);
                 }
             });
+        }, (prezFailed) =>
+        {
+            waitingForPresentationLoad = false;
+            baseController.Callback_OnPresentationFailed(prezFailed);
         });
         return true;
     }
@@ -624,7 +666,7 @@ class PrezSDKManager : MonoBehaviour
         baseController.Callback_OnSlideStatusUpdate(AfterNow.PrezSDK.Shared.Enums.SlideStatusUpdate.LOADING);
         //Wait till the slide completely loads
         while (!previousSlide.HasSlideLoaded)
-        {   
+        {
             yield return null;
         }
 
@@ -731,5 +773,16 @@ class PrezSDKManager : MonoBehaviour
     public void OnSyncTimeline(int num)
     {
         OnSyncGroup(num);
+    }
+
+    public static void DeleteDownloadedFiles()
+    {
+        DirectoryInfo directoryInfo = new DirectoryInfo(InitializeSDK.DownloadFolderPath);
+
+        foreach (var item in directoryInfo.EnumerateDirectories())
+        {
+            item.Delete(true);
+        }
+
     }
 }
