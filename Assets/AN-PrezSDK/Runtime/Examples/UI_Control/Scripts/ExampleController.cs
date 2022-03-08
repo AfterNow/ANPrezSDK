@@ -76,7 +76,7 @@ public class ExampleController : BasePrezController
         }
         else
         {
-            Callback_OnAuthenticationFailed("Failed to authorize to AnPrez web server");
+            Callback_OnAuthenticationFailed("Incorrect Email or Password");
         }
     }
 
