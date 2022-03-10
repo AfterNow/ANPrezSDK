@@ -42,7 +42,11 @@ class PrezSDKManager : MonoBehaviour
 
     #region public/serialized variables
 
+#if PREZ_SDK_UI
+    [SerializeField] AfterNow.PrezSDK.Shared.BasePrezControllerUI baseControllerUI;
+#else
     [SerializeField] AfterNow.PrezSDK.Shared.BasePrezController baseController;
+#endif
     public GameObject presentationAnchorOverride;
     public AnimationTimeline animationTimeline;
     public static PrezSDKManager _instance = null;
@@ -93,12 +97,24 @@ class PrezSDKManager : MonoBehaviour
 
     #endregion
 
+    private void OnEnable()
+    {
+#if PREZ_SDK_UI
+        baseControllerUI.loadPresentationFromId += OnStartPresentation;
+        baseControllerUI.nextStep += Next_Step;
+        baseControllerUI.nextSlide += Next_Slide;
+        baseControllerUI.previousSlide += Previous_Slide;
+#endif
+    }
+
     private void Awake()
     {
         _instance = this;
+#if PREZ_SDK_UI
 
+#else
         baseController.AssignEvents(OnStartPresentation, Next_Step, Next_Slide, Previous_Slide, Quit);
-
+#endif
         var instance = CoroutineRunner.Instance;
 
         _ = PrezWebCalls.OnAuthenticationRequest((ev) =>
@@ -107,11 +123,19 @@ class PrezSDKManager : MonoBehaviour
             {
                 if (ev)
                 {
+#if PREZ_SDK_UI
+
+#else
                     baseController.Callback_OnAuthorized(true);
+#endif
                 }
                 else
                 {
+#if PREZ_SDK_UI
+
+#else
                     baseController.Callback_OnAuthorized(false);
+#endif
                 }
             });
         });
@@ -152,7 +176,11 @@ class PrezSDKManager : MonoBehaviour
             PrezStates.CurrentSlide = 0;
             targetSlide = 0;
             slideIdx = -1;
+#if PREZ_SDK_UI
+
+#else
             baseController.Callback_OnPresentationEnd();
+#endif
         }
         else
         {
@@ -573,12 +601,15 @@ class PrezSDKManager : MonoBehaviour
 
     public bool OnStartPresentation(string presentationID)
     {
+        Debug.Log("Presentation ID : " + presentationID);
+
         slideIdx = -1;
         if (waitingForPresentationLoad) return false;
         //StatusText.text = null;
         waitingForPresentationLoad = true;
         _ = PrezWebCalls.JoinPresentation(presentationID, (prez) =>
         {
+            Debug.Log("joining");
             CoroutineRunner.DispatchToMainThread(() =>
             {
                 waitingForPresentationLoad = false;
@@ -591,12 +622,20 @@ class PrezSDKManager : MonoBehaviour
                     _manager = presentationAnchorOverride.AddComponent<PresentationManager>();
                     _manager.Init(prez.locations[0]);
                     StartCoroutine(LoadSlide(PrezStates.CurrentSlide));
+#if PREZ_SDK_UI
+
+#else
                     baseController.Callback_OnPresentationJoin(PresentationJoinStatus.SUCCESS, prez.match.shortId);
+#endif
                 }
                 else
                 {
                     //StatusText.text = "Invalid Presentation ID";
+#if PREZ_SDK_UI
+
+#else
                     baseController.Callback_OnPresentationJoin(PresentationJoinStatus.FAILED, null);
+#endif
                 }
             });
         });
@@ -620,15 +659,22 @@ class PrezSDKManager : MonoBehaviour
         previousSlide.loadedCount = 0;
 
         UpdateSlideCount();
-        //Debug.Log("LOADING SLIDE");    
+        //Debug.Log("LOADING SLIDE");
+#if PREZ_SDK_UI
+
+#else
         baseController.Callback_OnSlideStatusUpdate(AfterNow.PrezSDK.Shared.Enums.SlideStatusUpdate.LOADING);
+#endif
         //Wait till the slide completely loads
         while (!previousSlide.HasSlideLoaded)
-        {   
+        {
             yield return null;
         }
+#if PREZ_SDK_UI
 
+#else
         baseController.Callback_OnSlideStatusUpdate(AfterNow.PrezSDK.Shared.Enums.SlideStatusUpdate.LOADED);
+#endif
         PresentationManager.assets = previousSlide.Slide.assets;
         //then play slide animations
         //StartCoroutine(PlayAssetAnimations());
@@ -714,7 +760,10 @@ class PrezSDKManager : MonoBehaviour
 
     void UpdateSlideCount()
     {
+#if PREZ_SDK_UI
+#else
         baseController.Callback_OnSlideChange(PrezStates.CurrentSlide + 1);
+#endif
         slideCount = PrezStates.Presentation.locations[0].slides.Count;
     }
 
