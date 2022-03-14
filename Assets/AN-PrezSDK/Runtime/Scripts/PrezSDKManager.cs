@@ -37,6 +37,7 @@ class PrezSDKManager : MonoBehaviour
     private List<ARPTransition> _transitions = new List<ARPTransition>();
     private List<AudioSource> audioSources = new List<AudioSource>();
     private readonly LinkedList<int> _slideTracker = new LinkedList<int>();
+    private bool isAuthenticationSuccess = false;
 
     #endregion
 
@@ -104,7 +105,33 @@ class PrezSDKManager : MonoBehaviour
         baseControllerUI.nextStep += Next_Step;
         baseControllerUI.nextSlide += Next_Slide;
         baseControllerUI.previousSlide += Previous_Slide;
+        baseControllerUI.onAuthorizationSucceeded += AuthenticationSuccess;
+        baseControllerUI.onAuthorizationFailed += AuthenticationFailed;
 #endif
+    }
+
+    private void OnDisable()
+    {
+#if PREZ_SDK_UI
+        baseControllerUI.loadPresentationFromId -= OnStartPresentation;
+        baseControllerUI.nextStep -= Next_Step;
+        baseControllerUI.nextSlide -= Next_Slide;
+        baseControllerUI.previousSlide -= Previous_Slide;
+        baseControllerUI.onAuthorizationSucceeded -= AuthenticationSuccess;
+        baseControllerUI.onAuthorizationFailed -= AuthenticationFailed;
+#endif
+    }
+
+    void AuthenticationSuccess(string authenticationSuccess)
+    {
+        if(isAuthenticationSuccess)
+            Debug.Log(authenticationSuccess);
+    }
+
+    void AuthenticationFailed(string authenticationFailed)
+    {
+        if (!isAuthenticationSuccess)
+            Debug.Log(authenticationFailed);
     }
 
     private void Awake()
@@ -124,7 +151,7 @@ class PrezSDKManager : MonoBehaviour
                 if (ev)
                 {
 #if PREZ_SDK_UI
-
+                    isAuthenticationSuccess = true;
 #else
                     baseController.Callback_OnAuthorized(true);
 #endif
@@ -132,7 +159,7 @@ class PrezSDKManager : MonoBehaviour
                 else
                 {
 #if PREZ_SDK_UI
-
+                    isAuthenticationSuccess = false;
 #else
                     baseController.Callback_OnAuthorized(false);
 #endif
@@ -601,6 +628,12 @@ class PrezSDKManager : MonoBehaviour
 
     public bool OnStartPresentation(string presentationID)
     {
+        if (!isAuthenticationSuccess)
+        {
+            Debug.Log("Access Denied");
+            return false;
+        }
+
         Debug.Log("Presentation ID : " + presentationID);
 
         slideIdx = -1;

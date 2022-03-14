@@ -17,6 +17,8 @@ namespace AfterNow.PrezSDK.Shared
         public Action nextStep;
         public Action nextSlide;
         public Action previousSlide;
+        public Action<string> onAuthorizationFailed;
+        public Action<string> onAuthorizationSucceeded;
 
         public void LoadPresentationFromId(GameObject presentationIdInput)
         {
@@ -27,6 +29,16 @@ namespace AfterNow.PrezSDK.Shared
         public void OnAuthorized(bool isauthorized)
         {
             onAuthorized?.Invoke(isauthorized);
+        }
+
+        public void OnAuthorizationFailed(string message)
+        {
+            onAuthorizationFailed?.Invoke(message);
+        }
+
+        public void OnAuthorizationSucceeded(string message)
+        {
+            onAuthorizationSucceeded?.Invoke(message);
         }
 
         public void OnPresentationJoin(PresentationJoinStatus presentationJoinStatus, string presentationId)
