@@ -83,7 +83,7 @@ class PrezSDKManager : MonoBehaviour
     #region public events
 
     public static event Action OnPresentationEnded;
-
+    public static event Action<bool> OnPresentationSuccess;
     #endregion
 
     #region enums
@@ -124,7 +124,7 @@ class PrezSDKManager : MonoBehaviour
 
     void AuthenticationSuccess(string authenticationSuccess)
     {
-        if(isAuthenticationSuccess)
+        if (isAuthenticationSuccess)
             Debug.Log(authenticationSuccess);
     }
 
@@ -632,6 +632,18 @@ class PrezSDKManager : MonoBehaviour
         {
             Debug.Log("Access Denied");
             return false;
+        }
+
+        if (!string.IsNullOrEmpty(presentationID))
+        {
+            if (int.TryParse(presentationID.Trim(), out int integerPresentationID))
+            {
+                OnPresentationSuccess(true);
+            }
+            else
+            {
+                OnPresentationSuccess(false);
+            }
         }
 
         Debug.Log("Presentation ID : " + presentationID);

@@ -1,3 +1,4 @@
+using AfterNow.PrezSDK.Internal.Helpers;
 using AfterNow.PrezSDK.Shared.Enums;
 using System;
 using System.Collections;
@@ -11,6 +12,9 @@ namespace AfterNow.PrezSDK.Shared
 {
     public class BasePrezControllerUI : MonoBehaviour
     {
+        public TMP_InputField presentationIdInput;
+        public TMP_Text presentationStatusText;
+
         public Func<string, bool> loadPresentationFromId;
         public Action<PresentationJoinStatus, string> onPresentationJoin;
         public Action<bool> onAuthorized;
@@ -20,9 +24,17 @@ namespace AfterNow.PrezSDK.Shared
         public Action<string> onAuthorizationFailed;
         public Action<string> onAuthorizationSucceeded;
 
-        public void LoadPresentationFromId(GameObject presentationIdInput)
+        string presentationSuccessMessage = string.Empty;
+        string presentationFailedMessage = string.Empty;
+
+        private void OnEnable()
         {
-            string presentationId = presentationIdInput.GetComponent<TMP_InputField>().text;
+            PrezSDKManager.OnPresentationSuccess += ShowPresentationStatusMessage;
+        }
+
+        public void LoadPresentationFromId()
+        {
+            string presentationId = presentationIdInput.text;
             loadPresentationFromId(presentationId);
         }
 
@@ -59,6 +71,31 @@ namespace AfterNow.PrezSDK.Shared
         public void PreviousSlide()
         {
             previousSlide?.Invoke();
+        }
+
+        public void PresentationSuccessMessage(string _presentationSuccessMessage)
+        {
+            presentationSuccessMessage = _presentationSuccessMessage;
+        }
+
+        public void PresentationFailedMessage(string _presentationFailedMessage)
+        {
+            presentationFailedMessage = _presentationFailedMessage;
+        }
+
+        void ShowPresentationStatusMessage(bool isPresentationSuccess)
+        {
+            if (presentationStatusText != null)
+            {
+                if (isPresentationSuccess)
+                    presentationStatusText.text = presentationSuccessMessage;
+                else
+                    presentationStatusText.text = presentationFailedMessage;
+            }
+            else
+            {
+                Debug.LogError("presentationStatusText is not assigned");
+            }
         }
     }
 }
