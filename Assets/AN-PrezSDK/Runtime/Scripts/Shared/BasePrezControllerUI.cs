@@ -21,6 +21,7 @@ namespace AfterNow.PrezSDK.Shared
         public Action nextStep;
         public Action nextSlide;
         public Action previousSlide;
+        public Action quit;
         public Action<string> onAuthorizationFailed;
         public Action<string> onAuthorizationSucceeded;
 
@@ -71,6 +72,11 @@ namespace AfterNow.PrezSDK.Shared
         public void PreviousSlide()
         {
             previousSlide?.Invoke();
+        }
+
+        public void Quit()
+        {
+            quit?.Invoke();
         }
 
         public void PresentationSuccessMessage(string _presentationSuccessMessage)

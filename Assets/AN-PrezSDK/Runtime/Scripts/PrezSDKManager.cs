@@ -105,6 +105,7 @@ class PrezSDKManager : MonoBehaviour
         baseControllerUI.nextStep += Next_Step;
         baseControllerUI.nextSlide += Next_Slide;
         baseControllerUI.previousSlide += Previous_Slide;
+        baseControllerUI.quit += Quit;
         baseControllerUI.onAuthorizationSucceeded += AuthenticationSuccess;
         baseControllerUI.onAuthorizationFailed += AuthenticationFailed;
 #endif
@@ -117,6 +118,7 @@ class PrezSDKManager : MonoBehaviour
         baseControllerUI.nextStep -= Next_Step;
         baseControllerUI.nextSlide -= Next_Slide;
         baseControllerUI.previousSlide -= Previous_Slide;
+        baseControllerUI.quit -= Quit;
         baseControllerUI.onAuthorizationSucceeded -= AuthenticationSuccess;
         baseControllerUI.onAuthorizationFailed -= AuthenticationFailed;
 #endif
