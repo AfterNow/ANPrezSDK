@@ -53,7 +53,6 @@ class PrezSDKManager : MonoBehaviour
     public static PrezSDKManager _instance = null;
     [HideInInspector] public PresentationManager _manager;
     public static Dictionary<string, GameObject> prezAssets = new Dictionary<string, GameObject>();
-
     #endregion
 
     #region UI
@@ -84,6 +83,8 @@ class PrezSDKManager : MonoBehaviour
 
     public static event Action OnPresentationEnded;
     public static event Action<bool> OnPresentationSuccess;
+    public static event Action<SlideStatusUpdate> OnSlideStatusUpdate;
+    public static event Action<int> OnSlideChange;
     #endregion
 
     #region enums
@@ -708,7 +709,7 @@ class PrezSDKManager : MonoBehaviour
         UpdateSlideCount();
         //Debug.Log("LOADING SLIDE");
 #if PREZ_SDK_UI
-
+        OnSlideStatusUpdate(SlideStatusUpdate.LOADING);
 #else
         baseController.Callback_OnSlideStatusUpdate(AfterNow.PrezSDK.Shared.Enums.SlideStatusUpdate.LOADING);
 #endif
@@ -718,7 +719,7 @@ class PrezSDKManager : MonoBehaviour
             yield return null;
         }
 #if PREZ_SDK_UI
-
+        OnSlideStatusUpdate(SlideStatusUpdate.LOADED);
 #else
         baseController.Callback_OnSlideStatusUpdate(AfterNow.PrezSDK.Shared.Enums.SlideStatusUpdate.LOADED);
 #endif
@@ -808,6 +809,7 @@ class PrezSDKManager : MonoBehaviour
     void UpdateSlideCount()
     {
 #if PREZ_SDK_UI
+        OnSlideChange(PrezStates.CurrentSlide + 1);
 #else
         baseController.Callback_OnSlideChange(PrezStates.CurrentSlide + 1);
 #endif

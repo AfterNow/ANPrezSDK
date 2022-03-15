@@ -14,7 +14,8 @@ namespace AfterNow.PrezSDK.Shared
     {
         public TMP_InputField presentationIdInput;
         public TMP_Text presentationStatusText;
-
+        public TMP_Text currentSlideNumberText;
+        public TMP_Text slideStatusText;
         public Func<string, bool> loadPresentationFromId;
         public Action<PresentationJoinStatus, string> onPresentationJoin;
         public Action<bool> onAuthorized;
@@ -31,6 +32,8 @@ namespace AfterNow.PrezSDK.Shared
         private void OnEnable()
         {
             PrezSDKManager.OnPresentationSuccess += ShowPresentationStatusMessage;
+            PrezSDKManager.OnSlideStatusUpdate += ShowSlideStatusMessage;
+            PrezSDKManager.OnSlideChange += ShowCurrentSlideNumber;
         }
 
         public void LoadPresentationFromId()
@@ -102,6 +105,16 @@ namespace AfterNow.PrezSDK.Shared
             {
                 Debug.LogError("presentationStatusText is not assigned");
             }
+        }
+
+        void ShowSlideStatusMessage(SlideStatusUpdate slideStatusUpdate)
+        {
+            slideStatusText.text = slideStatusUpdate.ToString();
+        }
+
+        void ShowCurrentSlideNumber(int currentSlideNumber)
+        {
+            currentSlideNumberText.text = currentSlideNumber.ToString();
         }
     }
 }
