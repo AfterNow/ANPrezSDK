@@ -81,8 +81,7 @@ class PrezSDKManager : MonoBehaviour
 
     #region public events
 
-    public static event Action OnPresentationEnded;
-    public static event Action<bool> OnPresentationSuccess;
+    public static event Action<PresentationStatus> OnPresentationStatus;
     public static event Action<SlideStatusUpdate> OnSlideStatusUpdate;
     public static event Action<int> OnSlideChange;
     #endregion
@@ -97,6 +96,12 @@ class PrezSDKManager : MonoBehaviour
         NextSlide = 1
     }
 
+    public enum PresentationStatus
+    {
+        SUCCESS,
+        FAILURE,
+        ENDED
+    }
     #endregion
 
     private void OnEnable()
@@ -207,7 +212,7 @@ class PrezSDKManager : MonoBehaviour
             targetSlide = 0;
             slideIdx = -1;
 #if PREZ_SDK_UI
-
+            OnPresentationStatus(PresentationStatus.ENDED);
 #else
             baseController.Callback_OnPresentationEnd();
 #endif
@@ -641,11 +646,11 @@ class PrezSDKManager : MonoBehaviour
         {
             if (int.TryParse(presentationID.Trim(), out int integerPresentationID))
             {
-                OnPresentationSuccess(true);
+                OnPresentationStatus(PresentationStatus.SUCCESS);
             }
             else
             {
-                OnPresentationSuccess(false);
+                OnPresentationStatus(PresentationStatus.FAILURE);
             }
         }
 

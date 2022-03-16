@@ -1062,7 +1062,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 603285796}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -1092,6 +1092,18 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 148702751}
         m_TargetAssemblyTypeName: AfterNow.PrezSDK.Shared.BasePrezControllerUI, Assembly-CSharp
+        m_MethodName: PresentationEndedMessage
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: End of presentation
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 148702751}
+        m_TargetAssemblyTypeName: AfterNow.PrezSDK.Shared.BasePrezControllerUI, Assembly-CSharp
         m_MethodName: OnAuthorizationSucceeded
         m_Mode: 5
         m_Arguments:
@@ -1099,7 +1111,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Authorization Success
+          m_StringArgument: Authorization success
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 148702751}
@@ -1111,7 +1123,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Authorization Failed
+          m_StringArgument: Authorization failed
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 148702751}
@@ -1243,7 +1255,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 700102656}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -1696,7 +1708,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 1008710610}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -2895,7 +2907,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 2022350047}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:

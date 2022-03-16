@@ -28,10 +28,11 @@ namespace AfterNow.PrezSDK.Shared
 
         string presentationSuccessMessage = string.Empty;
         string presentationFailedMessage = string.Empty;
+        string presentationEndedMessage = string.Empty;
 
         private void OnEnable()
         {
-            PrezSDKManager.OnPresentationSuccess += ShowPresentationStatusMessage;
+            PrezSDKManager.OnPresentationStatus += ShowPresentationStatusMessage;
             PrezSDKManager.OnSlideStatusUpdate += ShowSlideStatusMessage;
             PrezSDKManager.OnSlideChange += ShowCurrentSlideNumber;
         }
@@ -92,14 +93,29 @@ namespace AfterNow.PrezSDK.Shared
             presentationFailedMessage = _presentationFailedMessage;
         }
 
-        void ShowPresentationStatusMessage(bool isPresentationSuccess)
+        public void PresentationEndedMessage(string _presentationEndedMessage)
+        {
+            presentationEndedMessage = _presentationEndedMessage;
+        }
+
+        void ShowPresentationStatusMessage(PrezSDKManager.PresentationStatus presentationStatus)
         {
             if (presentationStatusText != null)
             {
-                if (isPresentationSuccess)
-                    presentationStatusText.text = presentationSuccessMessage;
-                else
-                    presentationStatusText.text = presentationFailedMessage;
+                switch (presentationStatus)
+                {
+                    case PrezSDKManager.PresentationStatus.SUCCESS:
+                        presentationStatusText.text = presentationSuccessMessage;
+                        break;
+                    case PrezSDKManager.PresentationStatus.FAILURE:
+                        presentationStatusText.text = presentationFailedMessage;
+                        break;
+                    case PrezSDKManager.PresentationStatus.ENDED:
+                        presentationStatusText.text = presentationEndedMessage;
+                        break;
+                    default:
+                        break;
+                }
             }
             else
             {
