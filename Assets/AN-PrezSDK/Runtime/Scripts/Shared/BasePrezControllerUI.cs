@@ -125,7 +125,7 @@ namespace AfterNow.PrezSDK.Shared
 
         void ShowSlideStatusMessage(SlideStatusUpdate slideStatusUpdate)
         {
-            slideStatusText.text = slideStatusUpdate.ToString();
+            slideStatusText.text = "Slide " + slideStatusUpdate.ToString().ToLower();
         }
 
         void ShowCurrentSlideNumber(int currentSlideNumber)

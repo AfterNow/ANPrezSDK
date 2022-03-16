@@ -636,12 +636,13 @@ class PrezSDKManager : MonoBehaviour
 
     public bool OnStartPresentation(string presentationID)
     {
+#if PREZ_SDK_UI
+
         if (!isAuthenticationSuccess)
         {
             Debug.Log("Access Denied");
             return false;
         }
-
         if (!string.IsNullOrEmpty(presentationID))
         {
             if (int.TryParse(presentationID.Trim(), out int integerPresentationID))
@@ -653,7 +654,9 @@ class PrezSDKManager : MonoBehaviour
                 OnPresentationStatus(PresentationStatus.FAILURE);
             }
         }
+#else
 
+#endif
         Debug.Log("Presentation ID : " + presentationID);
 
         slideIdx = -1;
