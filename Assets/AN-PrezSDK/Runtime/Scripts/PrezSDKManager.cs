@@ -176,6 +176,9 @@ class PrezSDKManager : MonoBehaviour
 
         prezAssets.Clear();
         _manager._location = null;
+
+        //Remove PresentationManager from the presentationAnchorOverride
+        Destroy(presentationAnchorOverride.GetComponent<PresentationManager>());
     }
 
 
