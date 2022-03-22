@@ -383,29 +383,16 @@ class PrezSDKManager : MonoBehaviour
         }
         else if (targetSlideIdx == _manager._location.slides.Count)
         {
-            /*if (targetSlideIdx != _manager._location.slides.Count)
-                slideIdx = targetSlideIdx;*/
-            // Last slide, let it do the transition..
-            //if (currentSlide != null)
-            //{
-            /*shouldTrySync = false;
+            if (targetSlideIdx != _manager._location.slides.Count)
+                slideIdx = targetSlideIdx;
+            //Last slide, let it do the transition..
+
+            shouldTrySync = false;
             StopSlide(false, () =>
             {
                 isPlaying = false;
-                AppManager.Instance.slideNo.Value = 0;
-                eventUpdatePresValues();
-                eventUpdateMenuLayout(AppManager.Instance.appMode);
-                if (AppManager.Instance.isPresenter && AppNetworkController.Instance.channel.Value != null)
-                {
-                    AppNetworkController.Instance.SelectPresentationMode(AppManager.Instance.presentationState.Value);
-                }
                 CanReset = true;
-            });*/
-            //}
-            /*else if (shouldTrySync)
-            {
-                SyncSlide(targetSlideIdx, progressionType);
-            }*/
+            });
         }
         else
         {
