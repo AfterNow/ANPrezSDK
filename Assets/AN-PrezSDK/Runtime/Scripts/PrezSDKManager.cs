@@ -263,6 +263,9 @@ class PrezSDKManager : MonoBehaviour
         //Terminate the asset loading process
         AssetLoader.StopLoadingAssets();
 
+        //Cleanup assetbundles
+        AssetBundleManager.Cleanup();
+
         //Destroy the already loaded assets
         previousSlide.DestroyLoadedObjects();
 
