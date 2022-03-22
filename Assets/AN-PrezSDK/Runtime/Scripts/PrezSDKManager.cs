@@ -239,7 +239,7 @@ class PrezSDKManager : MonoBehaviour
     {
         if (isPlaying)
         {
-            if (!animationTimeline.FirstElementAutomatic && LastPlayedPoint == -1)
+            if (!animationTimeline.FirstElementAutomatic)
             {
                 SlidePoint = 0;
                 LastPlayedPoint = animationTimeline.Play(SlidePoint);
