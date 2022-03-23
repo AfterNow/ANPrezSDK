@@ -78,18 +78,7 @@ public class PresentationManager : MonoBehaviour
         PrezAPIHelper.StopDownload();
 
         //delete files
-        DirectoryInfo directoryInfo = new DirectoryInfo(InitializeSDK.DownloadFolderPath);
-
-        foreach (var item in directoryInfo.EnumerateFiles())
-        {
-            item.Delete();
-        }
-
-        foreach (var item in directoryInfo.EnumerateDirectories())
-        {
-            item.Delete(true);
-        }
-
+        PrezSDKManager.DeleteDownloadedFiles();
     }
 
     public class LoadedSlide
