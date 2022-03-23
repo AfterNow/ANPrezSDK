@@ -1,10 +1,13 @@
 
-ANPrez SDK
-============
+# ANPrez SDK
 
+## Compatible Unity Versions
 Unity 2020.3.11f1, 2021.2.2f1
 
-ANPrez SDK can be downloaded by either a UnityPackage or directly from the Package Manager.
+ANPrez SDK can be downloaded by either a UnityPackage or directly from the Package Manager using the SDK's git URL.
+
+## Steps to setup ANPrez SDK in your Unity project
+### Common steps
 
 1.  Create an empty project in Unity
 
@@ -12,91 +15,88 @@ ANPrez SDK can be downloaded by either a UnityPackage or directly from the Packa
 
 ![Import TMP](images/image10.png)
 
-3.  Search for ‘Brandon-Regular Material’ in the Project. If the shader is pink i.e ‘Hidden/InternalErrorShader’ like in the below Fig 1, then click on dropdown and select ‘TextMeshPro/DistanceField’ like in Fig 2.
-
-![Update Shader](images/image9.png)
-
-Fig 1
-
-![](images/image18.png)
-
-Fig 2
-
-4.  Click Import when the import dialog opens
+3.  Click Import when the import dialog opens
 
 ![Import Package](images/image5.png)
 
-Steps to import ANPrez SDK
-==========================
+4. Restart the Unity Editor to finish TextMeshPro configuration
 
-Using ANPrezSDK.unitypackage
-----------------------------
+5. Import "Burst" package from PackageManager. Change the "Packages" to "UnityRegistry" like in below image and click install.
 
-5.  Import “PrezSDK.unitypackage” into the project by either drag and drop or Assets-Import Package-Custom Package and selecting the package. When the import dialog opens, make sure everything is selected and click “Import”
+![Import Package](images/ImportBurst.png)
+
+
+## Using ANPrezSDK.unitypackage
+
+Import “PrezSDK.unitypackage” into the project by either drag and drop or Assets-Import Package-Custom Package and selecting the package. When the import dialog opens, make sure everything is selected and click “Import”
 
 ![Import PrezSDK package](images/image6.png)
 
-Using Package Manager
----------------------
+## Using Package Manager
 
 Users can import ANPrezSDK in to their projects using the git URL i.e [https://github.com/AfterNow/ANPrezSDK.git](https://www.google.com/url?q=https://github.com/AfterNow/ANPrezSDK.git&sa=D&source=editors&ust=1644002252952449&usg=AOvVaw0EhSYsVmkgdTDpso5PGuR-)
 
 ![Import PrezSDK from URL](images/image14.png)
 
-6.  In Unity, go to Window-Package Manager and click on the ‘+’ button. Here you will see options to load the package using
+In Unity, go to Window-Package Manager and click on the ‘+’ button. Here you will see options to load the package using
 
-1.  #### Add package from disk
-    
+### **Add package from disk**
 
 If the user has downloaded the SDK directly to their computer, select ‘package.json’ from Packages/com.afternow.anprezsdk/
 
-2.  #### Add package from tarball
-    
+### **Add package from tarball**
 
 Select the ‘ANPrezSDK.tgz’ or ‘ANPrezSDK.tar.gz’ file
 
-3.  #### Add package from git URL
-    
+### **Add package from git URL**
 
 Insert the git URL into the field. Make sure the link is valid by opening in the web browser once. Click ‘Add’ after inserting the URL.
 
 ![Enter URL of PrezSDK git](images/image17.png)
 
-7.  Once the package is imported using any of the above mentioned methods, package details will be visible in the Package Manager like in the image below.
+Once the package is imported using any of the above mentioned methods, package details will be visible in the Package Manager like in the image below.
 
 ![Verify PrezSDK information](images/image16.png)
 
-8.  In the above image the User can see
+In the above image the User can see
 
-View Documentation - Clicking this opens up web browser displaying the documentation of the SDK
+*View Documentation* - Clicking this opens up web browser displaying the documentation of the SDK
 
-View Changelog - Clicking this opens up the SDK’s changelog in a web browser where User can see the changes provided in the new version of SDK.
+*View Changelog* - Clicking this opens up the SDK’s changelog in a web browser where User can see the changes provided in the new version of SDK.
 
-View Licenses - Clicking this opens up a license document
+*View Licenses* - Clicking this opens up a license document
 
-Description - Description about the purpose of the SDK and what can it offer
+*Description* - Description about the purpose of the SDK and what can it offer
 
-Installed from - Git URL using which the package has been downloaded
+*Installed from* - Git URL using which the package has been downloaded
 
-Sample Projects - Links to download sample projects  provided. User can download them to respective to their platform of choice
+*Sample Projects* - Links to download sample projects  provided. User can download them to respective to their platform of choice
 
-9.  Once the package is imported successfully, you will see the package contents in the “AN-PrezSDK“ folder like in the below image
+Once the package is imported successfully, you will see the package contents in the “AN-PrezSDK“ folder like in the below image
 
 ![PrezSDK folder structure](images/image12.png)
 
-10.  Open “SDK” scene which is in Assets\\Scripts\\SDK\\Unity\\Scenes
+Open *ExampleScene* scene which is in Assets\AN-PrezSDK\Runtime\Examples\UI_Control
 
-11.  This is how the hierarchy of the “SDK” scene looks like :
+This is how the hierarchy of the *ExampleScene* scene looks like :
 
 ![PrezSDK Sample scene](images/image15.png)
 
-12.  The gameobject “AnPrezSDK” has a script called “PrezSDKManager”. This script is responsible for loading the presentation. If you select the “AnPrezSDK” gameobject, you can see there are some fields in the “PrezSDKManager” component in the inspector panel.
+The gameobject **PrezSDKManager** has a script called **PrezSDKManager**. This script is responsible for loading the presentation. If you select the **PrezSDKManager** gameobject, you can see there are some fields in the **PrezSDKManager** component in the inspector panel.
 
 ![PrezSDK main prefab](images/image11.png)
 
-13.  The UI for importing a presentation looks like this in “SDK” scene :
+## UI
+The UI inside the SDK consists of 3 types of menus
 
-![PrezSDK sample UI](images/image1.png)
+### User Login Menu
+![PrezSDK sample UI](images/UserLoginMenu.png)
+
+### Load Presentation Menu
+![PrezSDK sample UI](images/LoadPresentationMenu.png)
+
+### Play Presentation Menu
+![PrezSDK sample UI](images/PlayPresentationMenu.png)
 
 ### UI Elements
 
@@ -116,15 +116,15 @@ Current Slide - Displays current slide serial number
 
 Quit \- Quits presentation and returns to the login UI
 
-14.  Go to Play mode. Enter a presentation ID in the “Presentation ID” input field and hit “Load Presentation” button
+## Usage
+* Login using the user credentials
+* Go to Play mode. Enter a presentation ID in the “Presentation ID” input field and hit “Load Presentation” button
 
-![](images/image3.png)
+![](images/Sample_LoadPresentationMenu.png)
 
-15.  Navigate through the presentation using the ‘Previous Slide’, ‘Next Slide’ and ‘Next Step’ buttons.
+* Navigate through the presentation using the ‘Previous Slide’, ‘Next Slide’ and ‘Next Step’ buttons.
 
-![](images/image8.png)
-
-![](images/image13.png)
+![](images/Sample_PlayPresentationMenu.png)
 
 Issue Handling
 ==============
@@ -133,12 +133,7 @@ Issue Handling
 
 ![](images/image4.png)
 
-2.  If using Universal Render Pipeline (URP) in the project and if any glb models turns purple on Quest, try adding the below shaders from the glTFast folder of the SDK (Fig 1) to the ‘Always Included Shaders’ list of ‘Graphics’ settings in Unity (Fig 2).
+2. Incase if any UI elements seems to be not working, make sure to import the **TextMeshPro Essentials** package from the Window->TextMeshPro->Import TMP Essential Resources wizard 
+(This wizard will also automatically opens when the user drag and drops the 'ExampleController' prefab in to the scene)
 
-![](images/image7.png)
-
-Fig 1
-
-![](images/image2.png)
-
-Fig 2
+3. Incase if the UI seems to be not responding to user clicks, make sure there is an 'EventSystem' in the scene if not already present.
