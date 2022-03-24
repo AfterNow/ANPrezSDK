@@ -1,9 +1,10 @@
 ﻿namespace AfterNow.PrezSDK.Shared.Enums
 {
-    public enum PresentationJoinStatus
+    public enum PresentationStatus
     {
         FAILED = -1,
         WAITING,
-        SUCCESS
+        SUCCESS,
+        ENDED
     }
 }

@@ -1,22 +1,41 @@
 ﻿using AfterNow.PrezSDK.Shared.Enums;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 
 namespace AfterNow.PrezSDK.Shared
 {
-    public abstract class BasePrezController : MonoBehaviour
+    /// <summary>
+    /// Base script of the AN-Prez SDK which has the callbacks and functions which has to be derived by the user's custom script
+    /// </summary>
+    public abstract class BaseController : MonoBehaviour
     {
-        /// <summary>
-        /// Call this function with Presentation ID after Authorization is successful.
-        /// Returns false if presentation cannot be joined at the moment. 
-        /// Returns true if the request has been taken into consideration.
-        /// </summary>
-        /// <param name="presentationID"></param>
-        /// <returns></returns>
-        public bool JoinPresentationSafe(string presentationID)
-        {
-            return _onJoinPresentation(presentationID);
-        }
+        #region public events
+        public Func<string, bool> _onJoinPresentation;
+        public Action _nextStep;
+        public Action _nextSlide;
+        public Action _previousSlide;
+        public Action _quit;
+        #endregion
+
+        #region public variables
+        public TMP_InputField presentationIdInput;
+        public TMP_Text presentationLoadStatusText;
+        public string userEmailId;
+        public string userPassword;
+        public string defaultPresentationID;
+        public TMP_InputField userEmailIdInput;
+        public TMP_InputField userPasswordInput;
+        public TMP_Text presentationIDText;
+        public TMP_Text currentSlideNumberText;
+        public TMP_Text userLoginStatusText;
+        public TMP_Text slideLoadingStatusText;
+
+        #endregion
 
         /// <summary>
         /// Call this function with Presentation ID after authorization is successful.
@@ -61,12 +80,11 @@ namespace AfterNow.PrezSDK.Shared
             _quit();
         }
 
-
         /// <summary>
         /// This callback is invoked automatically after the presentation has been joined. 
         /// </summary>
         /// <param name="result"></param>
-        public abstract void Callback_OnPresentationJoin(PresentationJoinStatus joinStatus, string presentationID);
+        public abstract void Callback_OnPresentationJoin(PresentationStatus joinStatus, string presentationID);
 
         /// <summary>
         /// This callback is invoked if the user has entered their login credentials. 
@@ -83,7 +101,6 @@ namespace AfterNow.PrezSDK.Shared
         /// </summary>
         public abstract void Callback_OnPresentationFailed(string presentationFailedReason);
 
-
         /// <summary>
         /// This callback is invoked if a presentation fails to load. 
         /// </summary>
@@ -95,29 +112,22 @@ namespace AfterNow.PrezSDK.Shared
         /// <param name="result"></param>
         public abstract void Callback_OnAuthorized(bool result);
 
-
         /// <summary>
         /// This callback is invoked when the presentation ends
         /// </summary>
-        public virtual void Callback_OnPresentationEnd()
-        {
-        }
+        public abstract void Callback_OnPresentationEnd();
 
         /// <summary>
         /// This callback is invoked when the new slide status is updated
         /// </summary>
         /// <param name="slideStatus"></param>
-        public virtual void Callback_OnSlideStatusUpdate(SlideStatusUpdate slideStatus)
-        {
-        }
+        public abstract void Callback_OnSlideStatusUpdate(SlideStatusUpdate slideStatus);
 
         /// <summary>
         /// This callback is invoked when the slide is changed
         /// </summary>
         /// <param name="newSlide"></param>
-        public virtual void Callback_OnSlideChange(int newSlide)
-        {
-        }
+        public abstract void Callback_OnSlideChange(int newSlide);
 
         /// <summary>
         /// This callback is invoked when any of the asset in presentation fails to load
@@ -136,7 +146,7 @@ namespace AfterNow.PrezSDK.Shared
         /// <param name="nextStep"></param>
         /// <param name="nextSlide"></param>
         /// <param name="previousSlide"></param>
-        internal void AssignEvents(Func<string,bool> onJoinPresentation, Action nextStep, Action nextSlide, Action previousSlide, Action quit)
+        internal void AssignEvents(Func<string, bool> onJoinPresentation, Action nextStep, Action nextSlide, Action previousSlide, Action quit)
         {
             _onJoinPresentation = onJoinPresentation;
             _nextSlide = nextSlide;
@@ -144,11 +154,5 @@ namespace AfterNow.PrezSDK.Shared
             _previousSlide = previousSlide;
             _quit = quit;
         }
-
-        private Func<string, bool> _onJoinPresentation;
-        private Action _nextStep;
-        private Action _nextSlide;
-        private Action _previousSlide;
-        private Action _quit;
     }
 }
