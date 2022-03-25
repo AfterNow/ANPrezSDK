@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+namespace AfterNow.PrezSDK
+{
     public static class PrezAssetHelper
     {
         private static readonly Dictionary<string, TMP_FontAsset> LoadedFontAssets = new Dictionary<string, TMP_FontAsset>();
@@ -70,14 +72,14 @@ using UnityEngine;
         public static Texture2D GetBackgroundTexture(this Slide slide)
         {
             if (slide.BackgroundTexture == null) return null;
-            if(slide.BackgroundTexture is Texture2D tex)
+            if (slide.BackgroundTexture is Texture2D tex)
             {
                 return tex;
             }
             return null;
         }
 
-        public static void UpdateItemTransform(this ARPAsset asset,Transform newTransform)
+        public static void UpdateItemTransform(this ARPAsset asset, Transform newTransform)
         {
             if (asset.itemTransform == null)
             {
@@ -122,7 +124,7 @@ using UnityEngine;
         }
 
 
-        public static void SetTransform(this ItemTransform item,Transform transform)
+        public static void SetTransform(this ItemTransform item, Transform transform)
         {
             item.position = item.position.SetVector(transform.localPosition);
             item.rotation = item.rotation.SetQuaternion(transform.localRotation);
@@ -189,4 +191,4 @@ using UnityEngine;
             return replacement;
         }
     }
-
+}

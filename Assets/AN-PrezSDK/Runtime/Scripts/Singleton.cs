@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 
+namespace AfterNow.PrezSDK
+{
     /// <summary>
     /// Be aware this will not prevent a non singleton constructor
     ///   such as `T myT = new T();`
@@ -77,3 +79,4 @@
             applicationIsQuitting = true;
         }
     }
+}

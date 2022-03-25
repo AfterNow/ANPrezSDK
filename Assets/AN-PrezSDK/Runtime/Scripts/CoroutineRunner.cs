@@ -1,8 +1,11 @@
-﻿using System;
+﻿using AfterNow.PrezSDK;
+using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using UnityEngine;
 
+namespace AfterNow.PrezSDK
+{
     public class CoroutineRunner : Singleton<CoroutineRunner>
     {
         private static readonly ConcurrentQueue<Action> _executionQueue = new ConcurrentQueue<Action>();
@@ -100,3 +103,4 @@ using UnityEngine;
             else CoroutineRunner.Instance.StopCoroutine(coroutine);
         }
     }
+}

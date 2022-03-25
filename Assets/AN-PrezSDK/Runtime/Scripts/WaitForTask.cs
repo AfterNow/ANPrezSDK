@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
 using UnityEngine;
 
+namespace AfterNow.PrezSDK
+{
     public class WaitForTask : CustomYieldInstruction
     {
         public override bool keepWaiting => !_task.IsCompleted;
@@ -10,3 +12,4 @@ using UnityEngine;
             _task = task;
         }
     }
+}

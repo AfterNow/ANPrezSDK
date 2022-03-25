@@ -6,216 +6,219 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class AnimationTimeline
+namespace AfterNow.PrezSDK
 {
-    public List<AnimationGroup> animationGroups = new List<AnimationGroup>();
-
-    private AnimationGroup currentGroup;
-    public event Action<AnimationTimeline> OnTimelineComplete;
-    public event Action<AnimationGroup> OnGroupCompleted;
-    public readonly bool FirstElementAutomatic;
-    public readonly bool FirstElementHasTransitionAnimation;
-    int currentPlayingIndex;
-
-    public AnimationTimeline(List<AnimationGroup> pAnimationGroups)
+    public class AnimationTimeline
     {
-        // Make sure AnimationGroupComplete gets called when any animation group completes
-        animationGroups = pAnimationGroups;
+        public List<AnimationGroup> animationGroups = new List<AnimationGroup>();
 
-        if (animationGroups.Count > 0 && animationGroups[0].animations.Count > 0 && animationGroups[0].animations[0].model.startType == AnimationStartType.Automatically)
-        {
-            FirstElementAutomatic = true;
-        }
-        if (animationGroups.Count > 0 && animationGroups[0].animations.Count > 0)
-        {
-            var anim = animationGroups[0].animations[0].model.animation;
-            if (anim == AnimationType.None || anim == AnimationType.Appear)
-                FirstElementHasTransitionAnimation = false;
-            else FirstElementHasTransitionAnimation = true;
-        }
+        private AnimationGroup currentGroup;
+        public event Action<AnimationTimeline> OnTimelineComplete;
+        public event Action<AnimationGroup> OnGroupCompleted;
+        public readonly bool FirstElementAutomatic;
+        public readonly bool FirstElementHasTransitionAnimation;
+        int currentPlayingIndex;
 
-        foreach (AnimationGroup ag in animationGroups)
+        public AnimationTimeline(List<AnimationGroup> pAnimationGroups)
         {
-            //Debug.Log("ag.onGroupComplete += AnimationGroupCompleted");
-            ag.onGroupComplete += AnimationGroupCompleted;
-        }
-    }
+            // Make sure AnimationGroupComplete gets called when any animation group completes
+            animationGroups = pAnimationGroups;
 
-    private void AnimationGroupCompleted(AnimationGroup pAnimationGroup)
-    {
-        //Debug.Log("AnimationGroupCompleted");
-        /*        Debug.Log("~ animation group completed" + animationGroups.IndexOf(pAnimationGroup));
-        */        // Once an animation group completes, the next group either plays automatically or waits on command
-                  //UnityEngine.Debug.LogError("Animation group complete:"+$"{pAnimationGroup.GroupIndex} : {animationGroups.Count}");
-        OnGroupCompleted?.Invoke(pAnimationGroup);
-
-        int justPlayedIdx = pAnimationGroup.GroupIndex;
-        if (justPlayedIdx + 1 >= animationGroups.Count)
-        {
-            /*            Debug.Log("FINISHED");
-            */
-            currentGroup = null;
-            if (OnTimelineComplete != null)
+            if (animationGroups.Count > 0 && animationGroups[0].animations.Count > 0 && animationGroups[0].animations[0].model.startType == AnimationStartType.Automatically)
             {
-                OnTimelineComplete.Invoke(this);
+                FirstElementAutomatic = true;
             }
-            return;
-        }
-        AnimationGroup nextAnimationGroup = animationGroups[justPlayedIdx + 1];
-
-        if (nextAnimationGroup == null)
-        {
-            /*            Debug.Log("~ last animation group");
-            */
-            // Last animation group just finished
-            return;
-        }
-
-        currentGroup = nextAnimationGroup;
-        currentPlayingIndex = justPlayedIdx + 1;
-
-        if (nextAnimationGroup.animations[0].model.startType == AnimationStartType.AfterPreviousAnim)
-        {
-            /*            Debug.Log("~ next group automatic");
-            */
-            currentGroup = nextAnimationGroup;
-            // Play animation group automatically since first animation plays automatically
-            nextAnimationGroup.Play();
-
-        }
-        else if (nextAnimationGroup.animations[0].model.startType == AnimationStartType.OnCommand)
-        {
-            /*            Debug.Log("~ next group on command");
-            */
-            // Wait for on command since first animation plays on command
-        }
-    }
-
-    /// <summary>
-    /// Returns false when stuck at 
-    /// </summary>
-    /// <param name="pointNum"></param>
-    /// <returns></returns>
-    public int Play(int pointNum, bool nextStep = true)
-    {
-        if (pointNum < 0)
-        {
-            if (!FirstElementAutomatic)
+            if (animationGroups.Count > 0 && animationGroups[0].animations.Count > 0)
             {
-                Reset();
-                return -1;
+                var anim = animationGroups[0].animations[0].model.animation;
+                if (anim == AnimationType.None || anim == AnimationType.Appear)
+                    FirstElementHasTransitionAnimation = false;
+                else FirstElementHasTransitionAnimation = true;
             }
-            else pointNum = 0;
+
+            foreach (AnimationGroup ag in animationGroups)
+            {
+                //Debug.Log("ag.onGroupComplete += AnimationGroupCompleted");
+                ag.onGroupComplete += AnimationGroupCompleted;
+            }
         }
 
-        AnimationGroup groupToFinish = null;
-        AnimationGroup groupToPlay = null;
-        bool stopAudio = true;
-        for (int i = 0; i < animationGroups.Count; i++)
+        private void AnimationGroupCompleted(AnimationGroup pAnimationGroup)
         {
-            if (pointNum == i)
-            {
+            //Debug.Log("AnimationGroupCompleted");
+            /*        Debug.Log("~ animation group completed" + animationGroups.IndexOf(pAnimationGroup));
+            */        // Once an animation group completes, the next group either plays automatically or waits on command
+                      //UnityEngine.Debug.LogError("Animation group complete:"+$"{pAnimationGroup.GroupIndex} : {animationGroups.Count}");
+            OnGroupCompleted?.Invoke(pAnimationGroup);
 
-                currentPlayingIndex = i;
-                currentGroup = animationGroups[i];
-                if (currentGroup.isPlaying)
+            int justPlayedIdx = pAnimationGroup.GroupIndex;
+            if (justPlayedIdx + 1 >= animationGroups.Count)
+            {
+                /*            Debug.Log("FINISHED");
+                */
+                currentGroup = null;
+                if (OnTimelineComplete != null)
                 {
-                    //Debug.LogError("Finishing group"); 
-                    if (!nextStep)
+                    OnTimelineComplete.Invoke(this);
+                }
+                return;
+            }
+            AnimationGroup nextAnimationGroup = animationGroups[justPlayedIdx + 1];
+
+            if (nextAnimationGroup == null)
+            {
+                /*            Debug.Log("~ last animation group");
+                */
+                // Last animation group just finished
+                return;
+            }
+
+            currentGroup = nextAnimationGroup;
+            currentPlayingIndex = justPlayedIdx + 1;
+
+            if (nextAnimationGroup.animations[0].model.startType == AnimationStartType.AfterPreviousAnim)
+            {
+                /*            Debug.Log("~ next group automatic");
+                */
+                currentGroup = nextAnimationGroup;
+                // Play animation group automatically since first animation plays automatically
+                nextAnimationGroup.Play();
+
+            }
+            else if (nextAnimationGroup.animations[0].model.startType == AnimationStartType.OnCommand)
+            {
+                /*            Debug.Log("~ next group on command");
+                */
+                // Wait for on command since first animation plays on command
+            }
+        }
+
+        /// <summary>
+        /// Returns false when stuck at 
+        /// </summary>
+        /// <param name="pointNum"></param>
+        /// <returns></returns>
+        public int Play(int pointNum, bool nextStep = true)
+        {
+            if (pointNum < 0)
+            {
+                if (!FirstElementAutomatic)
+                {
+                    Reset();
+                    return -1;
+                }
+                else pointNum = 0;
+            }
+
+            AnimationGroup groupToFinish = null;
+            AnimationGroup groupToPlay = null;
+            bool stopAudio = true;
+            for (int i = 0; i < animationGroups.Count; i++)
+            {
+                if (pointNum == i)
+                {
+
+                    currentPlayingIndex = i;
+                    currentGroup = animationGroups[i];
+                    if (currentGroup.isPlaying)
                     {
+                        //Debug.LogError("Finishing group"); 
+                        if (!nextStep)
+                        {
+                            groupToPlay = currentGroup;
+                            ResetGroup(currentGroup);
+                        }
+                        else
+                        {
+                            groupToFinish = currentGroup;
+                            stopAudio = false; //never stop audio which is playing by air taps until slide change
+                        }
+                        i++;
+                    }
+                    else if (currentGroup.animations[0].model.startType == AnimationStartType.OnCommand || //iteration group waiting to be played
+                        pointNum == 0 && currentGroup.animations[0].model.startType == AnimationStartType.Automatically) //if first element and automatic
+                    {
+                        // Current group must be waiting on command to play
+                        /*            Debug.Log("PLAYING on comand group");
+                        */
                         groupToPlay = currentGroup;
-                        ResetGroup(currentGroup);
+                        //currentGroup.Play();
+                        //Debug.LogError("Play next group on command");
                     }
                     else
                     {
-                        groupToFinish = currentGroup;
-                        stopAudio = false; //never stop audio which is playing by air taps until slide change
+                        pointNum++;
+                        continue;
                     }
-                    i++;
                 }
-                else if (currentGroup.animations[0].model.startType == AnimationStartType.OnCommand || //iteration group waiting to be played
-                    (pointNum == 0 && currentGroup.animations[0].model.startType == AnimationStartType.Automatically)) //if first element and automatic
+                else if (i < pointNum)
                 {
-                    // Current group must be waiting on command to play
-                    /*            Debug.Log("PLAYING on comand group");
-                    */
-                    groupToPlay = currentGroup;
-                    //currentGroup.Play();
-                    //Debug.LogError("Play next group on command");
+                    if (!animationGroups[i].hasFinished)
+                    {
+                        animationGroups[i].Finish();
+                        Debug.Log("Finish1");
+                    }
                 }
                 else
                 {
-                    pointNum++;
-                    continue;
+                    ResetGroup(animationGroups[i]);
                 }
             }
-            else if (i < pointNum)
+
+            if (groupToFinish != null)
             {
-                if (!animationGroups[i].hasFinished)
-                {
-                    animationGroups[i].Finish();
-                    Debug.Log("Finish1");
-                }
+                groupToFinish.Finish(stopAudio);
+                //Debug.LogError("Force finishing group");
+                //Debug.Log("AnimationGroupCompleted(groupToFinish)");
+                AnimationGroupCompleted(groupToFinish); //when we go to previous step, we dont need to do finish callback
             }
-            else
+            else if (groupToPlay != null)
             {
-                ResetGroup(animationGroups[i]);
+                groupToPlay.Play();
             }
+            return pointNum;
         }
 
-        if (groupToFinish != null)
+        public void Reset()
         {
-            groupToFinish.Finish(stopAudio);
-            //Debug.LogError("Force finishing group");
-            //Debug.Log("AnimationGroupCompleted(groupToFinish)");
-            AnimationGroupCompleted(groupToFinish); //when we go to previous step, we dont need to do finish callback
+            foreach (var group in animationGroups)
+            {
+                ResetGroup(group);
+            }
+            currentGroup = null;
+            currentPlayingIndex = -1;
         }
-        else if (groupToPlay != null)
+
+        void ResetGroup(AnimationGroup group)
         {
-            groupToPlay.Play();
+            /*foreach (var anp in group.animations)
+            {
+                anp.Play(true, true);
+
+                GameObject go = GameObject.Find(anp.asset.FileName());
+                HideAndStop(go);
+                SetInitialTransform(go);
+            }
+            group.Reset();*/
         }
-        return pointNum;
+
+        //void HideAndStop(GameObject go)
+        //{
+        //    LeanTween.cancel(go);
+        //    if (PrezSDKManager.player != null)
+        //    {
+        //        PrezSDKManager.player.Stop();
+        //    }
+        //    /*else if (audioAsset != null)
+        //    {
+        //        audioAsset.Stop();
+        //    }*/
+        //    go.SetActive(false);
+        //}
+
+        //void SetInitialTransform(GameObject go)
+        //{
+
+        //}
     }
-
-    public void Reset()
-    {
-        foreach (var group in animationGroups)
-        {
-            ResetGroup(group);
-        }
-        currentGroup = null;
-        currentPlayingIndex = -1;
-    }
-
-    void ResetGroup(AnimationGroup group)
-    {
-        /*foreach (var anp in group.animations)
-        {
-            anp.Play(true, true);
-
-            GameObject go = GameObject.Find(anp.asset.FileName());
-            HideAndStop(go);
-            SetInitialTransform(go);
-        }
-        group.Reset();*/
-    }
-
-    //void HideAndStop(GameObject go)
-    //{
-    //    LeanTween.cancel(go);
-    //    if (PrezSDKManager.player != null)
-    //    {
-    //        PrezSDKManager.player.Stop();
-    //    }
-    //    /*else if (audioAsset != null)
-    //    {
-    //        audioAsset.Stop();
-    //    }*/
-    //    go.SetActive(false);
-    //}
-
-    //void SetInitialTransform(GameObject go)
-    //{
-
-    //}
 }
