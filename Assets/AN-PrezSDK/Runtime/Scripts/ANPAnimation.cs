@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace AfterNow.PrezSDK
 {
-    public class ANPAnimation
+    internal class ANPAnimation
     {
         public ARPAsset asset;
         public Action<ANPAnimation> callback;

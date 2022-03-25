@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace AfterNow.PrezSDK
 {
-    public class CoroutineRunner : Singleton<CoroutineRunner>
+    internal class CoroutineRunner : Singleton<CoroutineRunner>
     {
         private static readonly ConcurrentQueue<Action> _executionQueue = new ConcurrentQueue<Action>();
         private static readonly ConcurrentQueue<IEnumerator> _executionQueue1 = new ConcurrentQueue<IEnumerator>();
@@ -64,7 +64,7 @@ namespace AfterNow.PrezSDK
         }
     }
 
-    public static class CoroutineExtension
+    internal static class CoroutineExtension
     {
         /// <summary>
         /// Starts a coroutine on the MonoBehaviour of CoroutineRunner gameObject if MonoBehaviour param is null

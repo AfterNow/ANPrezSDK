@@ -1,7 +1,7 @@
 ﻿
 namespace AfterNow.PrezSDK.Internal.Views
 {
-    public static class PrezStates
+    internal static class PrezStates
     {
         public static Presentation Presentation;
 

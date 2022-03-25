@@ -3,7 +3,7 @@
 namespace AfterNow.PrezSDK
 {
     [Serializable]
-    public class CacheVersion
+    internal class CacheVersion
     {
         public DateTime lastModified;
         public DateTime expiryTime;

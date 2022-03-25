@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace AfterNow.PrezSDK
 {
-    public static class GLBLoader
+    internal static class GLBLoader
     {
         static readonly IDeferAgent _deferAgent;
         static readonly List<GltfImport> gltfImports = new List<GltfImport>();

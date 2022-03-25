@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace AfterNow.PrezSDK
 {
-    public class AnimationTimeline
+    internal class AnimationTimeline
     {
         public List<AnimationGroup> animationGroups = new List<AnimationGroup>();
 

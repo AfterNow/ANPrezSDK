@@ -14,7 +14,7 @@ using UnityEngine.Video;
 
 namespace AfterNow.PrezSDK
 {
-    public static class AssetLoader
+    internal static class AssetLoader
     {
         private static float imageFator = 0.4f;
         private static int loadVideoFrame = 1;

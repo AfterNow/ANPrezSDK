@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace AfterNow.PrezSDK
 {
-    public static class PrezAssetHelper
+    internal static class PrezAssetHelper
     {
         private static readonly Dictionary<string, TMP_FontAsset> LoadedFontAssets = new Dictionary<string, TMP_FontAsset>();
         public static TMP_FontAsset GetFontAsset(this ARPText asset)

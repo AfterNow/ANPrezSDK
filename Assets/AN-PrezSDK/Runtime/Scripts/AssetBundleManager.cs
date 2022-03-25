@@ -7,7 +7,7 @@ using UnityEngine.Networking;
 
 public class AssetBundleManager : MonoBehaviour
 {
-    public static AssetBundleManager Instance
+    internal static AssetBundleManager Instance
     {
         get
         {

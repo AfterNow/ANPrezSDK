@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AfterNow.PrezSDK
 {
-    public static class UriBuilderExtension
+    internal static class UriBuilderExtension
     {
         public static string UriPath(string path)
         {

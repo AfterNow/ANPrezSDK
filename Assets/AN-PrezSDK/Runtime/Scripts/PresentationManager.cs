@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace AfterNow.PrezSDK
 {
-    public class PresentationManager : MonoBehaviour
+    internal class PresentationManager : MonoBehaviour
     {
         public static LoadedSlide _slide;
         public Location _location;

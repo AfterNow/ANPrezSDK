@@ -10,6 +10,7 @@ using AfterNow.PrezSDK.Internal.Views;
 using AfterNow.PrezSDK.Shared;
 using AfterNow.PrezSDK.Shared.Enums;
 using System.IO;
+using AfterNow.PrezSDK.Internal;
 
 namespace AfterNow.PrezSDK
 {
@@ -17,7 +18,7 @@ namespace AfterNow.PrezSDK
     /// <summary>
     /// Sample class on how to Authenticate to server, join a presentation and Navigate through the presentation
     /// </summary>
-    class PrezSDKManager : MonoBehaviour
+    public class PrezSDKManager : MonoBehaviour
     {
         #region private variables
 
@@ -48,9 +49,9 @@ namespace AfterNow.PrezSDK
 
         [SerializeField] BasePrezController baseController;
         public GameObject presentationAnchorOverride;
-        public AnimationTimeline animationTimeline;
+        AnimationTimeline animationTimeline;
         public static PrezSDKManager _instance = null;
-        [HideInInspector] public PresentationManager _manager;
+        PresentationManager _manager;
         public static Dictionary<string, GameObject> prezAssets = new Dictionary<string, GameObject>();
 
         #endregion
@@ -82,18 +83,6 @@ namespace AfterNow.PrezSDK
         #region public events
 
         public static event Action OnPresentationEnded;
-
-        #endregion
-
-        #region enums
-
-        [Serializable]
-        public enum SlideProgressionType : sbyte
-        {
-            PreviousSlide = -1,
-            ResetSlide = 0,
-            NextSlide = 1
-        }
 
         #endregion
 
@@ -712,7 +701,7 @@ namespace AfterNow.PrezSDK
             Play();
         }
 
-        public void TimelineComplete(AnimationTimeline timeilne)
+        void TimelineComplete(AnimationTimeline timeilne)
         {
             isDone = true;
             isPlaying = false;

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace AfterNow.PrezSDK
 {
-    public class WaitForTask : CustomYieldInstruction
+    internal class WaitForTask : CustomYieldInstruction
     {
         public override bool keepWaiting => !_task.IsCompleted;
         private readonly Task _task;

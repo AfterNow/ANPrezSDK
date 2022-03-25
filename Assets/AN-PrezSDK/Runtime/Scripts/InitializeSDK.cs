@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace AfterNow.PrezSDK
 {
-    class InitializeSDK
+    internal class InitializeSDK
     {
         public static string DownloadFolderPath { get; private set; }
         /// <summary>

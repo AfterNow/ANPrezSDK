@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace AfterNow.PrezSDK
 {
-    public class Rotate : MonoBehaviour
+    internal class Rotate : MonoBehaviour
     {
         public bool shouldUpdate;
         public float speed;
