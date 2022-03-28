@@ -16,7 +16,7 @@ namespace AfterNow.PrezSDK
 {
 
     /// <summary>
-    /// Sample class on how to Authenticate to server, join a presentation and Navigate through the presentation
+    /// This class is responsible for handling operations like user authenticating to server, joining a presentation and navigating through the presentation
     /// </summary>
     public class PrezSDKManager : MonoBehaviour
     {

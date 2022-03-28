@@ -1,0 +1,300 @@
+{
+  "homepages": [],
+  "source_base_path": "D:/DocFx Projects/ANPrezSDKDocumentationBuilder",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "Conceptual",
+      "source_relative_path": "README.md",
+      "output": {
+        ".html": {
+          "relative_path": "README.html",
+          "hash": "SawacF0x3700kG35omL0qKOCE3a12cyKLxUqdUt16wE="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AfterNow.PrezSDK.Editor.PrezShaderContainer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AfterNow.PrezSDK.Editor.PrezShaderContainer.html",
+          "hash": "AswTzLwLQ/Nuz/qwZf7Ie4McZBXj++2ZnivQfsqbjJw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AfterNow.PrezSDK.Editor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AfterNow.PrezSDK.Editor.html",
+          "hash": "qNNNdI2d7ZZe1aqFHXk9GJJqiXFJI4Qd0mUFznVDsK8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AfterNow.PrezSDK.Examples.ExampleController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AfterNow.PrezSDK.Examples.ExampleController.html",
+          "hash": "VmTMicV/Jjl+QPcJpJ9pqZtzJ90bQpvLvaFelhcYwyg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AfterNow.PrezSDK.Examples.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AfterNow.PrezSDK.Examples.html",
+          "hash": "+boIN/brMq+FPE5OUcg9GikVyRyYm88rEBptusis0zI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AfterNow.PrezSDK.PrezSDKManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AfterNow.PrezSDK.PrezSDKManager.html",
+          "hash": "XqOq1DZVMUf5TWMxQsEpEjNoaGmwpKnCl3ulf8DhMC4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AfterNow.PrezSDK.Shared.BasePrezController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AfterNow.PrezSDK.Shared.BasePrezController.html",
+          "hash": "jGS2HFleOgcllNPrFE3RmVXCUJCTGvnJsUddctjFSF4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AfterNow.PrezSDK.Shared.Enums.PresentationJoinStatus.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AfterNow.PrezSDK.Shared.Enums.PresentationJoinStatus.html",
+          "hash": "jsmaDXpwD8o7/w0RxSgDa5bDiPG0idhpPe6l5a/uHPg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AfterNow.PrezSDK.Shared.Enums.SlideProgressionType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AfterNow.PrezSDK.Shared.Enums.SlideProgressionType.html",
+          "hash": "l//L3nyLhSGbqajN4v0aEKiNIRROss1HqCLlfrXynp0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AfterNow.PrezSDK.Shared.Enums.SlideStatusUpdate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AfterNow.PrezSDK.Shared.Enums.SlideStatusUpdate.html",
+          "hash": "6Pd9xHXQ0ULe/6BAF/wV5z8x1H4qY6BUZCQXFmn0lXc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AfterNow.PrezSDK.Shared.Enums.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AfterNow.PrezSDK.Shared.Enums.html",
+          "hash": "lxoMcAylEeAOA/vuyIekAkATWCe3vAfv79I1vHxqUAg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AfterNow.PrezSDK.Shared.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AfterNow.PrezSDK.Shared.html",
+          "hash": "7XFOTykPBSQxwq2IepeUdNhogVDmqQ2YdTQBrcUg56w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AfterNow.PrezSDK.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AfterNow.PrezSDK.html",
+          "hash": "+k3b3hbM9nKv9fXhxd8IWx6shvK806U5f+JLX/F1nLY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "api/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "api/index.html",
+          "hash": "wcQeFeeoEBNcNqCDq4v/f6edVUnPH4Js1CN9ncs0FmA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html",
+          "hash": "D7fVo8mttFpkHUzuvO1/9WuFBtZbtQJoLVzz2goGAsE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/intro.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/intro.html",
+          "hash": "I3bS9/sxR4oyH8bmpRaQAjuxycutuGXPZbIVVQOfp5c="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "articles/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "articles/toc.html",
+          "hash": "BlPxk5mtl2kgfcZUgkEguqiSAR/EUyUTT4EdebwkQvs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "images/AfterNow_logo.png",
+      "output": {
+        "resource": {
+          "relative_path": "images/AfterNow_logo.png"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html",
+          "hash": "4c6oafGGqygCCOV08EJk24jrJpJjhGUDVfPB4eRNd8I="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html",
+          "hash": "WSuRrYiGwKKMbtdG9z8W9fXmLoCyTnGg9AxbPKLXm2Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    }
+  ],
+  "incremental_info": [
+    {
+      "status": {
+        "can_incremental": true,
+        "incrementalPhase": "build",
+        "total_file_count": 0,
+        "skipped_file_count": 0
+      },
+      "processors": {
+        "ConceptualDocumentProcessor": {
+          "can_incremental": true,
+          "incrementalPhase": "build",
+          "total_file_count": 4,
+          "skipped_file_count": 4
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": true,
+          "incrementalPhase": "build",
+          "total_file_count": 12,
+          "skipped_file_count": 1
+        },
+        "ResourceDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        },
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        }
+      }
+    },
+    {
+      "status": {
+        "can_incremental": true,
+        "details": "Can support incremental post processing.",
+        "incrementalPhase": "postProcessing",
+        "total_file_count": 0,
+        "skipped_file_count": 0
+      },
+      "processors": {}
+    }
+  ],
+  "version_info": {},
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}
