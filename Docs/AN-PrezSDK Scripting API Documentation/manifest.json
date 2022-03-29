@@ -1,4 +1,17 @@
 {
+  "sitemap": {
+    "fileOptions": {
+      "**/api/**.yml": {
+        "baseUrl": "http://htmlpreview.github.io/?/",
+        "changefreq": "monthly",
+        "priority": 0.3,
+        "lastmod": "2001-01-01T00:00:00"
+      }
+    },
+    "baseUrl": "http://htmlpreview.github.io/?/",
+    "changefreq": "monthly",
+    "priority": 0.1
+  },
   "homepages": [],
   "source_base_path": "D:/DocFx Projects/ANPrezSDKDocumentationBuilder",
   "xrefmap": "xrefmap.yml",
@@ -12,7 +25,7 @@
           "hash": "SawacF0x3700kG35omL0qKOCE3a12cyKLxUqdUt16wE="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -192,7 +205,7 @@
           "hash": "I3bS9/sxR4oyH8bmpRaQAjuxycutuGXPZbIVVQOfp5c="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -227,7 +240,7 @@
           "hash": "4c6oafGGqygCCOV08EJk24jrJpJjhGUDVfPB4eRNd8I="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -262,7 +275,7 @@
           "can_incremental": true,
           "incrementalPhase": "build",
           "total_file_count": 12,
-          "skipped_file_count": 1
+          "skipped_file_count": 8
         },
         "ResourceDocumentProcessor": {
           "can_incremental": false,
@@ -282,8 +295,8 @@
     },
     {
       "status": {
-        "can_incremental": true,
-        "details": "Can support incremental post processing.",
+        "can_incremental": false,
+        "details": "Cannot support incremental post processing, the reason is: should not trace intermediate info.",
         "incrementalPhase": "postProcessing",
         "total_file_count": 0,
         "skipped_file_count": 0
