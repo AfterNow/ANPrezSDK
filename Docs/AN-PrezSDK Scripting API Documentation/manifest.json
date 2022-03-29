@@ -2,13 +2,13 @@
   "sitemap": {
     "fileOptions": {
       "**/api/**.yml": {
-        "baseUrl": "http://htmlpreview.github.io/?/",
+        "baseUrl": "http://htmlpreview.github.io/\"?/",
         "changefreq": "monthly",
         "priority": 0.3,
         "lastmod": "2001-01-01T00:00:00"
       }
     },
-    "baseUrl": "http://htmlpreview.github.io/?/",
+    "baseUrl": "http://htmlpreview.github.io/\"?/",
     "changefreq": "monthly",
     "priority": 0.1
   },
@@ -275,7 +275,7 @@
           "can_incremental": true,
           "incrementalPhase": "build",
           "total_file_count": 12,
-          "skipped_file_count": 8
+          "skipped_file_count": 12
         },
         "ResourceDocumentProcessor": {
           "can_incremental": false,
