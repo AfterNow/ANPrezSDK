@@ -648,6 +648,9 @@ class PrezSDKManager : MonoBehaviour
 
     IEnumerator LoadSlide(int slideNo)
     {
+        //Reset LastPlayedPoint to -1
+        LastPlayedPoint = -1;
+        
         isSlideEnded = false;
         PrezStates.CurrentSlide = slideNo;
         previousSlide = _manager.LoadSlide(slideNo);
