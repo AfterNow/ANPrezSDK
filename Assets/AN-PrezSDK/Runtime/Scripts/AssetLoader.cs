@@ -27,6 +27,7 @@ public static class AssetLoader
     public static void StopLoadingAssets()
     {
         CoroutineRunner.Instance.StopAllCoroutines();
+        GameObject.FindGameObjectsWithTag("PrezObjectAsset").ToList().ForEach(x => UnityEngine.Object.Destroy(x));
     }
 
     public static IEnumerator OnLoadAsset(ARPAsset asset, Action<GameObject> onLoaded)
@@ -94,6 +95,7 @@ public static class AssetLoader
                 request = Resources.LoadAsync<GameObject>("PrezObjectAsset");
                 yield return request;
                 GameObject _object = (GameObject)UnityEngine.Object.Instantiate(request.asset);
+                _object.tag = "PrezObjectAsset";
                 _object.name = fileName;
                 _object.gameObject.SetActive(true);
 
@@ -175,7 +177,6 @@ public static class AssetLoader
                     }
                     else
                     {
-                        Debug.LogError(fileName + " not loaded");
                         UnityEngine.Object.Destroy(_object);
                         PresentationManager._slide.loadedCount++;
                     }

@@ -200,6 +200,7 @@ public class PresentationManager : MonoBehaviour
                 {
                     if (go != null)
                     {
+                        go.tag = "Untagged";
                         _loadedObject = go;
                         _loadedObject.transform.SetParent(_anchor);
                         _loadedObject.SetInitialTransform(_asset.itemTransform);
