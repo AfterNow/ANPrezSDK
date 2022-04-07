@@ -11,8 +11,6 @@ namespace AfterNow.PrezSDK.Runtime.Examples
 {
     public class BasePrezController : BaseController
     {
-        [SerializeField] PrezSDKManager prezSDKManager;
-
         [SerializeField] Button nextSlide;
         [SerializeField] Button previousSlide;
         [SerializeField] Button nextStep;
@@ -83,16 +81,16 @@ namespace AfterNow.PrezSDK.Runtime.Examples
             });
         }
 
-        public void UserLogin()
+        public override void UserLogin()
         {
             userLoginStatusText.text = "Authenticating...";
             userLoginStatusText.color = Color.black;
-            prezSDKManager.Login(userEmailIdInput.text, userPasswordInput.text);
+            PrezSDKManager._instance.Login(userEmailIdInput.text, userPasswordInput.text);
         }
 
-        public void UserLogout()
+        public override void UserLogout()
         {
-            prezSDKManager.Logout();
+            PrezSDKManager._instance.Logout();
         }
 
         public override void Callback_OnAuthenticationFailed(string authenticationFailedReason)

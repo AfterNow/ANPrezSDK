@@ -176,6 +176,7 @@ class PrezSDKManager : MonoBehaviour
         {
             CoroutineRunner.DispatchToMainThread(() =>
             {
+                Debug.Log(ev);
                 if (ev)
                 {
                     if (isBasePrezController)

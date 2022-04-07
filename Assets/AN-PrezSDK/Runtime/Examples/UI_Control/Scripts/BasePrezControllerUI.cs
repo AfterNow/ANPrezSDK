@@ -24,6 +24,16 @@ namespace AfterNow.PrezSDK.Runtime.Examples
             PrezSDKManager.OnSlideChange += ShowCurrentSlideNumber;
         }
 
+        public override void UserLogin()
+        {
+            PrezSDKManager._instance.Login(userEmailIdInput.text, userPasswordInput.text);
+        }
+
+        public override void UserLogout()
+        {
+            PrezSDKManager._instance.Logout();
+        }
+        
         public void LoadPresentationFromId()
         {
             string presentationId = presentationIdInput.text;

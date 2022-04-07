@@ -38,6 +38,16 @@ namespace AfterNow.PrezSDK.Shared
         #endregion
 
         /// <summary>
+        /// This function is called when the user clicks on the Login button
+        /// </summary>
+        public abstract void UserLogin();
+
+        /// <summary>
+        /// This function is called when the user clicks on the Logout button
+        /// </summary>
+        public abstract void UserLogout();
+
+        /// <summary>
         /// Call this function with Presentation ID after authorization is successful.
         /// Does not impact the presentation if presentation cannot be joined at the moment.
         /// This function can also be called from Unity's inspector
