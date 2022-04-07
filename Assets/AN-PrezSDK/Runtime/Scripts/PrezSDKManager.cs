@@ -145,11 +145,21 @@ class PrezSDKManager : MonoBehaviour
                 {
                     if (ev)
                     {
-                        baseController.Callback_OnAuthorized(true);
+                        Debug.Log("authorization success");
+
+                        if (isBasePrezController)
+                            baseController.Callback_OnAuthorized(true);
+                        else
+                            isAuthenticationSuccess = true;
                     }
                     else
                     {
-                        baseController.Callback_OnAuthorized(false);
+                        Debug.Log("authorization failed");
+
+                        if (isBasePrezController)
+                            baseController.Callback_OnAuthorized(false);
+                        else
+                            isAuthenticationSuccess = false;
                     }
                 });
             });
@@ -632,8 +642,10 @@ class PrezSDKManager : MonoBehaviour
 
     public bool OnStartPresentation(string presentationID)
     {
+        Debug.Log("Start Presentation");
         if (!isBasePrezController)
         {
+            Debug.Log("Is BasePrezControllerUI");
             if (!isAuthenticationSuccess)
             {
                 Debug.Log("Access Denied");
@@ -643,11 +655,13 @@ class PrezSDKManager : MonoBehaviour
             {
                 if (int.TryParse(presentationID.Trim(), out int integerPresentationID))
                 {
-                    OnPresentationStatus(PresentationStatus.SUCCESS);
+                    Debug.Log("Presentation Success");
+                    ////OnPresentationStatus(PresentationStatus.SUCCESS);
                 }
                 else
                 {
-                    OnPresentationStatus(PresentationStatus.FAILED);
+                    Debug.Log("Presentation Failed");
+                    ////OnPresentationStatus(PresentationStatus.FAILED);
                 }
             }
         }

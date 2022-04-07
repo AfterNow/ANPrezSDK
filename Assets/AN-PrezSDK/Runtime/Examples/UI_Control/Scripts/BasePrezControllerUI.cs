@@ -27,7 +27,7 @@ namespace AfterNow.PrezSDK.Runtime.Examples
         public void LoadPresentationFromId()
         {
             string presentationId = presentationIdInput.text;
-            _onJoinPresentation(presentationId);
+            _onJoinPresentation?.Invoke(presentationId);
         }
 
         public void OnAuthorized(bool isauthorized)
@@ -97,32 +97,32 @@ namespace AfterNow.PrezSDK.Runtime.Examples
 
         public override void Callback_OnUserLoginFromEditor(Action<string, string> userCredentials)
         {
-            throw new NotImplementedException();
+            userCredentials(userEmailId, userPassword);
         }
 
         public override void Callback_OnUserLogout()
         {
-            throw new NotImplementedException();
+            Debug.Log("Callback_OnUserLogout");
         }
 
         public override void Callback_OnPresentationFailed(string presentationFailedReason)
         {
-            throw new NotImplementedException();
+            Debug.Log("Callback_OnPresentationFailed");
         }
 
         public override void Callback_OnAuthenticationFailed(string authenticationFailedReason)
         {
-            throw new NotImplementedException();
+            Debug.Log("Callback_OnAuthenticationFailed");
         }
 
         public override void Callback_OnAuthorized(bool result)
         {
-            throw new NotImplementedException();
+            Debug.Log("Callback_OnAuthorized");
         }
 
         public override void Callback_OnPresentationEnd()
         {
-            throw new NotImplementedException();
+            Debug.Log("Callback_OnPresentationEnd");
         }
 
         public override void Callback_OnSlideStatusUpdate(SlideStatusUpdate slideStatus)
@@ -132,7 +132,7 @@ namespace AfterNow.PrezSDK.Runtime.Examples
 
         public override void Callback_OnSlideChange(int newSlide)
         {
-            throw new NotImplementedException();
+            Debug.Log("Callback_OnSlideChange");
         }
     }
 }

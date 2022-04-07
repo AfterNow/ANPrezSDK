@@ -373,6 +373,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 5051317054946455136, guid: 73e5abc563281d340bc4db3f8293bfcb, type: 3}
+      propertyPath: baseController
+      value: 
+      objectReference: {fileID: 563243002137403711}
+    - target: {fileID: 5051317054946455136, guid: 73e5abc563281d340bc4db3f8293bfcb, type: 3}
       propertyPath: baseControllerUI
       value: 
       objectReference: {fileID: 0}
@@ -433,42 +437,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 563243001262920431, guid: 81c62e9baf2c6164c86d1dff64ee5752, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 563243001475061441, guid: 81c62e9baf2c6164c86d1dff64ee5752, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 563243001647368221, guid: 81c62e9baf2c6164c86d1dff64ee5752, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 563243001647368221, guid: 81c62e9baf2c6164c86d1dff64ee5752, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 563243001647368221, guid: 81c62e9baf2c6164c86d1dff64ee5752, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 563243001647368221, guid: 81c62e9baf2c6164c86d1dff64ee5752, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Target
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 563243001647368221, guid: 81c62e9baf2c6164c86d1dff64ee5752, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_Target
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 563243001647368221, guid: 81c62e9baf2c6164c86d1dff64ee5752, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[5].m_Target
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 563243001648315453, guid: 81c62e9baf2c6164c86d1dff64ee5752, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 563243001997092638, guid: 81c62e9baf2c6164c86d1dff64ee5752, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -517,9 +485,28 @@ PrefabInstance:
       propertyPath: m_Name
       value: BasePrezControllerUI
       objectReference: {fileID: 0}
-    - target: {fileID: 563243002262552032, guid: 81c62e9baf2c6164c86d1dff64ee5752, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+    - target: {fileID: 3454234912330247509, guid: 81c62e9baf2c6164c86d1dff64ee5752, type: 3}
+      propertyPath: userEmailId
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454234912330247509, guid: 81c62e9baf2c6164c86d1dff64ee5752, type: 3}
+      propertyPath: userPassword
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454234912330247509, guid: 81c62e9baf2c6164c86d1dff64ee5752, type: 3}
+      propertyPath: defaultPresentationID
       value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 81c62e9baf2c6164c86d1dff64ee5752, type: 3}
+--- !u!114 &563243002137403711 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3454234912330247509, guid: 81c62e9baf2c6164c86d1dff64ee5752, type: 3}
+  m_PrefabInstance: {fileID: 563243002137403710}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d40f1fae726e448429c1a470008d78b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

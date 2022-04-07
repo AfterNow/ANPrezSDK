@@ -28,7 +28,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 563243002264060747}
+  - {fileID: 2288202676851446444}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -44,60 +44,156 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d40f1fae726e448429c1a470008d78b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  presentationIdInput: {fileID: 0}
-  presentationLoadStatusText: {fileID: 0}
+  presentationIdInput: {fileID: 2288202678459957401}
+  presentationLoadStatusText: {fileID: 2288202677049001754}
   userEmailId: 
   userPassword: 
   defaultPresentationID: 
   userEmailIdInput: {fileID: 0}
   userPasswordInput: {fileID: 0}
   presentationIDText: {fileID: 0}
-  currentSlideNumberText: {fileID: 0}
+  currentSlideNumberText: {fileID: 2288202678125280817}
   userLoginStatusText: {fileID: 0}
-  slideLoadingStatusText: {fileID: 0}
---- !u!1001 &5588076267240467318
+  slideLoadingStatusText: {fileID: 2288202678385737116}
+--- !u!1001 &6168958914979183249
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 563243001997092638}
     m_Modifications:
+    - target: {fileID: 5358684616982070432, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 5358684617065758135, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
+      objectReference: {fileID: 3454234912330247509}
+    - target: {fileID: 5358684617065758135, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: NextStep
+      objectReference: {fileID: 0}
+    - target: {fileID: 5358684617065758135, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: AfterNow.PrezSDK.Shared.BaseController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5358684617169838955, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5358684617169838955, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_Mode
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5358684617169838955, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 3454234912330247509}
     - target: {fileID: 5358684617169838955, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 3454234912330247509}
     - target: {fileID: 5358684617169838955, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 3454234912330247509}
     - target: {fileID: 5358684617169838955, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 3454234912330247509}
     - target: {fileID: 5358684617169838955, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_Target
       value: 
+      objectReference: {fileID: 3454234912330247509}
+    - target: {fileID: 5358684617169838955, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: PresentationSuccessMessage
       objectReference: {fileID: 0}
     - target: {fileID: 5358684617169838955, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[5].m_Target
-      value: 
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: PresentationFailedMessage
+      objectReference: {fileID: 0}
+    - target: {fileID: 5358684617169838955, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: OnAuthorizationSucceeded
+      objectReference: {fileID: 0}
+    - target: {fileID: 5358684617169838955, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_MethodName
+      value: OnAuthorizationFailed
+      objectReference: {fileID: 0}
+    - target: {fileID: 5358684617169838955, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_MethodName
+      value: LoadPresentationFromId
+      objectReference: {fileID: 0}
+    - target: {fileID: 5358684617169838955, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: AfterNow.PrezSDK.Runtime.Examples.BasePrezControllerUI, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5358684617169838955, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: AfterNow.PrezSDK.Runtime.Examples.BasePrezControllerUI, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5358684617169838955, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
+      value: AfterNow.PrezSDK.Runtime.Examples.BasePrezControllerUI, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5358684617169838955, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_TargetAssemblyTypeName
+      value: AfterNow.PrezSDK.Runtime.Examples.BasePrezControllerUI, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5358684617169838955, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_TargetAssemblyTypeName
+      value: AfterNow.PrezSDK.Runtime.Examples.BasePrezControllerUI, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5358684617169838955, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_StringArgument
+      value: Authorization Success
+      objectReference: {fileID: 0}
+    - target: {fileID: 5358684617169838955, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_StringArgument
+      value: Authorization Failed
       objectReference: {fileID: 0}
     - target: {fileID: 5358684617170769739, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
+      objectReference: {fileID: 3454234912330247509}
+    - target: {fileID: 5358684617170769739, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: QuitSession
+      objectReference: {fileID: 0}
+    - target: {fileID: 5358684617170769739, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: AfterNow.PrezSDK.Shared.BaseController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 5358684617243687321, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
+      objectReference: {fileID: 3454234912330247509}
+    - target: {fileID: 5358684617243687321, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: NextSlide
       objectReference: {fileID: 0}
+    - target: {fileID: 5358684617243687321, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: AfterNow.PrezSDK.Shared.BaseController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5358684617363860708, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 5358684617779398413, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 5358684617947704118, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 5358684618059595147, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 5358684618390513721, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
       propertyPath: m_Name
       value: SampleCanvas2
@@ -189,11 +285,83 @@ PrefabInstance:
     - target: {fileID: 5358684618394293910, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
+      objectReference: {fileID: 3454234912330247509}
+    - target: {fileID: 5358684618394293910, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: PreviousSlide
       objectReference: {fileID: 0}
+    - target: {fileID: 5358684618394293910, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: AfterNow.PrezSDK.Shared.BaseController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5358684618418448310, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 5358684618556413549, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 5358684618749452928, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 5358684618783378077, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 5358684618799198204, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
---- !u!224 &563243002264060747 stripped
+--- !u!224 &2288202676851446444 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5358684618390513725, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
-  m_PrefabInstance: {fileID: 5588076267240467318}
+  m_PrefabInstance: {fileID: 6168958914979183249}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2288202678459957401 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5358684617859938824, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+  m_PrefabInstance: {fileID: 6168958914979183249}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2da0c512f12947e489f739169773d7ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2288202677049001754 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5358684618059595147, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+  m_PrefabInstance: {fileID: 6168958914979183249}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2288202678125280817 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5358684616982070432, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+  m_PrefabInstance: {fileID: 6168958914979183249}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2288202678385737116 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5358684617779398413, guid: aaffc99401c79a0498a9e5c07dcff10a, type: 3}
+  m_PrefabInstance: {fileID: 6168958914979183249}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

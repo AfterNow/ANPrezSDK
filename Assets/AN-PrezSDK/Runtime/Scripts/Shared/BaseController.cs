@@ -89,7 +89,10 @@ namespace AfterNow.PrezSDK.Shared
         /// <summary>
         /// This callback is invoked if the user has entered their login credentials. 
         /// </summary>
-        public abstract void Callback_OnUserLoginFromEditor(Action<string, string> userCredentials);
+        public virtual void Callback_OnUserLoginFromEditor(Action<string, string> userCredentials)
+        {
+            userCredentials(userEmailId, userPassword);
+        }
 
         /// <summary>
         /// This callback is invoked if the user logsout. 
