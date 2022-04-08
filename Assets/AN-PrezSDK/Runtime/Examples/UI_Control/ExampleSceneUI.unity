@@ -216,6 +216,16 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &242846415 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5633043320370280235, guid: b666aa016764b77438b3f857061d1ecd, type: 3}
+  m_PrefabInstance: {fileID: 670971372}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &295813650 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3602807064027867530, guid: b666aa016764b77438b3f857061d1ecd, type: 3}
+  m_PrefabInstance: {fileID: 670971372}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &409600004
 GameObject:
   m_ObjectHideFlags: 0
@@ -1011,6 +1021,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 73e5abc563281d340bc4db3f8293bfcb, type: 3}
+--- !u!1 &2082601694 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3602807065115211443, guid: b666aa016764b77438b3f857061d1ecd, type: 3}
+  m_PrefabInstance: {fileID: 670971372}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &563243002137403710
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1067,6 +1082,10 @@ PrefabInstance:
       value: BasePrezControllerUI
       objectReference: {fileID: 0}
     - target: {fileID: 3454234912330247509, guid: 81c62e9baf2c6164c86d1dff64ee5752, type: 3}
+      propertyPath: UserLoginUI
+      value: 
+      objectReference: {fileID: 242846415}
+    - target: {fileID: 3454234912330247509, guid: 81c62e9baf2c6164c86d1dff64ee5752, type: 3}
       propertyPath: userEmailId
       value: 
       objectReference: {fileID: 0}
@@ -1082,6 +1101,14 @@ PrefabInstance:
       propertyPath: userPasswordInput
       value: 
       objectReference: {fileID: 670971379}
+    - target: {fileID: 3454234912330247509, guid: 81c62e9baf2c6164c86d1dff64ee5752, type: 3}
+      propertyPath: LoadPresentationUI
+      value: 
+      objectReference: {fileID: 295813650}
+    - target: {fileID: 3454234912330247509, guid: 81c62e9baf2c6164c86d1dff64ee5752, type: 3}
+      propertyPath: PlayPresentationUI
+      value: 
+      objectReference: {fileID: 2082601694}
     - target: {fileID: 3454234912330247509, guid: 81c62e9baf2c6164c86d1dff64ee5752, type: 3}
       propertyPath: presentationIDText
       value: 

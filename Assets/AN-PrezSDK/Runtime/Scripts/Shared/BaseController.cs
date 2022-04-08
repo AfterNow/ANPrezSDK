@@ -35,6 +35,13 @@ namespace AfterNow.PrezSDK.Shared
         public TMP_Text userLoginStatusText;
         public TMP_Text slideLoadingStatusText;
 
+        public GameObject LoadPresentationUI;
+        public GameObject PlayPresentationUI;
+        public GameObject UserLoginUI;
+
+        [HideInInspector]public string presentationID = null;
+        [HideInInspector]public bool hasSlideLoaded = false;
+
         #endregion
 
         /// <summary>
@@ -166,6 +173,36 @@ namespace AfterNow.PrezSDK.Shared
             _nextStep = nextStep;
             _previousSlide = previousSlide;
             _quit = quit;
+        }
+
+        public void EnableUserLoginUI()
+        {
+            UserLoginUI.SetActive(true);
+            LoadPresentationUI.SetActive(false);
+            PlayPresentationUI.SetActive(false);
+        }
+
+        public void EnableLoadPresentationUI()
+        {
+            UserLoginUI.SetActive(false);
+            LoadPresentationUI.SetActive(true);
+            PlayPresentationUI.SetActive(false);
+        }
+
+        public void EnablePlayPresentationUI()
+        {
+            LoadPresentationUI.SetActive(false);
+            PlayPresentationUI.SetActive(true);
+            presentationIDText.text = presentationID;
+        }
+
+        public void ReturnToLoadPresentationScreen()
+        {
+            QuitSession();
+            presentationLoadStatusText.text = string.Empty;
+            presentationLoadStatusText.color = Color.white;
+            LoadPresentationUI.SetActive(true);
+            PlayPresentationUI.SetActive(false);
         }
     }
 }

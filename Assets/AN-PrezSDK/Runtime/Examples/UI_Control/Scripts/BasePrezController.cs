@@ -19,14 +19,6 @@ namespace AfterNow.PrezSDK.Runtime.Examples
         [SerializeField] Button Login;
         [SerializeField] Button Logout;
 
-        [SerializeField] GameObject LoadPresentationUI;
-        [SerializeField] GameObject PlayPresentationUI;
-        [SerializeField] GameObject UserLoginUI;
-
-        string presentationID = null;
-        bool hasSlideLoaded = false;
-
-
         private void Start()
         {
             //Clear Status Texts
@@ -55,6 +47,7 @@ namespace AfterNow.PrezSDK.Runtime.Examples
             Quit.onClick.AddListener(() =>
             {
                 ReturnToLoadPresentationScreen();
+                LoadPresentation.interactable = true;
             });
 
             LoadPresentation.onClick.AddListener(() =>
@@ -118,7 +111,7 @@ namespace AfterNow.PrezSDK.Runtime.Examples
                 else
                 {
                     //Enable Presentation UI one second after the user is authorized successfully
-                    Invoke("EnableLoadPresentationUI", 2f);
+                    Invoke(nameof(EnableLoadPresentationUI), 2f);
                 }
 
                 UserLoginUI.SetActive(false);
@@ -132,6 +125,7 @@ namespace AfterNow.PrezSDK.Runtime.Examples
         public override void Callback_OnPresentationEnd()
         {
             ReturnToLoadPresentationScreen();
+            LoadPresentation.interactable = true;
         }
 
         public override void Callback_OnPresentationFailed(string presentationFailedReason)
@@ -147,7 +141,7 @@ namespace AfterNow.PrezSDK.Runtime.Examples
             {
                 presentationLoadStatusText.text = "Loading Presentation...";
                 presentationLoadStatusText.color = Color.green;
-                Invoke("EnablePlayPresentationUI", 2f);
+                Invoke(nameof(EnablePlayPresentationUI), 2f);
             }
             else
             {
@@ -200,17 +194,6 @@ namespace AfterNow.PrezSDK.Runtime.Examples
             EnableUserLoginUI();
         }
 
-
-        public void ReturnToLoadPresentationScreen()
-        {
-            QuitSession();
-            presentationLoadStatusText.text = string.Empty;
-            presentationLoadStatusText.color = Color.white;
-            LoadPresentationUI.SetActive(true);
-            PlayPresentationUI.SetActive(false);
-            LoadPresentation.interactable = true;
-        }
-
         IEnumerator ShowSlideLoadingStatus(string slideLoadingStatus, Color slideLoadingStatusColor)
         {
             slideLoadingStatusText.text = slideLoadingStatus;
@@ -222,27 +205,6 @@ namespace AfterNow.PrezSDK.Runtime.Examples
                 slideLoadingStatusText.text = string.Empty;
                 slideLoadingStatusText.color = Color.white;
             }
-        }
-
-        void EnableUserLoginUI()
-        {
-            UserLoginUI.SetActive(true);
-            LoadPresentationUI.SetActive(false);
-            PlayPresentationUI.SetActive(false);
-        }
-
-        void EnableLoadPresentationUI()
-        {
-            UserLoginUI.SetActive(false);
-            LoadPresentationUI.SetActive(true);
-            PlayPresentationUI.SetActive(false);
-        }
-
-        void EnablePlayPresentationUI()
-        {
-            LoadPresentationUI.SetActive(false);
-            PlayPresentationUI.SetActive(true);
-            presentationIDText.text = presentationID;
         }
     }
 }

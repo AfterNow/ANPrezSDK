@@ -82,18 +82,23 @@ namespace AfterNow.PrezSDK.Runtime.Examples
 
         public override void Callback_OnPresentationJoin(PresentationStatus joinStatus, string presentationID)
         {
+            this.presentationID = presentationID;
             if (presentationLoadStatusText != null)
             {
                 switch (joinStatus)
                 {
                     case PresentationStatus.SUCCESS:
                         presentationLoadStatusText.text = presentationSuccessMessage;
+                        presentationLoadStatusText.color = Color.green;
+                        Invoke(nameof(EnablePlayPresentationUI), 2f);
                         break;
                     case PresentationStatus.FAILED:
                         presentationLoadStatusText.text = presentationFailedMessage;
+                        presentationLoadStatusText.color = Color.red;
                         break;
                     case PresentationStatus.ENDED:
                         presentationLoadStatusText.text = presentationEndedMessage;
+                        presentationLoadStatusText.color = Color.green;
                         break;
                     default:
                         break;
@@ -127,12 +132,38 @@ namespace AfterNow.PrezSDK.Runtime.Examples
 
         public override void Callback_OnAuthorized(bool result)
         {
-            Debug.Log("Callback_OnAuthorized");
+            if (result)
+            {
+                userLoginStatusText.text = "Login Success";
+                userLoginStatusText.color = Color.green;
+                if (!string.IsNullOrEmpty(defaultPresentationID))
+                {
+                    if (int.TryParse(defaultPresentationID.Trim(), out int integerPresentationID))
+                    {
+                        JoinPresentation(defaultPresentationID);
+                    }
+                    else
+                    {
+                        Callback_OnPresentationFailed("Presentation ID should only contain numbers");
+                    }
+                }
+                else
+                {
+                    //Enable Presentation UI one second after the user is authorized successfully
+                    Invoke(nameof(EnableLoadPresentationUI), 2f);
+                }
+
+                UserLoginUI.SetActive(false);
+            }
+            else
+            {
+                Callback_OnAuthenticationFailed("Incorrect Email or Password");
+            }
         }
 
         public override void Callback_OnPresentationEnd()
         {
-            Debug.Log("Callback_OnPresentationEnd");
+            ReturnToLoadPresentationScreen();
         }
 
         public override void Callback_OnSlideStatusUpdate(SlideStatusUpdate slideStatus)

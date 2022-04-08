@@ -179,17 +179,15 @@ class PrezSDKManager : MonoBehaviour
                 Debug.Log(ev);
                 if (ev)
                 {
-                    if (isBasePrezController)
-                        baseController.Callback_OnAuthorized(true);
-                    else
+                    if (!isBasePrezController)
                         isAuthenticationSuccess = true;
+                    baseController.Callback_OnAuthorized(true);
                 }
                 else
                 {
-                    if (isBasePrezController)
-                        baseController.Callback_OnAuthorized(false);
-                    else
+                    if (!isBasePrezController)
                         isAuthenticationSuccess = false;
+                    baseController.Callback_OnAuthorized(false);
                 }
             });
         });
@@ -229,10 +227,10 @@ class PrezSDKManager : MonoBehaviour
             PrezStates.CurrentSlide = 0;
             targetSlide = 0;
             slideIdx = -1;
-            if (isBasePrezController)
-                baseController.Callback_OnPresentationEnd();
-            else
-                OnPresentationStatus(PresentationStatus.ENDED);
+            //if (isBasePrezController)
+            baseController.Callback_OnPresentationEnd();
+            //else
+            //  OnPresentationStatus(PresentationStatus.ENDED);
         }
         else
         {
@@ -688,14 +686,12 @@ class PrezSDKManager : MonoBehaviour
                     _manager = presentationAnchorOverride.AddComponent<PresentationManager>();
                     _manager.Init(prez.locations[0]);
                     StartCoroutine(LoadSlide(PrezStates.CurrentSlide));
-                    if (isBasePrezController)
-                        baseController.Callback_OnPresentationJoin(AfterNow.PrezSDK.Shared.Enums.PresentationStatus.SUCCESS, prez.match.shortId);
+                    baseController.Callback_OnPresentationJoin(AfterNow.PrezSDK.Shared.Enums.PresentationStatus.SUCCESS, prez.match.shortId);
                 }
                 else
                 {
                     //StatusText.text = "Invalid Presentation ID";
-                    if (isBasePrezController)
-                        baseController.Callback_OnPresentationJoin(AfterNow.PrezSDK.Shared.Enums.PresentationStatus.FAILED, null);
+                    baseController.Callback_OnPresentationJoin(AfterNow.PrezSDK.Shared.Enums.PresentationStatus.FAILED, null);
                 }
             });
         }, (prezFailed) =>
