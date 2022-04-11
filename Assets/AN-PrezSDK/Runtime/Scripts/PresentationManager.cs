@@ -9,6 +9,10 @@ using UnityEngine;
 
 namespace AfterNow.PrezSDK
 {
+    /// <summary>
+    /// Class responsible for managing the presentation loaded by a user. This is an internal script added in the scene in runtime.
+    /// User does not have to interact with it.
+    /// </summary>
     internal class PresentationManager : MonoBehaviour
     {
         public static LoadedSlide _slide;
@@ -118,16 +122,24 @@ namespace AfterNow.PrezSDK
                 }
             }
 
+            /// <summary>
+            /// This method handles cleanup of the slide including destroying the loaded assets, cleaning up assetbundles, disposing models, textures etc.
+            /// </summary>
             public void CleanUp()
             {
                 DestroyLoadedObjects();
                 FindObjectOfType<PrezSDKManager>().ClearObjects();
+
+                //Clean up assetbundles
                 AssetBundleManager.Cleanup();
 
+                //Destroy the gameobjects of loaded assets of a slide
                 foreach (Transform child in _instance.transform)
                 {
                     Destroy(child.gameObject);
                 }
+
+                //Reset the loaded count to 0
                 loadedCount = 0;
 
                 //Dispose glb models
@@ -262,6 +274,9 @@ namespace AfterNow.PrezSDK
 
         }
 
+        /// <summary>
+        /// Dispose the textures of the loaded assets. This is called when the slide is unloaded.
+        /// </summary>
         static void DisposeTextures()
         {
             foreach (var texture in AssetLoader.textures)
@@ -270,6 +285,9 @@ namespace AfterNow.PrezSDK
             }
         }
 
+        /// <summary>
+        /// Dispose the audio clips of the loaded assets. This is called when the slide is unloaded.
+        /// </summary>
         static void DisposeAudioClips()
         {
             foreach (var audioClip in AssetLoader.audioClips)
