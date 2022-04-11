@@ -16,7 +16,7 @@ namespace AfterNow.PrezSDK
 {
 
     /// <summary>
-    /// This class is responsible for handling operations like user authenticating to server, joining a presentation and navigating through the presentation
+    /// This class is responsible for handling operations like user authenticating to server, joining and viewing a presentation
     /// </summary>
     public class PrezSDKManager : MonoBehaviour
     {
@@ -47,11 +47,22 @@ namespace AfterNow.PrezSDK
 
         #region public/serialized variables
 
-        [SerializeField] BasePrezController baseController;
+        /// <summary>
+        /// BasePrezController is the base class which the user has to extend to implement the required methods
+        /// </summary>
+        public BasePrezController baseController;
+        
+        /// <summary>
+        /// The gameobject which can be used to override the default presentation anchor gameobject.
+        /// </summary>
         public GameObject presentationAnchorOverride;
         AnimationTimeline animationTimeline;
         public static PrezSDKManager _instance = null;
         PresentationManager _manager;
+
+        /// <summary>
+        /// A collection of all the assets in a loaded slide
+        /// </summary>
         public static Dictionary<string, GameObject> prezAssets = new Dictionary<string, GameObject>();
 
         #endregion
@@ -68,6 +79,9 @@ namespace AfterNow.PrezSDK
 
         #region public properties
 
+        /// <summary>
+        /// The last played point of the presentation
+        /// </summary>
         public int LastPlayedPoint
         {
             get => _lastPlayedPoint;
@@ -126,6 +140,11 @@ namespace AfterNow.PrezSDK
             });
         }
 
+        /// <summary>
+        /// Function which handles the User signin
+        /// </summary>
+        /// <param name="username">Email ID of the User</param>
+        /// <param name="password">Password of the User</param>
         public void Login(string username, string password)
         {
             PrezWebCalls.user_email = username;
@@ -147,11 +166,18 @@ namespace AfterNow.PrezSDK
             });
         }
 
+        /// <summary>
+        /// Function which handles the User logout
+        /// </summary>
         public void Logout()
         {
             baseController.Callback_OnUserLogout();
         }
 
+        /// <summary>
+        /// This function is called when the user clicks on the Quit button. User will be quit from the presentation
+        /// and returned to the presentation selection menu
+        /// </summary>
         private void Quit()
         {
             //Terminate the asset loading process
@@ -170,7 +196,9 @@ namespace AfterNow.PrezSDK
             _manager._location = null;
         }
 
-
+        /// <summary>
+        /// This function is called when the user clicks on the Next button. User will be navigated to the next slide
+        /// </summary>
         void Next_Slide()
         {
             //Clear present slide data before playing another slide
@@ -190,6 +218,9 @@ namespace AfterNow.PrezSDK
             GoToSlide(targetSlide);
         }
 
+        /// <summary>
+        /// This function is called when the user clicks on the Previous button. User will be navigated to the previous slide
+        /// </summary>
         void Previous_Slide()
         {
             if (PrezStates.CurrentSlide != 0)
@@ -202,6 +233,9 @@ namespace AfterNow.PrezSDK
             }
         }
 
+        /// <summary>
+        /// This function is called when the user clicks on the Next button. User will be navigated to the next slide
+        /// </summary>
         void Next_Step()
         {
             if (isSlideEnded)
@@ -227,7 +261,10 @@ namespace AfterNow.PrezSDK
             }
         }
 
-        void NextStepLogic()
+        /// <summary>
+        /// Handles the next step logic. This is only for the internal developer purpose. Users no need to access this function
+        /// </summary>
+        private void NextStepLogic()
         {
             if (isPlaying)
             {
@@ -267,7 +304,7 @@ namespace AfterNow.PrezSDK
 
 
         /// <summary>
-        /// The most inporttant function
+        /// Used for the transitioning from one slide to another. For internal developer purpose only
         /// </summary>
         /// <param name="nextSlide">1 to move forward, -1 to move backward, 0 to reset slide(?)</param>
         /// <param name="targetSlideIdx"></param>
@@ -420,7 +457,9 @@ namespace AfterNow.PrezSDK
             slideIdx = targetSlideIdx;
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
         public void ClearObjects()
         {
             if (PresentationManager.loadedObjects.Count > 0)
@@ -446,7 +485,12 @@ namespace AfterNow.PrezSDK
             animationTimeline.Reset();
             PlayStartTime = null;
         }
-
+        
+        /// <summary>
+        /// Stop an on going slide
+        /// </summary>
+        /// <param name="now">Stops a slide instantly</param>
+        /// <param name="action">Callback when the slide is successfully stopped from loading</param>
         public void StopSlide(bool now = false, Action action = null)
         {
             // If stop instantly, don't do animation and just hide children
@@ -564,6 +608,11 @@ namespace AfterNow.PrezSDK
 
         }
 
+        /// <summary>
+        /// Handles logic whether to show an object during the "ScaleOut" transition of the slide
+        /// </summary>
+        /// <param name="show">Show or Hide the object?</param>
+        /// <param name="_prezAsset">The object that's supposed to be shown or hidden</param>
         public void ShowChild(bool show, GameObject _prezAsset)
         {
             if (_prezAsset)
@@ -590,6 +639,12 @@ namespace AfterNow.PrezSDK
             return SlideIndexRunner;
         }
 
+        /// <summary>
+        /// Starts the presentation of the id "presentationID". Will be called after the successfull login.
+        /// </summary>
+        /// <param name="presentationID">The ID of the presentation to load. User can either provide this from 
+        /// the inspector and in runtime</param>
+        /// <returns></returns>
         public bool OnStartPresentation(string presentationID)
         {
             slideIdx = -1;
@@ -627,6 +682,11 @@ namespace AfterNow.PrezSDK
             return true;
         }
 
+        /// <summary>
+        /// Loads the slide <paramref name="slideNo"/>. Slides can be loaded using the "Next Slide" or "Previous Slide" buttons.
+        /// </summary>
+        /// <param name="slideNo">The index of the slide inside a presentation to be loaded. This varies depending on whether
+        /// the user has done "Next Slide" or "Previous Slide" operation </param>
         public void GoToSlide(int slideNo)
         {
             if (PrezStates.CurrentSlide == slideNo) return;
@@ -707,6 +767,10 @@ namespace AfterNow.PrezSDK
             isPlaying = false;
         }
 
+        /// <summary>
+        /// Plays the slide animations
+        /// </summary>
+        /// <param name="groupNum"></param>
         public void Play(int groupNum = -1)
         {
             //Debug.Log("PrezSDKManager Play");
@@ -736,6 +800,9 @@ namespace AfterNow.PrezSDK
 
         }
 
+        /// <summary>
+        /// Updates the slide count by 1 when a new slide of the presentation is loaded.
+        /// </summary>
         void UpdateSlideCount()
         {
             baseController.Callback_OnSlideChange(PrezStates.CurrentSlide + 1);
@@ -757,6 +824,9 @@ namespace AfterNow.PrezSDK
             OnSyncGroup(num);
         }
 
+        /// <summary>
+        /// Deletes the presentation files after a presentation is finished or if the user decides to quit it underway.
+        /// </summary>
         public static void DeleteDownloadedFiles()
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(InitializeSDK.DownloadFolderPath);

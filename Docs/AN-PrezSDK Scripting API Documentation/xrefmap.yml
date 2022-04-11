@@ -234,6 +234,12 @@ references:
   commentId: F:AfterNow.PrezSDK.PrezSDKManager._instance
   fullName: AfterNow.PrezSDK.PrezSDKManager._instance
   nameWithType: PrezSDKManager._instance
+- uid: AfterNow.PrezSDK.PrezSDKManager.baseController
+  name: baseController
+  href: api/AfterNow.PrezSDK.PrezSDKManager.html#AfterNow_PrezSDK_PrezSDKManager_baseController
+  commentId: F:AfterNow.PrezSDK.PrezSDKManager.baseController
+  fullName: AfterNow.PrezSDK.PrezSDKManager.baseController
+  nameWithType: PrezSDKManager.baseController
 - uid: AfterNow.PrezSDK.PrezSDKManager.ClearObjects
   name: ClearObjects()
   href: api/AfterNow.PrezSDK.PrezSDKManager.html#AfterNow_PrezSDK_PrezSDKManager_ClearObjects

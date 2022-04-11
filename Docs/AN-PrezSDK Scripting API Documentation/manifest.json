@@ -1,17 +1,4 @@
 {
-  "sitemap": {
-    "fileOptions": {
-      "**/api/**.yml": {
-        "baseUrl": "http://htmlpreview.github.io/\"?/",
-        "changefreq": "monthly",
-        "priority": 0.3,
-        "lastmod": "2001-01-01T00:00:00"
-      }
-    },
-    "baseUrl": "http://htmlpreview.github.io/\"?/",
-    "changefreq": "monthly",
-    "priority": 0.1
-  },
   "homepages": [],
   "source_base_path": "D:/DocFx Projects/ANPrezSDKDocumentationBuilder",
   "xrefmap": "xrefmap.yml",
@@ -25,7 +12,7 @@
           "hash": "SawacF0x3700kG35omL0qKOCE3a12cyKLxUqdUt16wE="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -37,7 +24,7 @@
           "hash": "AswTzLwLQ/Nuz/qwZf7Ie4McZBXj++2ZnivQfsqbjJw="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -49,7 +36,7 @@
           "hash": "qNNNdI2d7ZZe1aqFHXk9GJJqiXFJI4Qd0mUFznVDsK8="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -61,7 +48,7 @@
           "hash": "VmTMicV/Jjl+QPcJpJ9pqZtzJ90bQpvLvaFelhcYwyg="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -73,7 +60,7 @@
           "hash": "+boIN/brMq+FPE5OUcg9GikVyRyYm88rEBptusis0zI="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -82,7 +69,7 @@
       "output": {
         ".html": {
           "relative_path": "api/AfterNow.PrezSDK.PrezSDKManager.html",
-          "hash": "XqOq1DZVMUf5TWMxQsEpEjNoaGmwpKnCl3ulf8DhMC4="
+          "hash": "LNMgkF04USLIUtANOpVMM5orIiBvFGGLNvTEFKzzYSQ="
         }
       },
       "is_incremental": false,
@@ -97,7 +84,7 @@
           "hash": "jGS2HFleOgcllNPrFE3RmVXCUJCTGvnJsUddctjFSF4="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -109,7 +96,7 @@
           "hash": "jsmaDXpwD8o7/w0RxSgDa5bDiPG0idhpPe6l5a/uHPg="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -121,7 +108,7 @@
           "hash": "l//L3nyLhSGbqajN4v0aEKiNIRROss1HqCLlfrXynp0="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -133,7 +120,7 @@
           "hash": "6Pd9xHXQ0ULe/6BAF/wV5z8x1H4qY6BUZCQXFmn0lXc="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -145,7 +132,7 @@
           "hash": "lxoMcAylEeAOA/vuyIekAkATWCe3vAfv79I1vHxqUAg="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -157,7 +144,7 @@
           "hash": "7XFOTykPBSQxwq2IepeUdNhogVDmqQ2YdTQBrcUg56w="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -181,7 +168,7 @@
           "hash": "wcQeFeeoEBNcNqCDq4v/f6edVUnPH4Js1CN9ncs0FmA="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -205,7 +192,7 @@
           "hash": "I3bS9/sxR4oyH8bmpRaQAjuxycutuGXPZbIVVQOfp5c="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -240,7 +227,7 @@
           "hash": "4c6oafGGqygCCOV08EJk24jrJpJjhGUDVfPB4eRNd8I="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -275,7 +262,7 @@
           "can_incremental": true,
           "incrementalPhase": "build",
           "total_file_count": 12,
-          "skipped_file_count": 12
+          "skipped_file_count": 11
         },
         "ResourceDocumentProcessor": {
           "can_incremental": false,
@@ -295,8 +282,8 @@
     },
     {
       "status": {
-        "can_incremental": false,
-        "details": "Cannot support incremental post processing, the reason is: should not trace intermediate info.",
+        "can_incremental": true,
+        "details": "Can support incremental post processing.",
         "incrementalPhase": "postProcessing",
         "total_file_count": 0,
         "skipped_file_count": 0
