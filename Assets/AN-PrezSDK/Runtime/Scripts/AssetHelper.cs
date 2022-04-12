@@ -7,9 +7,19 @@ using UnityEngine;
 
 namespace AfterNow.PrezSDK
 {
+    /// <summary>
+    /// A Helper class which handles operations related to assets like their orientation, text color etc
+    /// </summary>
     internal static class PrezAssetHelper
     {
+        // An array which stores TextMeshPro fonts of the text assets loaded
         private static readonly Dictionary<string, TMP_FontAsset> LoadedFontAssets = new Dictionary<string, TMP_FontAsset>();
+
+        /// <summary>
+        /// This function takes in the text asset's object <paramref name="asset"/> and returns the font that text contains
+        /// </summary>
+        /// <param name="asset"> The text asset </param>
+        /// <returns></returns>
         public static TMP_FontAsset GetFontAsset(this ARPText asset)
         {
             string fontName = asset.GetFontName();
@@ -31,12 +41,24 @@ namespace AfterNow.PrezSDK
             }
         }
 
+        /// <summary>
+        /// This function takes a color's html coded string <paramref name="stringColor"/> and returns it's color 
+        /// </summary>
+        /// <param name="stringColor"> HTML code string of a color </param>
+        /// <returns> Color of the provided HTML string input <paramref name="stringColor"/> </returns>
         public static Color GetColor(string stringColor)
         {
             ColorUtility.TryParseHtmlString(stringColor, out Color newColor);
             return newColor;
         }
 
+        /// <summary>
+        /// This function handles the text alignment of the TextMeshPro Text asset. It takes in ARPText <paramref name="text"/> and returns
+        /// the TextAlignmentOption which could be one of Center/Left/Right. If none is mentioned in the Text asset, center is considered
+        /// as default
+        /// </summary>
+        /// <param name="text"> The text asset </param>
+        /// <returns> TextAlignmentOption : Center/Left/Right. Default is center </returns>
         public static TextAlignmentOptions GetTMPAlignment(this ARPText text)
         {
             switch (text.alignment)
@@ -52,6 +74,12 @@ namespace AfterNow.PrezSDK
             }
         }
 
+        /// <summary>
+        /// This function returns the WrapMode of an animation <paramref name="transition"/>. It could be one of Once/Loop/PingPong/Clamp.
+        /// Default value is "Default"
+        /// </summary>
+        /// <param name="transition"> The animation of an asset </param>
+        /// <returns> WrapMode i.e the type of animation to be played. It could be Once/Loop/PingPong/Clamp </returns>
         public static WrapMode GetWrapMode(this ARPTransition transition)
         {
             switch (transition.internalAnimationWrap)
@@ -69,6 +97,11 @@ namespace AfterNow.PrezSDK
             }
         }
 
+        /// <summary>
+        /// Returns background texture of the <paramref name="slide"/>
+        /// </summary>
+        /// <param name="slide"> Slide of the loaded presentation </param>
+        /// <returns> Returns the texture which is in format of Texture2D </returns>
         public static Texture2D GetBackgroundTexture(this Slide slide)
         {
             if (slide.BackgroundTexture == null) return null;
@@ -79,6 +112,11 @@ namespace AfterNow.PrezSDK
             return null;
         }
 
+        /// <summary>
+        /// Updates the transform of the <paramref name="asset"/> which is a type of "ARPAsset" with the provided <paramref name="newTransform"/>
+        /// </summary>
+        /// <param name="asset"> The asset whose transform need to be updated </param>
+        /// <param name="newTransform"> The transform to be applied to the <paramref name="asset"/></param>
         public static void UpdateItemTransform(this ARPAsset asset, Transform newTransform)
         {
             if (asset.itemTransform == null)
@@ -88,6 +126,11 @@ namespace AfterNow.PrezSDK
             asset.itemTransform.SetTransform(newTransform);
         }
 
+        /// <summary>
+        /// Function which returns the ItemTransform of an <paramref name="asset"/> which is of type "ARPAsset"
+        /// </summary>
+        /// <param name="asset"> The asset whose ItemTransform is required </param>
+        /// <returns> ItemTransform reference of the provided <paramref name="asset"/></returns>
         public static ItemTransform GetItemTransform(this ARPAsset asset)
         {
             if (asset.itemTransform == null)
@@ -97,6 +140,11 @@ namespace AfterNow.PrezSDK
             return asset.itemTransform;
         }
 
+        /// <summary>
+        /// Updates the transform of the <paramref name="asset"/> which is a type of "Location" with the provided <paramref name="newTransform"/>
+        /// </summary>
+        /// <param name="asset"></param>
+        /// <param name="newTransform"></param>
         public static void UpdateItemTransform(this Location asset, Transform newTransform)
         {
             if (asset.itemTransform == null)
@@ -106,6 +154,11 @@ namespace AfterNow.PrezSDK
             asset.itemTransform.SetTransform(newTransform);
         }
 
+        /// <summary>
+        /// Function which returns the ItemTransform of an <paramref name="asset"/> which is of type "Location"
+        /// </summary>
+        /// <param name="asset"> The asset whose ItemTransform is required </param>
+        /// <returns> ItemTransform reference of the provided <paramref name="asset"/></returns>
         public static ItemTransform GetItemTransform(this Location asset)
         {
             if (asset.itemTransform == null)
@@ -115,6 +168,11 @@ namespace AfterNow.PrezSDK
             return asset.itemTransform;
         }
 
+        /// <summary>
+        /// This function takes care of applying intial transform of an asset
+        /// </summary>
+        /// <param name="obj">The gameobject of the asset to apply the initial transform for</param>
+        /// <param name="itemTransform"> The initial transform value to be applied to the gameobject <paramref name="obj"/></param>
         public static void SetInitialTransform(this GameObject obj, ItemTransform itemTransform)
         {
             Transform trans = obj.transform;
@@ -123,7 +181,11 @@ namespace AfterNow.PrezSDK
             trans.localScale = itemTransform.localScale.GetVector();
         }
 
-
+        /// <summary>
+        /// This function sets the asset's transform
+        /// </summary>
+        /// <param name="item"> ItemTransform reference of the asset the <paramref name="transform"/> will be applied to </param>
+        /// <param name="transform"> transform that has to be applied to the asset </param>
         public static void SetTransform(this ItemTransform item, Transform transform)
         {
             item.position = item.position.SetVector(transform.localPosition);
@@ -131,6 +193,12 @@ namespace AfterNow.PrezSDK
             item.localScale = item.localScale.SetVector(transform.localScale);
         }
 
+        /// <summary>
+        /// This function handles logic for applying the <paramref name="vector"/> of type Vector3 to the <paramref name="item"/> of type PrezVector
+        /// </summary>
+        /// <param name="item"> PrezVector3 reference of an asset </param>
+        /// <param name="vector"> Vector3 that has to be applied to the <paramref name="item"/> of type PrezVector3 of an asset </param>
+        /// <returns> PrezVector3 </returns>
         public static PrezVector3 SetVector(this PrezVector3 item, Vector3 vector)
         {
             item.x = vector.x;
@@ -139,6 +207,12 @@ namespace AfterNow.PrezSDK
             return item;
         }
 
+        /// <summary>
+        /// This function handles logic for applying the <paramref name="quat"/> of type Quaternion to the <paramref name="item"/> of type PrezQuaternion
+        /// </summary>
+        /// <param name="item"> PrezQuaternion reference of an asset </param>
+        /// <param name="quat"> Quaternion that has to be applied to the <paramref name="item"/> of type PrezQuaternion of an asset </param>
+        /// <returns> PrezQuaternion </returns>
         public static PrezQuaternion SetQuaternion(this PrezQuaternion item, Quaternion quat)
         {
             item.x = quat.x;
@@ -148,16 +222,31 @@ namespace AfterNow.PrezSDK
             return item;
         }
 
+        /// <summary>
+        /// This function converts the <paramref name="vec"/> of type PrezVector3 of an asset and returns Vector3
+        /// </summary>
+        /// <param name="vec"> The PrezVector3 of an asset </param>
+        /// <returns> Vector3 </returns>
         public static Vector3 GetVector(this PrezVector3 vec)
         {
             return new Vector3(vec.x, vec.y, vec.z);
         }
 
+        /// <summary>
+        /// This function converts the <paramref name="quat"/> of type PrezQuaternion of an asset and returns Quaternion
+        /// </summary>
+        /// <param name="quat"> The PrezQuaternion of an asset </param>
+        /// <returns> Quaternion </returns>
         public static Quaternion GetQuaternion(this PrezQuaternion quat)
         {
             return new Quaternion(quat.x, quat.y, quat.z, quat.w);
         }
 
+        /// <summary>
+        /// This function is responsible for returning a replacement string which will be applied to the asset bundles
+        /// based on the device platform the presentation is loaded
+        /// </summary>
+        /// <returns> Replacement string </returns>
         public static string ReplacementString()
         {
             string replacement = null;
