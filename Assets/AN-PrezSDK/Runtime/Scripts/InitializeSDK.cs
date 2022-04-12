@@ -8,6 +8,9 @@ using UnityEngine;
 
 namespace AfterNow.PrezSDK
 {
+    /// <summary>
+    /// Class which handles the initialization of the Prez SDK.
+    /// </summary>
     internal class InitializeSDK
     {
         public static string DownloadFolderPath { get; private set; }

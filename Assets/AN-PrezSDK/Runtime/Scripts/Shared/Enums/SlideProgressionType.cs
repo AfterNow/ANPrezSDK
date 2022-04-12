@@ -2,6 +2,9 @@ using System;
 
 namespace AfterNow.PrezSDK.Shared.Enums
 {
+    /// <summary>
+    /// An enum consisting of different progresses of a presentation
+    /// </summary>
     [Serializable]
     public enum SlideProgressionType : sbyte
     {

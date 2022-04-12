@@ -2,6 +2,9 @@ using UnityEngine;
 
 namespace AfterNow.PrezSDK
 {
+    /// <summary>
+    /// Class which handles the asset rotation if it was set in the portal
+    /// </summary>
     internal class Rotate : MonoBehaviour
     {
         public bool shouldUpdate;

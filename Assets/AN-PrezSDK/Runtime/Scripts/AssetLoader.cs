@@ -14,6 +14,9 @@ using UnityEngine.Video;
 
 namespace AfterNow.PrezSDK
 {
+    /// <summary>
+    /// This class is responsible for loading assets of a presentation.
+    /// </summary>
     internal static class AssetLoader
     {
         private static float imageFator = 0.4f;
@@ -23,14 +26,30 @@ namespace AfterNow.PrezSDK
 
         static AudioSource audioChannelVideo;
 
+        /// <summary>
+        /// List of textures present in a slide
+        /// </summary>
         public static readonly List<Texture2D> textures = new List<Texture2D>();
+
+        /// <summary>
+        /// List of audio clips present in a slide
+        /// </summary>
         public static readonly List<AudioClip> audioClips = new List<AudioClip>();
 
+        /// <summary>
+        /// Stops loading of assets. This is called when the user changes slides
+        /// </summary>
         public static void StopLoadingAssets()
         {
             CoroutineRunner.Instance.StopAllCoroutines();
         }
 
+        /// <summary>
+        /// Loads assets of a slide based on its type like Audio, Video, Image, etc. It takes "ARPAsset" as a parameter and returns the loaded gameobject.
+        /// </summary>
+        /// <param name="asset"> The asset of a slide that is to be loaded </param>
+        /// <param name="onLoaded"> A callback which returns the instatiated gameobject of the <paramref name="asset"/></param>
+        /// <returns></returns>
         public static IEnumerator OnLoadAsset(ARPAsset asset, Action<GameObject> onLoaded)
         {
             string assetPath = asset.type != ANPAssetType.TEXT ? asset.AbsoluteDownloadPath(InitializeSDK.DownloadFolderPath) : null;
@@ -236,7 +255,7 @@ namespace AfterNow.PrezSDK
         }
 
 
-        // ONLY used for GLB Re Scaling
+        // Used for the GLB Re-scaling
         private static void AdjustObjectScale(GameObject glbObject)
         {
             glbObject.SetActive(true);
@@ -295,6 +314,15 @@ namespace AfterNow.PrezSDK
             return bounds;
         }
 
+        /// <summary>
+        /// This function is responsible for handling the video player logic. The video file present in the <paramref name="_assetPath"/>
+        /// is played on the Video Player which is attached to the <paramref name="_video"/>. If <paramref name="OnEnable"/> is set to true,
+        /// volume on the audio source is increased to maximum which is 1.
+        /// </summary>
+        /// <param name="_video"> The gameobject which has the Video Player component </param>
+        /// <param name="_assetPath"> Video file path </param>
+        /// <param name="OnEnable"> If set to true, audio level of the video will be set to 1 </param>
+        /// <returns></returns>
         private static IEnumerator HandleVideoPlayer(GameObject _video, string _assetPath, bool OnEnable)
         {
             VideoPlayer player = _video.GetComponent<VideoPlayer>();
@@ -330,6 +358,12 @@ namespace AfterNow.PrezSDK
             }
         }
 
+        /// <summary>
+        /// This function handles the image loading logic
+        /// </summary>
+        /// <param name="_gameObject"> Gameobject with the Image component attached </param>
+        /// <param name="url"> Image file path </param>
+        /// <returns></returns>
         static IEnumerator LoadImage(GameObject _gameObject, string url)
         {
             //Debug.Log("supports : " + SystemInfo.SupportsTextureFormat(TextureFormat.RGBA32));
