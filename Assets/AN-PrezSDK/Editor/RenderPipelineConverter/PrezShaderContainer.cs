@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace AfterNow.PrezSDK.Editor
 {
-    public class PrezShaderContainer : ScriptableObject
+    internal class PrezShaderContainer : ScriptableObject
     {
         [SerializeField] TextAsset builtInShadersList;
         [SerializeField] TextAsset srpShadersList;

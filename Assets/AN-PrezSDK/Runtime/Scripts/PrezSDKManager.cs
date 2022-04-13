@@ -8,9 +8,9 @@ using System.Linq;
 using AfterNow.PrezSDK.Internal.Helpers;
 using AfterNow.PrezSDK.Internal.Views;
 using AfterNow.PrezSDK.Shared;
-using AfterNow.PrezSDK.Shared.Enums;
 using System.IO;
 using AfterNow.PrezSDK.Internal;
+using AfterNow.PrezSDK.Shared.Enums;
 
 namespace AfterNow.PrezSDK
 {

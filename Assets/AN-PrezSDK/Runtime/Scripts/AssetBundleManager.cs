@@ -9,7 +9,7 @@ namespace AfterNow.PrezSDK
     /// <summary>
     /// Class to handle loading and unloading of asset bundles present in a presentation
     /// </summary>
-    public class AssetBundleManager : MonoBehaviour
+    internal class AssetBundleManager : MonoBehaviour
     {
         internal static AssetBundleManager Instance
         {
