@@ -9,31 +9,7 @@
       "output": {
         ".html": {
           "relative_path": "README.html",
-          "hash": "SawacF0x3700kG35omL0qKOCE3a12cyKLxUqdUt16wE="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/AfterNow.PrezSDK.Editor.PrezShaderContainer.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/AfterNow.PrezSDK.Editor.PrezShaderContainer.html",
-          "hash": "AswTzLwLQ/Nuz/qwZf7Ie4McZBXj++2ZnivQfsqbjJw="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/AfterNow.PrezSDK.Editor.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/AfterNow.PrezSDK.Editor.html",
-          "hash": "qNNNdI2d7ZZe1aqFHXk9GJJqiXFJI4Qd0mUFznVDsK8="
+          "hash": "hE2DXrCHZ55YRFW77jbW8c+wjZ9BzXVvq7I2k0d1tT8="
         }
       },
       "is_incremental": true,
@@ -45,7 +21,7 @@
       "output": {
         ".html": {
           "relative_path": "api/AfterNow.PrezSDK.Examples.ExampleController.html",
-          "hash": "VmTMicV/Jjl+QPcJpJ9pqZtzJ90bQpvLvaFelhcYwyg="
+          "hash": "qCYSzoZlxsmtn64x3vrgUN8rxITc1xVZP4v4VFdfwhw="
         }
       },
       "is_incremental": true,
@@ -57,7 +33,7 @@
       "output": {
         ".html": {
           "relative_path": "api/AfterNow.PrezSDK.Examples.html",
-          "hash": "+boIN/brMq+FPE5OUcg9GikVyRyYm88rEBptusis0zI="
+          "hash": "/QUUGLhrH3F+U7lz1JfTZei8CsrfPlfZz2hQGHDxvps="
         }
       },
       "is_incremental": true,
@@ -69,10 +45,10 @@
       "output": {
         ".html": {
           "relative_path": "api/AfterNow.PrezSDK.PrezSDKManager.html",
-          "hash": "LNMgkF04USLIUtANOpVMM5orIiBvFGGLNvTEFKzzYSQ="
+          "hash": "m5G0Hn4Zz2miQEgzg4gnJqes+avKYwKPOuPjRHhY/HY="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -81,55 +57,7 @@
       "output": {
         ".html": {
           "relative_path": "api/AfterNow.PrezSDK.Shared.BasePrezController.html",
-          "hash": "jGS2HFleOgcllNPrFE3RmVXCUJCTGvnJsUddctjFSF4="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/AfterNow.PrezSDK.Shared.Enums.PresentationJoinStatus.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/AfterNow.PrezSDK.Shared.Enums.PresentationJoinStatus.html",
-          "hash": "jsmaDXpwD8o7/w0RxSgDa5bDiPG0idhpPe6l5a/uHPg="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/AfterNow.PrezSDK.Shared.Enums.SlideProgressionType.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/AfterNow.PrezSDK.Shared.Enums.SlideProgressionType.html",
-          "hash": "l//L3nyLhSGbqajN4v0aEKiNIRROss1HqCLlfrXynp0="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/AfterNow.PrezSDK.Shared.Enums.SlideStatusUpdate.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/AfterNow.PrezSDK.Shared.Enums.SlideStatusUpdate.html",
-          "hash": "6Pd9xHXQ0ULe/6BAF/wV5z8x1H4qY6BUZCQXFmn0lXc="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/AfterNow.PrezSDK.Shared.Enums.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/AfterNow.PrezSDK.Shared.Enums.html",
-          "hash": "lxoMcAylEeAOA/vuyIekAkATWCe3vAfv79I1vHxqUAg="
+          "hash": "H+Xcf6m+hyl12VPvY4nu6cU6bkm23UP7LCE7grLNt7k="
         }
       },
       "is_incremental": true,
@@ -141,7 +69,7 @@
       "output": {
         ".html": {
           "relative_path": "api/AfterNow.PrezSDK.Shared.html",
-          "hash": "7XFOTykPBSQxwq2IepeUdNhogVDmqQ2YdTQBrcUg56w="
+          "hash": "ENY5PBkticzrFx/z82v/yqU9Taa/S0/a5uUk39kCDU4="
         }
       },
       "is_incremental": true,
@@ -153,10 +81,10 @@
       "output": {
         ".html": {
           "relative_path": "api/AfterNow.PrezSDK.html",
-          "hash": "+k3b3hbM9nKv9fXhxd8IWx6shvK806U5f+JLX/F1nLY="
+          "hash": "ZkWwqP4+VP+e7SKByYlGAKpBSF77uNBPi5e8+KyvTx0="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -165,7 +93,7 @@
       "output": {
         ".html": {
           "relative_path": "api/index.html",
-          "hash": "wcQeFeeoEBNcNqCDq4v/f6edVUnPH4Js1CN9ncs0FmA="
+          "hash": "2ILRVIAepbjTnqTuWgVCOfeSBzywXnkJwh1n70zWqj4="
         }
       },
       "is_incremental": true,
@@ -177,7 +105,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "D7fVo8mttFpkHUzuvO1/9WuFBtZbtQJoLVzz2goGAsE="
+          "hash": "mFcC/ntzkDTflk1XL3zIIi0sJIxVONzoXeRYDCqapMI="
         }
       },
       "is_incremental": false,
@@ -189,7 +117,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/intro.html",
-          "hash": "I3bS9/sxR4oyH8bmpRaQAjuxycutuGXPZbIVVQOfp5c="
+          "hash": "19sOJ7zinYsaOutzXpAfyLdrN2qQN+QcnzmNXouqTv4="
         }
       },
       "is_incremental": true,
@@ -209,10 +137,21 @@
     },
     {
       "type": "Resource",
-      "source_relative_path": "images/AfterNow_logo.png",
+      "source_relative_path": "images/AfterNow_logo_small.png",
       "output": {
         "resource": {
-          "relative_path": "images/AfterNow_logo.png"
+          "relative_path": "images/AfterNow_logo_small.png"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "images/AfterNow_logo_with_name.png",
+      "output": {
+        "resource": {
+          "relative_path": "images/AfterNow_logo_with_name.png"
         }
       },
       "is_incremental": false,
@@ -224,7 +163,7 @@
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "4c6oafGGqygCCOV08EJk24jrJpJjhGUDVfPB4eRNd8I="
+          "hash": "MI1C5lBjozym0qw+9k9r0drTX9ol21zbgGPZ2/EV95M="
         }
       },
       "is_incremental": true,
@@ -261,8 +200,8 @@
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": true,
           "incrementalPhase": "build",
-          "total_file_count": 12,
-          "skipped_file_count": 11
+          "total_file_count": 6,
+          "skipped_file_count": 6
         },
         "ResourceDocumentProcessor": {
           "can_incremental": false,
