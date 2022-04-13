@@ -67,7 +67,7 @@ namespace AfterNow.PrezSDK
                     tm.text = txt.value;
                     tm.font = txt.GetFontAsset();
                     tm.alignment = txt.GetTMPAlignment();
-                    tm.color = PrezAssetHelper.GetColor(txt.color);
+                    tm.color = AssetHelper.GetColor(txt.color);
                     tm.faceColor = tm.color;
                     //yield return null;
                     var collider = _text.AddComponent<BoxCollider>();

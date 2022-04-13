@@ -203,7 +203,7 @@ namespace AfterNow.PrezSDK
                         {
                             if (_asset.url.Contains(".unitypackage"))
                             {
-                                replacement = PrezAssetHelper.ReplacementString();
+                                replacement = AssetHelper.ReplacementString();
                             }
                         }
                         var task = _asset.DownloadAsset(replacement);

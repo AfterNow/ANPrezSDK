@@ -10,7 +10,7 @@ namespace AfterNow.PrezSDK
     /// <summary>
     /// A Helper class which handles operations related to assets like their orientation, text color etc
     /// </summary>
-    internal static class PrezAssetHelper
+    internal static class AssetHelper
     {
         // An array which stores TextMeshPro fonts of the text assets loaded
         private static readonly Dictionary<string, TMP_FontAsset> LoadedFontAssets = new Dictionary<string, TMP_FontAsset>();
