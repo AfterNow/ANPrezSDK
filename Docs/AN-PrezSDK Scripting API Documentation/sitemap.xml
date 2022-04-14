@@ -1,99 +1,63 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://htmlpreview.github.io/?api/AfterNow.PrezSDK.Editor.PrezShaderContainer.html</loc>
-    <lastmod>2001-01-01T12:00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
+    <loc>http://htmlpreview.github.io/?https://github.com/AfterNow/ANPrezSDK/tree/develop_1481_documentation/Docs/AN-PrezSDK%20Scripting%20API%20Documentation/api/AfterNow.PrezSDK.Examples.ExampleController.html</loc>
+    <lastmod>2022-04-14T07:27:09+05:30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
   </url>
   <url>
-    <loc>http://htmlpreview.github.io/?api/AfterNow.PrezSDK.Editor.html</loc>
-    <lastmod>2001-01-01T12:00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
+    <loc>http://htmlpreview.github.io/?https://github.com/AfterNow/ANPrezSDK/tree/develop_1481_documentation/Docs/AN-PrezSDK%20Scripting%20API%20Documentation/api/AfterNow.PrezSDK.Examples.html</loc>
+    <lastmod>2022-04-14T07:27:09+05:30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
   </url>
   <url>
-    <loc>http://htmlpreview.github.io/?api/AfterNow.PrezSDK.Examples.ExampleController.html</loc>
-    <lastmod>2001-01-01T12:00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
+    <loc>http://htmlpreview.github.io/?https://github.com/AfterNow/ANPrezSDK/tree/develop_1481_documentation/Docs/AN-PrezSDK%20Scripting%20API%20Documentation/api/AfterNow.PrezSDK.PrezSDKManager.html</loc>
+    <lastmod>2022-04-14T07:27:09+05:30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
   </url>
   <url>
-    <loc>http://htmlpreview.github.io/?api/AfterNow.PrezSDK.Examples.html</loc>
-    <lastmod>2001-01-01T12:00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
+    <loc>http://htmlpreview.github.io/?https://github.com/AfterNow/ANPrezSDK/tree/develop_1481_documentation/Docs/AN-PrezSDK%20Scripting%20API%20Documentation/api/AfterNow.PrezSDK.Shared.BasePrezController.html</loc>
+    <lastmod>2022-04-14T07:27:09+05:30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
   </url>
   <url>
-    <loc>http://htmlpreview.github.io/?api/AfterNow.PrezSDK.PrezSDKManager.html</loc>
-    <lastmod>2001-01-01T12:00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
+    <loc>http://htmlpreview.github.io/?https://github.com/AfterNow/ANPrezSDK/tree/develop_1481_documentation/Docs/AN-PrezSDK%20Scripting%20API%20Documentation/api/AfterNow.PrezSDK.Shared.html</loc>
+    <lastmod>2022-04-14T07:27:09+05:30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
   </url>
   <url>
-    <loc>http://htmlpreview.github.io/?api/AfterNow.PrezSDK.Shared.BasePrezController.html</loc>
-    <lastmod>2001-01-01T12:00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
+    <loc>http://htmlpreview.github.io/?https://github.com/AfterNow/ANPrezSDK/tree/develop_1481_documentation/Docs/AN-PrezSDK%20Scripting%20API%20Documentation/api/AfterNow.PrezSDK.html</loc>
+    <lastmod>2022-04-14T07:27:09+05:30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
   </url>
   <url>
-    <loc>http://htmlpreview.github.io/?api/AfterNow.PrezSDK.Shared.Enums.PresentationJoinStatus.html</loc>
-    <lastmod>2001-01-01T12:00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
+    <loc>http://htmlpreview.github.io/?https://github.com/AfterNow/ANPrezSDK/tree/develop_1481_documentation/Docs/AN-PrezSDK%20Scripting%20API%20Documentation/api/index.html</loc>
+    <lastmod>2022-04-14T07:27:09+05:30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
   </url>
   <url>
-    <loc>http://htmlpreview.github.io/?api/AfterNow.PrezSDK.Shared.Enums.SlideProgressionType.html</loc>
-    <lastmod>2001-01-01T12:00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
+    <loc>http://htmlpreview.github.io/?https://github.com/AfterNow/ANPrezSDK/tree/develop_1481_documentation/Docs/AN-PrezSDK%20Scripting%20API%20Documentation/articles/intro.html</loc>
+    <lastmod>2022-04-14T07:27:09+05:30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
   </url>
   <url>
-    <loc>http://htmlpreview.github.io/?api/AfterNow.PrezSDK.Shared.Enums.SlideStatusUpdate.html</loc>
-    <lastmod>2001-01-01T12:00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
+    <loc>http://htmlpreview.github.io/?https://github.com/AfterNow/ANPrezSDK/tree/develop_1481_documentation/Docs/AN-PrezSDK%20Scripting%20API%20Documentation/index.html</loc>
+    <lastmod>2022-04-14T07:27:09+05:30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
   </url>
   <url>
-    <loc>http://htmlpreview.github.io/?api/AfterNow.PrezSDK.Shared.Enums.html</loc>
-    <lastmod>2001-01-01T12:00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>http://htmlpreview.github.io/?api/AfterNow.PrezSDK.Shared.html</loc>
-    <lastmod>2001-01-01T12:00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>http://htmlpreview.github.io/?api/AfterNow.PrezSDK.html</loc>
-    <lastmod>2001-01-01T12:00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>http://htmlpreview.github.io/?api/index.html</loc>
-    <lastmod>2022-03-29T06:01:28+05:30</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.1</priority>
-  </url>
-  <url>
-    <loc>http://htmlpreview.github.io/?articles/intro.html</loc>
-    <lastmod>2022-03-29T06:01:28+05:30</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.1</priority>
-  </url>
-  <url>
-    <loc>http://htmlpreview.github.io/?index.html</loc>
-    <lastmod>2022-03-29T06:01:28+05:30</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.1</priority>
-  </url>
-  <url>
-    <loc>http://htmlpreview.github.io/?README.html</loc>
-    <lastmod>2022-03-29T06:01:28+05:30</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.1</priority>
+    <loc>http://htmlpreview.github.io/?https://github.com/AfterNow/ANPrezSDK/tree/develop_1481_documentation/Docs/AN-PrezSDK%20Scripting%20API%20Documentation/README.html</loc>
+    <lastmod>2022-04-14T07:27:09+05:30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
   </url>
 </urlset>

@@ -1,4 +1,7 @@
 {
+  "sitemap": {
+    "baseUrl": "https://example.com/"
+  },
   "homepages": [],
   "source_base_path": "D:/DocFx Projects/ANPrezSDKDocumentationBuilder",
   "xrefmap": "xrefmap.yml",
@@ -12,7 +15,7 @@
           "hash": "hE2DXrCHZ55YRFW77jbW8c+wjZ9BzXVvq7I2k0d1tT8="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -24,7 +27,7 @@
           "hash": "qCYSzoZlxsmtn64x3vrgUN8rxITc1xVZP4v4VFdfwhw="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -36,7 +39,7 @@
           "hash": "/QUUGLhrH3F+U7lz1JfTZei8CsrfPlfZz2hQGHDxvps="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -48,7 +51,7 @@
           "hash": "m5G0Hn4Zz2miQEgzg4gnJqes+avKYwKPOuPjRHhY/HY="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -60,7 +63,7 @@
           "hash": "H+Xcf6m+hyl12VPvY4nu6cU6bkm23UP7LCE7grLNt7k="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -72,7 +75,7 @@
           "hash": "ENY5PBkticzrFx/z82v/yqU9Taa/S0/a5uUk39kCDU4="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -84,7 +87,7 @@
           "hash": "ZkWwqP4+VP+e7SKByYlGAKpBSF77uNBPi5e8+KyvTx0="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -96,7 +99,7 @@
           "hash": "2ILRVIAepbjTnqTuWgVCOfeSBzywXnkJwh1n70zWqj4="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -120,7 +123,7 @@
           "hash": "19sOJ7zinYsaOutzXpAfyLdrN2qQN+QcnzmNXouqTv4="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -166,7 +169,7 @@
           "hash": "MI1C5lBjozym0qw+9k9r0drTX9ol21zbgGPZ2/EV95M="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -221,8 +224,8 @@
     },
     {
       "status": {
-        "can_incremental": true,
-        "details": "Can support incremental post processing.",
+        "can_incremental": false,
+        "details": "Cannot support incremental post processing, the reason is: should not trace intermediate info.",
         "incrementalPhase": "postProcessing",
         "total_file_count": 0,
         "skipped_file_count": 0
