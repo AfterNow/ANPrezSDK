@@ -91,12 +91,17 @@ public static class AssetLoader
                 break;
 
             case ANPAssetType.OBJECT:
+                GameObject glbParent = new GameObject();
+                glbParent.name = fileName;
+                glbParent.AddComponent<Rotate>();
+                
                 request = Resources.LoadAsync<GameObject>("PrezObjectAsset");
                 yield return request;
                 GameObject _object = (GameObject)UnityEngine.Object.Instantiate(request.asset);
-                _object.name = fileName;
+                _object.name = "GLTF";
                 _object.gameObject.SetActive(true);
-
+                _object.transform.SetParent(glbParent.transform);
+                
                 bool IsGLBLoading = false;
                 bool finishedAsync = false;
                 Exception exception = null;
@@ -154,12 +159,12 @@ public static class AssetLoader
                                 UnityEngine.Object.Destroy(cam.gameObject);
                             }
                         }
-                        AdjustObjectScale(glb);
+                        AdjustObjectScale(_object);
                         /*if (assetGo.transform.Find("Root") != null)
                         {
                             UnityEngine.Object.Destroy(assetGo.transform.Find("Root"));
                         }*/
-                        onLoaded(_object);
+                        onLoaded(glbParent);
                         //Debug.Log("objectloaded : " + _object.name + " type : GLB");
 
                         if (exception != null)
@@ -189,7 +194,7 @@ public static class AssetLoader
                         {
                             bundle.name = asset.FileName();
                             bundle.transform.SetParent(_object.transform, false);
-                            onLoaded(_object);
+                            onLoaded(glbParent);
                             //Debug.Log("objectloaded : " + bundle.name + " type : ASSETBUNDLE");
                         }
                         else
