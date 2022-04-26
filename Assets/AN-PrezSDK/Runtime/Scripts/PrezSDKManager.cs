@@ -38,18 +38,22 @@ class PrezSDKManager : MonoBehaviour
     private List<ARPTransition> _transitions = new List<ARPTransition>();
     private List<AudioSource> audioSources = new List<AudioSource>();
     private readonly LinkedList<int> _slideTracker = new LinkedList<int>();
+    private bool isAuthenticationSuccess = false;
 
     #endregion
 
     #region public/serialized variables
 
-    [SerializeField] BasePrezController baseController;
+#if PREZ_SDK_UI
+    [SerializeField] AfterNow.PrezSDK.Shared.BasePrezControllerUI baseControllerUI;
+#else
+    [SerializeField] AfterNow.PrezSDK.Shared.BasePrezController baseController;
+
     public GameObject presentationAnchorOverride;
     public AnimationTimeline animationTimeline;
     public static PrezSDKManager _instance = null;
     [HideInInspector] public PresentationManager _manager;
     public static Dictionary<string, GameObject> prezAssets = new Dictionary<string, GameObject>();
-
     #endregion
 
     #region UI
@@ -78,8 +82,9 @@ class PrezSDKManager : MonoBehaviour
 
     #region public events
 
-    public static event Action OnPresentationEnded;
-
+    public static event Action<PresentationStatus> OnPresentationStatus;
+    public static event Action<SlideStatusUpdate> OnSlideStatusUpdate;
+    public static event Action<int> OnSlideChange;
     #endregion
 
     #region enums
@@ -92,14 +97,60 @@ class PrezSDKManager : MonoBehaviour
         NextSlide = 1
     }
 
+    public enum PresentationStatus
+    {
+        SUCCESS,
+        FAILURE,
+        ENDED
+    }
     #endregion
+
+    private void OnEnable()
+    {
+#if PREZ_SDK_UI
+        baseControllerUI.loadPresentationFromId += OnStartPresentation;
+        baseControllerUI.nextStep += Next_Step;
+        baseControllerUI.nextSlide += Next_Slide;
+        baseControllerUI.previousSlide += Previous_Slide;
+        baseControllerUI.quit += Quit;
+        baseControllerUI.onAuthorizationSucceeded += AuthenticationSuccess;
+        baseControllerUI.onAuthorizationFailed += AuthenticationFailed;
+#endif
+    }
+
+    private void OnDisable()
+    {
+#if PREZ_SDK_UI
+        baseControllerUI.loadPresentationFromId -= OnStartPresentation;
+        baseControllerUI.nextStep -= Next_Step;
+        baseControllerUI.nextSlide -= Next_Slide;
+        baseControllerUI.previousSlide -= Previous_Slide;
+        baseControllerUI.quit -= Quit;
+        baseControllerUI.onAuthorizationSucceeded -= AuthenticationSuccess;
+        baseControllerUI.onAuthorizationFailed -= AuthenticationFailed;
+#endif
+    }
+
+    void AuthenticationSuccess(string authenticationSuccess)
+    {
+        if (isAuthenticationSuccess)
+            Debug.Log(authenticationSuccess);
+    }
+
+    void AuthenticationFailed(string authenticationFailed)
+    {
+        if (!isAuthenticationSuccess)
+            Debug.Log(authenticationFailed);
+    }
 
     private void Awake()
     {
         _instance = this;
+#if PREZ_SDK_UI
 
+#else
         baseController.AssignEvents(OnStartPresentation, Next_Step, Next_Slide, Previous_Slide, Quit);
-
+#endif
         var instance = CoroutineRunner.Instance;
 
         if (presentationAnchorOverride == null)
@@ -145,11 +196,19 @@ class PrezSDKManager : MonoBehaviour
             {
                 if (ev)
                 {
+#if PREZ_SDK_UI
+                    isAuthenticationSuccess = true;
+#else
                     baseController.Callback_OnAuthorized(true);
+#endif
                 }
                 else
                 {
+#if PREZ_SDK_UI
+                    isAuthenticationSuccess = false;
+#else
                     baseController.Callback_OnAuthorized(false);
+#endif
                 }
             });
         });
@@ -192,7 +251,11 @@ class PrezSDKManager : MonoBehaviour
             PrezStates.CurrentSlide = 0;
             targetSlide = 0;
             slideIdx = -1;
+#if PREZ_SDK_UI
+            OnPresentationStatus(PresentationStatus.ENDED);
+#else
             baseController.Callback_OnPresentationEnd();
+#endif
         }
         else
         {
@@ -603,6 +666,29 @@ class PrezSDKManager : MonoBehaviour
 
     public bool OnStartPresentation(string presentationID)
     {
+#if PREZ_SDK_UI
+
+        if (!isAuthenticationSuccess)
+        {
+            Debug.Log("Access Denied");
+            return false;
+        }
+        if (!string.IsNullOrEmpty(presentationID))
+        {
+            if (int.TryParse(presentationID.Trim(), out int integerPresentationID))
+            {
+                OnPresentationStatus(PresentationStatus.SUCCESS);
+            }
+            else
+            {
+                OnPresentationStatus(PresentationStatus.FAILURE);
+            }
+        }
+#else
+
+#endif
+        Debug.Log("Presentation ID : " + presentationID);
+
         slideIdx = -1;
         if (waitingForPresentationLoad) return false;
         //StatusText.text = null;
@@ -610,6 +696,7 @@ class PrezSDKManager : MonoBehaviour
 
         _ = PrezWebCalls.JoinPresentation(presentationID, (prez) =>
         {
+            Debug.Log("joining");
             CoroutineRunner.DispatchToMainThread(() =>
             {
                 waitingForPresentationLoad = false;
@@ -622,12 +709,20 @@ class PrezSDKManager : MonoBehaviour
                     _manager = presentationAnchorOverride.AddComponent<PresentationManager>();
                     _manager.Init(prez.locations[0]);
                     StartCoroutine(LoadSlide(PrezStates.CurrentSlide));
+#if PREZ_SDK_UI
+
+#else
                     baseController.Callback_OnPresentationJoin(PresentationJoinStatus.SUCCESS, prez.match.shortId);
+#endif
                 }
                 else
                 {
                     //StatusText.text = "Invalid Presentation ID";
+#if PREZ_SDK_UI
+
+#else
                     baseController.Callback_OnPresentationJoin(PresentationJoinStatus.FAILED, null);
+#endif
                 }
             });
         }, (prezFailed) =>
@@ -658,15 +753,22 @@ class PrezSDKManager : MonoBehaviour
         previousSlide.loadedCount = 0;
 
         UpdateSlideCount();
-        //Debug.Log("LOADING SLIDE");    
+        //Debug.Log("LOADING SLIDE");
+#if PREZ_SDK_UI
+        OnSlideStatusUpdate(SlideStatusUpdate.LOADING);
+#else
         baseController.Callback_OnSlideStatusUpdate(AfterNow.PrezSDK.Shared.Enums.SlideStatusUpdate.LOADING);
+#endif
         //Wait till the slide completely loads
         while (!previousSlide.HasSlideLoaded)
         {
             yield return null;
         }
-
+#if PREZ_SDK_UI
+        OnSlideStatusUpdate(SlideStatusUpdate.LOADED);
+#else
         baseController.Callback_OnSlideStatusUpdate(AfterNow.PrezSDK.Shared.Enums.SlideStatusUpdate.LOADED);
+#endif
         PresentationManager.assets = previousSlide.Slide.assets;
         //then play slide animations
         //StartCoroutine(PlayAssetAnimations());
@@ -752,7 +854,11 @@ class PrezSDKManager : MonoBehaviour
 
     void UpdateSlideCount()
     {
+#if PREZ_SDK_UI
+        OnSlideChange(PrezStates.CurrentSlide + 1);
+#else
         baseController.Callback_OnSlideChange(PrezStates.CurrentSlide + 1);
+#endif
         slideCount = PrezStates.Presentation.locations[0].slides.Count;
     }
 

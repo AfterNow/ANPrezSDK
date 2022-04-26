@@ -395,18 +395,10 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4216163859105102623, guid: aae0fa894c30a7d4abc369b23c4f3591, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4216163859105102623, guid: aae0fa894c30a7d4abc369b23c4f3591, type: 3}
+    - target: {fileID: 5051317054588666705, guid: aae0fa894c30a7d4abc369b23c4f3591, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5051317054946455137, guid: aae0fa894c30a7d4abc369b23c4f3591, type: 3}
-      propertyPath: prezSDKManager
-      value: 
-      objectReference: {fileID: 1529574488}
     - target: {fileID: 5051317054946455138, guid: aae0fa894c30a7d4abc369b23c4f3591, type: 3}
       propertyPath: m_Name
       value: ExampleController

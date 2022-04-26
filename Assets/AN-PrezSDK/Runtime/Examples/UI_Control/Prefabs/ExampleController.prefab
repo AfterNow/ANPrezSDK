@@ -1259,15 +1259,47 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_IgnoreLayout: 1
-  m_MinWidth: -1
-  m_MinHeight: -1
-  m_PreferredWidth: -1
-  m_PreferredHeight: -1
-  m_FlexibleWidth: -1
-  m_FlexibleHeight: -1
-  m_LayoutPriority: 1
---- !u!1 &2825373563098415494
+  defaultPresentationID: 
+  PresentationIDText: {fileID: 5051317054907238704}
+  CurrentSlideText: {fileID: 5051317054437617513}
+  SlideLoadingStatusText: {fileID: 1104793472975881503}
+  StatusText: {fileID: 7107940829780008756}
+  nextSlide: {fileID: 5051317054605212807}
+  previousSlide: {fileID: 5051317054777221796}
+  nextStep: {fileID: 5051317055796215161}
+  Quit: {fileID: 5051317054822044615}
+  Login: {fileID: 5051317055074644459}
+  LoginUI: {fileID: 5051317054217683731}
+  PresentationUI: {fileID: 5051317055338781738}
+  PresentationID: {fileID: 5051317054588666704}
+  OnPresentationEnd:
+    m_PersistentCalls:
+      m_Calls: []
+  OnSlideChange:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAuthorized:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPresentationJoin:
+    m_PersistentCalls:
+      m_Calls: []
+  OnSlideStatusUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+  OnQuit:
+    m_PersistentCalls:
+      m_Calls: []
+  OnNextStep:
+    m_PersistentCalls:
+      m_Calls: []
+  OnNextSlide:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPreviousSlide:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!1 &5051317055023985187
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
