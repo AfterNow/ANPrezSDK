@@ -44,7 +44,7 @@ class PrezSDKManager : MonoBehaviour
     #endregion
 
     #region public/serialized variables
-    public BaseController baseController;
+    public Base baseController;
     public GameObject presentationAnchorOverride;
     public AnimationTimeline animationTimeline;
     public static PrezSDKManager _instance = null;
@@ -98,30 +98,41 @@ class PrezSDKManager : MonoBehaviour
     private void OnEnable()
     {
         // If BaseControllerUI has been assigned
-        baseController._onJoinPresentation += OnStartPresentation;
+        /*baseController._onJoinPresentation += OnStartPresentation;
         baseController._nextStep += Next_Step;
         baseController._nextSlide += Next_Slide;
         baseController._previousSlide += Previous_Slide;
-        baseController._quit += Quit;
+        baseController._quit += Quit;*/
+
+        baseController._onJoinPresentation += OnStartPresentation;
     }
 
     private void OnDisable()
     {
         // If BaseControllerUI has been assigned
-        baseController._onJoinPresentation -= OnStartPresentation;
+        /*baseController._onJoinPresentation -= OnStartPresentation;
         baseController._nextStep -= Next_Step;
         baseController._nextSlide -= Next_Slide;
         baseController._previousSlide -= Previous_Slide;
-        baseController._quit -= Quit;
+        baseController._quit -= Quit;*/
+
+        baseController._onJoinPresentation -= OnStartPresentation;
+
     }
 
     private void Awake()
     {
-        _instance = this;
-        isBasePrezController = baseController is BasePrezController;
+        baseController._nextStep.AddListener(Next_Step);
+        baseController._nextSlide.AddListener(Next_Slide);
+        baseController._previousSlide.AddListener(Previous_Slide);
+        baseController._quit.AddListener(Quit);
+        baseController._nextStep.AddListener(Next_Step);
 
-        if (isBasePrezController)
-            baseController.AssignEvents(OnStartPresentation, Next_Step, Next_Slide, Previous_Slide, Quit);
+        _instance = this;
+        isBasePrezController = baseController is Base;
+
+        //if (isBasePrezController)
+            //baseController.AssignEvents(OnStartPresentation, Next_Step, Next_Slide, Previous_Slide, Quit);
 
         var instance = CoroutineRunner.Instance;
 
@@ -131,7 +142,7 @@ class PrezSDKManager : MonoBehaviour
             presentationAnchorOverride.transform.SetParent(transform, false);
         }
 
-        baseController.Callback_OnUserLoginFromEditor((username, password) =>
+        /*baseController.Callback_OnUserLoginFromEditor((username, password) =>
         {
             if (string.IsNullOrEmpty(username) && string.IsNullOrEmpty(password))
                 return;
@@ -164,7 +175,7 @@ class PrezSDKManager : MonoBehaviour
                 });
             });
 
-        });
+        });*/
     }
 
     public void Login(string username, string password)
@@ -195,7 +206,7 @@ class PrezSDKManager : MonoBehaviour
 
     public void Logout()
     {
-        baseController.Callback_OnUserLogout();
+        /*baseController.Callback_OnUserLogout();*/
     }
 
     private void Quit()
