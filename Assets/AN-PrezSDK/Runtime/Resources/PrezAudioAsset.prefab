@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8895726651146161465}
   - component: {fileID: 8816193772504757867}
   - component: {fileID: 4144516833721687370}
+  - component: {fileID: 1415500230052879887}
   m_Layer: 9
   m_Name: PrezAudioAsset
   m_TagString: AUDIO
@@ -176,6 +177,19 @@ SpriteRenderer:
   m_Size: {x: 0.1536, y: 0.1536}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!65 &1415500230052879887
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8897051314860746271}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.1536, y: 0.1536, z: 0.05}
+  m_Center: {x: 0, y: 0, z: 0}

@@ -48,6 +48,11 @@ public static class AssetLoader
                 tm.alignment = txt.GetTMPAlignment();
                 tm.color = PrezAssetHelper.GetColor(txt.color);
                 tm.faceColor = tm.color;
+                //yield return null;
+                var collider = _text.AddComponent<BoxCollider>();
+                collider.center = Vector3.zero;
+                collider.size = new Vector3(collider.size.x, collider.size.y, 0.005f);
+                //yield return null;
 
                 onLoaded(_text);
                 //Debug.Log("objectloaded : " + _text.name + " type : TEXT");
@@ -154,6 +159,7 @@ public static class AssetLoader
                                 UnityEngine.Object.Destroy(cam.gameObject);
                             }
                         }
+                        AdjustObjectScale(_object);
                         /*if (assetGo.transform.Find("Root") != null)
                         {
                             UnityEngine.Object.Destroy(assetGo.transform.Find("Root"));
@@ -232,12 +238,64 @@ public static class AssetLoader
         yield return null;
     }
 
+
+    // ONLY used for GLB Re Scaling
+    private static void AdjustObjectScale(GameObject glbObject)
+    {
+        glbObject.SetActive(true);
+
+        Bounds GLBBounds = CalculateLocalBounds(glbObject.transform);
+        GLBBounds.center = GLBBounds.center / 2;
+        GLBBounds.size = GLBBounds.size / 2;
+
+        BoxCollider GLBBoxCollider = glbObject.AddComponent<BoxCollider>();
+
+        float largest = Mathf.Max(GLBBounds.size.x, GLBBounds.size.y, GLBBounds.size.z) / defaultSizeFactor;
+        if (largest != 0)
+        {
+            Transform child0 = glbObject.transform.GetChild(0);
+            if (child0)
+            {
+                child0.localScale /= largest;
+                GLBBoxCollider.center = (GLBBounds.center / largest) * 2;
+                GLBBoxCollider.size = (GLBBounds.size / largest) * 2;
+                /* Vector3 defaultSize = new Vector3(defaultSizeFactor / largest, defaultSizeFactor / largest, defaultSizeFactor / largest) / 2;
+                 child0.localScale = defaultSize;
+                 GLBBoxCollider.center = Multiply(GLBBounds.center, defaultSize);
+                 GLBBoxCollider.size = Multiply(GLBBounds.size, defaultSize) * 2;*/
+
+                if (glbObject != null)
+                {
+                    foreach (Transform trans in glbObject.GetComponentsInChildren<Transform>())
+                    {
+                        trans.gameObject.layer = 0;
+                    }
+                }
+            }
+        }
+    }
+
     private static Vector3 Multiply(Vector3 one, Vector3 two)
     {
         one.x = one.x * two.x;
         one.y = one.y * two.y;
         one.z = one.z * two.z;
         return one;
+    }
+
+    public static Bounds CalculateLocalBounds(Transform trans)
+    {
+        Quaternion currentRotation = trans.rotation;
+        trans.rotation = Quaternion.Euler(0f, 0f, 0f);
+        Bounds bounds = new Bounds(trans.position, Vector3.zero);
+        foreach (Renderer renderer in trans.GetComponentsInChildren<Renderer>())
+        {
+            bounds.Encapsulate(renderer.bounds);
+        }
+        Vector3 localCenter = bounds.center - trans.position;
+        bounds.center = localCenter;
+        trans.rotation = currentRotation;
+        return bounds;
     }
 
     private static IEnumerator HandleVideoPlayer(GameObject _video, string _assetPath, bool OnEnable)
