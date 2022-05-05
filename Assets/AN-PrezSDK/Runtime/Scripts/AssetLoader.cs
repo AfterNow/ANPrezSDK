@@ -56,8 +56,6 @@ public static class AssetLoader
                     var collider = _text.AddComponent<BoxCollider>();
                     collider.center = Vector3.zero;
                     collider.size = new Vector3(collider.size.x, collider.size.y, 0.005f);
-
-                    _text.AddComponent<CheckClickable>().asset = asset;
                 }
                 //yield return null;
 
@@ -76,7 +74,6 @@ public static class AssetLoader
                 if (isClickable)
                 {
                     _image.transform.GetChild(0).gameObject.AddComponent<BoxCollider>();
-                    _image.transform.GetChild(0).gameObject.AddComponent<CheckClickable>().asset = asset;
                 }
                 onLoaded(_image);
                 //Debug.Log("objectloaded : " + _image.name + " type : IMAGE");
@@ -93,7 +90,6 @@ public static class AssetLoader
                 if (isClickable)
                 {
                     _video.AddComponent<BoxCollider>();
-                    _video.AddComponent<CheckClickable>().asset = asset;
                 }
                 videoParent.name = fileName;
                 if (videoParent.GetComponent<Rotate>() == null)
@@ -121,7 +117,6 @@ public static class AssetLoader
                 if (isClickable)
                 {
                     _object.AddComponent<BoxCollider>();
-                    _object.AddComponent<CheckClickable>().asset = asset;
                 }
                 bool IsGLBLoading = false;
                 bool finishedAsync = false;
