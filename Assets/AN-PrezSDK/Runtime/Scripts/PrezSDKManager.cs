@@ -45,40 +45,26 @@ class PrezSDKManager : MonoBehaviour
 
     [SerializeField] BasePrezController baseController;
     public GameObject presentationAnchorOverride;
-    public AnimationTimeline animationTimeline;
+    internal AnimationTimeline animationTimeline;
     public static PrezSDKManager _instance = null;
     [HideInInspector] public PresentationManager _manager;
-    public static Dictionary<string, GameObject> prezAssets = new Dictionary<string, GameObject>();
-
-    #endregion
-
-    #region UI
-
-
-
-    #endregion
-
-    #region private properties
+    internal static Dictionary<string, GameObject> prezAssets = new Dictionary<string, GameObject>();
+    [field:SerializeField] public bool EnableClickable { get; private set; }
+    public IEnumerator<ClickableAsset> ClickableAssets
+    {
+        get
+        {
+            foreach(var asset in AssetLoader.ClickableAssets)
+            {
+                yield return asset;
+            }
+        }
+    }
 
     #endregion
 
     #region public properties
-
-    public int LastPlayedPoint
-    {
-        get => _lastPlayedPoint;
-        set
-        {
-            _lastPlayedPoint = value;
-        }
-    }
     public float? PlayStartTime { get; private set; }
-
-    #endregion
-
-    #region public events
-
-    public static event Action OnPresentationEnded;
 
     #endregion
 
@@ -97,7 +83,6 @@ class PrezSDKManager : MonoBehaviour
     private void Awake()
     {
         _instance = this;
-
         baseController.AssignEvents(OnStartPresentation, Next_Step, Next_Slide, Previous_Slide, Quit);
 
         var instance = CoroutineRunner.Instance;
@@ -132,6 +117,15 @@ class PrezSDKManager : MonoBehaviour
             });
 
         });
+
+        if(EnableClickable)
+        {
+            AssetLoader.OnClickableActivate = JumpToSlide;
+        }
+        else
+        {
+            AssetLoader.OnClickableActivate = null;
+        }
     }
 
     public void Login(string username, string password)
@@ -213,6 +207,23 @@ class PrezSDKManager : MonoBehaviour
         }
     }
 
+    void JumpToSlide(int targetSlide)
+    {
+        if(targetSlide < 0)
+        {
+            Debug.LogError($"Slide index {targetSlide} not valid");
+            return;
+        }
+        Debug.LogError(targetSlide);
+        if(PrezStates.CurrentSlide != targetSlide)
+        {
+            ClearPresentSlide();
+
+            this.targetSlide = targetSlide;
+            GoToSlide(targetSlide);
+        }
+    }
+
     void Next_Step()
     {
         if (isSlideEnded)
@@ -242,14 +253,14 @@ class PrezSDKManager : MonoBehaviour
     {
         if (isPlaying)
         {
-            if (!animationTimeline.FirstElementAutomatic && LastPlayedPoint == -1)
+            if (!animationTimeline.FirstElementAutomatic && _lastPlayedPoint == -1)
             {
                 SlidePoint = 0;
-                LastPlayedPoint = animationTimeline.Play(SlidePoint);
+                _lastPlayedPoint = animationTimeline.Play(SlidePoint);
             }
             else
             {
-                LastPlayedPoint = animationTimeline.Play(SlidePoint);
+                _lastPlayedPoint = animationTimeline.Play(SlidePoint);
             }
         }
         else
@@ -453,7 +464,7 @@ class PrezSDKManager : MonoBehaviour
     void ResetTimeline()
     {
         SlidePoint = animationTimeline.FirstElementAutomatic ? 0 : -1;
-        LastPlayedPoint = SlidePoint;
+        _lastPlayedPoint = SlidePoint;
         animationTimeline.Reset();
         PlayStartTime = null;
     }
@@ -649,7 +660,7 @@ class PrezSDKManager : MonoBehaviour
     IEnumerator LoadSlide(int slideNo)
     {
         //Reset LastPlayedPoint to -1
-        LastPlayedPoint = -1;
+        _lastPlayedPoint = -1;
         
         isSlideEnded = false;
         PrezStates.CurrentSlide = slideNo;
@@ -764,7 +775,7 @@ class PrezSDKManager : MonoBehaviour
     public void OnSyncGroup(int num, bool nextStep = true)
     {
         SlidePoint = num;
-        LastPlayedPoint = animationTimeline.Play(num, nextStep);
+        _lastPlayedPoint = animationTimeline.Play(num, nextStep);
     }
     public void OnSyncTimeline(int num)
     {

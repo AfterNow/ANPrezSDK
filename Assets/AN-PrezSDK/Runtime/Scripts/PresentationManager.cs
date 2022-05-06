@@ -275,5 +275,18 @@ public class PresentationManager : MonoBehaviour
             DestroyImmediate(audioClip, true);
         }
     }
+
+    internal int GetSlideIndexFromId(string slideId)
+    {
+        for(int i=0;i<_location.slides.Count;i++)
+        {
+            var slide = _location.slides[i];
+            if(slide.id == slideId)
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
 }
 

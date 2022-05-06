@@ -18,12 +18,12 @@ public static class AssetLoader
     private static int loadVideoFrame = 1;
     private static float defaultSizeFactor = 1;
     public static bool loadComplete = false;
-
+    internal static Action<int> OnClickableActivate;
     static AudioSource audioChannelVideo;
     public static readonly List<Texture2D> textures = new List<Texture2D>();
     public static readonly List<AudioClip> audioClips = new List<AudioClip>();
-    private static bool isClickable;
-    static BoxCollider collider;
+    internal static readonly List<ClickableAsset> ClickableAssets = new List<ClickableAsset>();
+
     public static void StopLoadingAssets()
     {
         CoroutineRunner.Instance.StopAllCoroutines();
@@ -31,11 +31,11 @@ public static class AssetLoader
 
     public static IEnumerator OnLoadAsset(ARPAsset asset, Action<GameObject> onLoaded)
     {
-        isClickable = IsAssetClickable(asset.clickTarget);
-    
+        bool isClickable = IsAssetClickable(asset.clickTarget);
+        GameObject loadedAsset = null;
         string assetPath = asset.type != ANPAssetType.TEXT ? asset.AbsoluteDownloadPath(InitializeSDK.DownloadFolderPath) : null;
         string fileName = Path.GetFileName(assetPath);
-
+        BoxCollider collider = null;
         switch (asset.type)
         {
             case ANPAssetType.TEXT:
@@ -50,16 +50,14 @@ public static class AssetLoader
                 tm.alignment = txt.GetTMPAlignment();
                 tm.color = PrezAssetHelper.GetColor(txt.color);
                 tm.faceColor = tm.color;
-                //yield return null;
-                if (isClickable)
+                if(isClickable)
                 {
-                    collider = _text.AddComponent<BoxCollider>();
+                    yield return null;
+                    collider = tm.gameObject.AddComponent<BoxCollider>();
                     collider.center = Vector3.zero;
                     collider.size = new Vector3(collider.size.x, collider.size.y, 0.005f);
                 }
-                //yield return null;
-
-                onLoaded(_text);
+                loadedAsset = _text;
                 //Debug.Log("objectloaded : " + _text.name + " type : TEXT");
                 break;
 
@@ -75,7 +73,7 @@ public static class AssetLoader
                 {
                     collider = _image.transform.GetChild(0).gameObject.AddComponent<BoxCollider>();
                 }
-                onLoaded(_image);
+                loadedAsset = _image;
                 //Debug.Log("objectloaded : " + _image.name + " type : IMAGE");
                 break;
 
@@ -99,7 +97,7 @@ public static class AssetLoader
                 CoroutineRunner.Instance.StartCoroutine(HandleVideoPlayer(_video, assetPath, true));
                 loadComplete = true;
 
-                onLoaded(videoParent);
+                loadedAsset = videoParent;
                 //Debug.Log("objectloaded : " + videoParent.name + " type : VIDEO");
                 break;
 
@@ -175,12 +173,12 @@ public static class AssetLoader
                                 UnityEngine.Object.Destroy(cam.gameObject);
                             }
                         }
-                        AdjustObjectScale(_object);
+                        AdjustObjectScale(_object, ref collider);
                         /*if (assetGo.transform.Find("Root") != null)
                         {
                             UnityEngine.Object.Destroy(assetGo.transform.Find("Root"));
                         }*/
-                        onLoaded(glbParent);
+                        loadedAsset = glbParent;
                         //Debug.Log("objectloaded : " + _object.name + " type : GLB");
 
                         if (exception != null)
@@ -210,7 +208,7 @@ public static class AssetLoader
                         {
                             bundle.name = asset.FileName();
                             bundle.transform.SetParent(_object.transform, false);
-                            onLoaded(glbParent);
+                            loadedAsset = glbParent;
                             //Debug.Log("objectloaded : " + bundle.name + " type : ASSETBUNDLE");
                         }
                         else
@@ -219,6 +217,7 @@ public static class AssetLoader
                             UnityEngine.Object.Destroy(_object);
                         }
                     });
+                    yield return null;
                 }
                 break;
 
@@ -246,16 +245,24 @@ public static class AssetLoader
                     }
                 }
 
-                onLoaded(_audio);
+                loadedAsset = _audio;
                 //Debug.Log("objectloaded : " + _audio.name + " type : AUDIO");
 
                 break;
         }
+        bool isClickableEnabled = OnClickableActivate != null;
         if (collider != null)
         {
-            collider.enabled = false;
+            collider.enabled = isClickableEnabled;
+            if(isClickableEnabled)
+            {
+                var clickableAsset = collider.gameObject.AddComponent<ClickableAsset>();
+                clickableAsset.Initialize(asset.clickTarget, OnClickableActivate, () => ClickableAssets.Remove(clickableAsset));
+                ClickableAssets.Add(clickableAsset);
+            }
         }
-        yield return null;
+
+        onLoaded(loadedAsset);
     }
 
     private static bool IsAssetClickable(string _clickTarget)
@@ -276,7 +283,7 @@ public static class AssetLoader
     }
     
     // ONLY used for GLB Re Scaling
-    private static void AdjustObjectScale(GameObject glbObject)
+    private static void AdjustObjectScale(GameObject glbObject, ref BoxCollider collider)
     {
         glbObject.SetActive(true);
 
