@@ -733,7 +733,7 @@ class PrezSDKManager : MonoBehaviour
                 else
                 {
                     isWaitingForSlideDelay = true;
-                    waitingForSlideDelay = CoroutineRunner.Instance.StartCoroutine(DelayedCall(slide.transition.delay, () =>
+                    waitingForSlideDelay = CoroutineRunner.Instance.StartCoroutine(StartSlideDelayTimer(slide.transition.delay, () =>
                     {
                         if(isWaitingForSlideDelay)
                         {
@@ -750,7 +750,7 @@ class PrezSDKManager : MonoBehaviour
         //if automatic, wait for the delay, then load the slide
     }
 
-    private IEnumerator DelayedCall(float seconds, Action action)
+    private IEnumerator StartSlideDelayTimer(float seconds, Action action)
     {
         yield return new WaitForSeconds(seconds);
         action();
