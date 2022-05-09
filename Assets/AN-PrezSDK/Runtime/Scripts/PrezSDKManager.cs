@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 using System;
 using Unity.Linq;
 using System.Linq;
@@ -24,6 +23,8 @@ class PrezSDKManager : MonoBehaviour
     private int _lastPlayedPoint = -1;
     private bool isPlaying;
     private bool isDone = false;
+    private bool isWaitingForSlideDelay = false;
+    private Coroutine waitingForSlideDelay;
     private bool isAnimating = false;
     private bool isSlideEnded = false;
     private int targetSlide = 0;
@@ -151,6 +152,7 @@ class PrezSDKManager : MonoBehaviour
 
     private void Quit()
     {
+        StopTransitionDelayTimer();
         //Terminate the asset loading process
         AssetLoader.StopLoadingAssets();
 
@@ -173,6 +175,7 @@ class PrezSDKManager : MonoBehaviour
 
     void Next_Slide()
     {
+        StopTransitionDelayTimer();
         //Clear present slide data before playing another slide
         ClearPresentSlide();
 
@@ -192,6 +195,7 @@ class PrezSDKManager : MonoBehaviour
 
     void Previous_Slide()
     {
+        StopTransitionDelayTimer();
         if (PrezStates.CurrentSlide != 0)
         {
             //Clear present slide data before playing another slide
@@ -204,7 +208,8 @@ class PrezSDKManager : MonoBehaviour
 
     void JumpToSlide(int targetSlide)
     {
-        if(targetSlide < 0)
+        StopTransitionDelayTimer();
+        if (targetSlide < 0)
         {
             Debug.LogError($"Slide index {targetSlide} not valid");
             return;
@@ -221,6 +226,7 @@ class PrezSDKManager : MonoBehaviour
 
     void Next_Step()
     {
+        StopTransitionDelayTimer();
         if (isSlideEnded)
         {
             //Debug.Log("nextstep isSlideEnded");
@@ -591,19 +597,6 @@ class PrezSDKManager : MonoBehaviour
         }
     }
 
-    private Coroutine SlideIndexRunner;
-
-    /// <summary>
-    /// Only used for Play mode. Edit mode should never call this directly
-    /// </summary>
-    /// <param name="newIdx"></param>
-    /// <returns></returns>
-    private Coroutine GotoSlidePlayMode(int newIdx)
-    {
-        SlideIndexRunner = StartCoroutine(LoadSlide(newIdx));
-        return SlideIndexRunner;
-    }
-
     public bool OnStartPresentation(string presentationID)
     {
         slideIdx = -1;
@@ -722,6 +715,54 @@ class PrezSDKManager : MonoBehaviour
     {
         isDone = true;
         isPlaying = false;
+
+        int totalSlides = _manager._location.slides.Count;
+        int currentSlide = PrezStates.CurrentSlide;
+        int nextSlide = currentSlide + 1;
+
+        if(nextSlide < totalSlides)
+        {
+            var slide = _manager._location.slides[nextSlide];
+            if(slide.transition.startType == AnimationStartType.Automatically)
+            {
+                if(slide.transition.delay <= 0)
+                {
+                    Next_Slide(); //dont wait.
+                    waitingForSlideDelay = null;
+                }
+                else
+                {
+                    isWaitingForSlideDelay = true;
+                    waitingForSlideDelay = CoroutineRunner.Instance.StartCoroutine(DelayedCall(slide.transition.delay, () =>
+                    {
+                        if(isWaitingForSlideDelay)
+                        {
+                            isWaitingForSlideDelay = false;
+                            Next_Slide();
+                        }
+                        waitingForSlideDelay = null;
+                    }));
+                }
+            }
+        }
+        //check if next slide present.
+        //if true, check for next slide transition type.
+        //if automatic, wait for the delay, then load the slide
+    }
+
+    private IEnumerator DelayedCall(float seconds, Action action)
+    {
+        yield return new WaitForSeconds(seconds);
+        action();
+    }
+
+    private void StopTransitionDelayTimer()
+    {
+        if(waitingForSlideDelay != null)
+        {
+            CoroutineRunner.Instance.StopCoroutine(waitingForSlideDelay);
+            waitingForSlideDelay = null;
+        }
     }
 
     public void Play(int groupNum = -1)
@@ -730,7 +771,7 @@ class PrezSDKManager : MonoBehaviour
 
         SlidePoint = groupNum;
         isDone = false;
-
+        isWaitingForSlideDelay = false;
         // Set initial transforms for each asset in this slide before they start animating in case we updated their transform
         /*foreach (AssetController ac in assetControllers)
         {
