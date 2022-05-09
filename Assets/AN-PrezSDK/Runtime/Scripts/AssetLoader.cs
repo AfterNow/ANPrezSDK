@@ -18,11 +18,11 @@ public static class AssetLoader
     private static int loadVideoFrame = 1;
     private static float defaultSizeFactor = 1;
     public static bool loadComplete = false;
-
+    internal static Action<int> OnClickableActivate;
     static AudioSource audioChannelVideo;
-
     public static readonly List<Texture2D> textures = new List<Texture2D>();
     public static readonly List<AudioClip> audioClips = new List<AudioClip>();
+    internal static readonly List<ClickableAsset> ClickableAssets = new List<ClickableAsset>();
 
     public static void StopLoadingAssets()
     {
@@ -31,9 +31,11 @@ public static class AssetLoader
 
     public static IEnumerator OnLoadAsset(ARPAsset asset, Action<GameObject> onLoaded)
     {
+        bool isClickable = IsAssetClickable(asset.clickTarget);
+        GameObject loadedAsset = null;
         string assetPath = asset.type != ANPAssetType.TEXT ? asset.AbsoluteDownloadPath(InitializeSDK.DownloadFolderPath) : null;
         string fileName = Path.GetFileName(assetPath);
-
+        BoxCollider collider = null;
         switch (asset.type)
         {
             case ANPAssetType.TEXT:
@@ -48,13 +50,14 @@ public static class AssetLoader
                 tm.alignment = txt.GetTMPAlignment();
                 tm.color = PrezAssetHelper.GetColor(txt.color);
                 tm.faceColor = tm.color;
-                //yield return null;
-                var collider = _text.AddComponent<BoxCollider>();
-                collider.center = Vector3.zero;
-                collider.size = new Vector3(collider.size.x, collider.size.y, 0.005f);
-                //yield return null;
-
-                onLoaded(_text);
+                if(isClickable)
+                {
+                    yield return null;
+                    collider = tm.gameObject.AddComponent<BoxCollider>();
+                    collider.center = Vector3.zero;
+                    collider.size = new Vector3(collider.size.x, collider.size.y, 0.005f);
+                }
+                loadedAsset = _text;
                 //Debug.Log("objectloaded : " + _text.name + " type : TEXT");
                 break;
 
@@ -66,7 +69,11 @@ public static class AssetLoader
 
                 // Load image in to the child of the loaded asset (that's the one which has 'MeshRenderer')
                 CoroutineRunner.Instance.StartCoroutine(LoadImage(_image.transform.GetChild(0).gameObject, assetPath));
-                onLoaded(_image);
+                if (isClickable)
+                {
+                    collider = _image.transform.GetChild(0).gameObject.AddComponent<BoxCollider>();
+                }
+                loadedAsset = _image;
                 //Debug.Log("objectloaded : " + _image.name + " type : IMAGE");
                 break;
 
@@ -78,6 +85,10 @@ public static class AssetLoader
 
                 GameObject videoParent = new GameObject();
                 _video.transform.parent = videoParent.transform;
+                if (isClickable)
+                {
+                    collider = _video.AddComponent<BoxCollider>();
+                }
                 videoParent.name = fileName;
                 if (videoParent.GetComponent<Rotate>() == null)
                     videoParent.AddComponent<Rotate>();
@@ -86,7 +97,7 @@ public static class AssetLoader
                 CoroutineRunner.Instance.StartCoroutine(HandleVideoPlayer(_video, assetPath, true));
                 loadComplete = true;
 
-                onLoaded(videoParent);
+                loadedAsset = videoParent;
                 //Debug.Log("objectloaded : " + videoParent.name + " type : VIDEO");
                 break;
 
@@ -101,7 +112,10 @@ public static class AssetLoader
                 _object.name = "GLTF";
                 _object.gameObject.SetActive(true);
                 _object.transform.SetParent(glbParent.transform);
-                
+                if (isClickable)
+                {
+                    collider = _object.AddComponent<BoxCollider>();
+                }
                 bool IsGLBLoading = false;
                 bool finishedAsync = false;
                 Exception exception = null;
@@ -159,12 +173,12 @@ public static class AssetLoader
                                 UnityEngine.Object.Destroy(cam.gameObject);
                             }
                         }
-                        AdjustObjectScale(_object);
+                        AdjustObjectScale(_object, ref collider);
                         /*if (assetGo.transform.Find("Root") != null)
                         {
                             UnityEngine.Object.Destroy(assetGo.transform.Find("Root"));
                         }*/
-                        onLoaded(glbParent);
+                        loadedAsset = glbParent;
                         //Debug.Log("objectloaded : " + _object.name + " type : GLB");
 
                         if (exception != null)
@@ -194,7 +208,7 @@ public static class AssetLoader
                         {
                             bundle.name = asset.FileName();
                             bundle.transform.SetParent(_object.transform, false);
-                            onLoaded(glbParent);
+                            loadedAsset = glbParent;
                             //Debug.Log("objectloaded : " + bundle.name + " type : ASSETBUNDLE");
                         }
                         else
@@ -203,6 +217,7 @@ public static class AssetLoader
                             UnityEngine.Object.Destroy(_object);
                         }
                     });
+                    yield return null;
                 }
                 break;
 
@@ -230,17 +245,45 @@ public static class AssetLoader
                     }
                 }
 
-                onLoaded(_audio);
+                loadedAsset = _audio;
                 //Debug.Log("objectloaded : " + _audio.name + " type : AUDIO");
 
                 break;
         }
-        yield return null;
+        bool isClickableEnabled = OnClickableActivate != null;
+        if (collider != null)
+        {
+            collider.enabled = isClickableEnabled;
+            if(isClickableEnabled)
+            {
+                var clickableAsset = collider.gameObject.AddComponent<ClickableAsset>();
+                clickableAsset.Initialize(asset.clickTarget, OnClickableActivate, () => ClickableAssets.Remove(clickableAsset));
+                ClickableAssets.Add(clickableAsset);
+            }
+        }
+
+        onLoaded(loadedAsset);
     }
 
-
+    private static bool IsAssetClickable(string _clickTarget)
+    {
+        if (string.IsNullOrEmpty(_clickTarget))
+        {
+            return false;
+        }
+        if (string.IsNullOrWhiteSpace(_clickTarget))
+        {
+            return false;
+        }
+        if (_clickTarget.Equals("None"))
+        {
+            return false;
+        }
+        return true;
+    }
+    
     // ONLY used for GLB Re Scaling
-    private static void AdjustObjectScale(GameObject glbObject)
+    private static void AdjustObjectScale(GameObject glbObject, ref BoxCollider collider)
     {
         glbObject.SetActive(true);
 
@@ -248,7 +291,14 @@ public static class AssetLoader
         GLBBounds.center = GLBBounds.center / 2;
         GLBBounds.size = GLBBounds.size / 2;
 
-        BoxCollider GLBBoxCollider = glbObject.AddComponent<BoxCollider>();
+        if (glbObject.GetComponent<BoxCollider>() == null)
+        {
+            collider = glbObject.AddComponent<BoxCollider>();
+        }
+        else
+        {
+            collider = glbObject.GetComponent<BoxCollider>();
+        }
 
         float largest = Mathf.Max(GLBBounds.size.x, GLBBounds.size.y, GLBBounds.size.z) / defaultSizeFactor;
         if (largest != 0)
@@ -257,13 +307,9 @@ public static class AssetLoader
             if (child0)
             {
                 child0.localScale /= largest;
-                GLBBoxCollider.center = (GLBBounds.center / largest) * 2;
-                GLBBoxCollider.size = (GLBBounds.size / largest) * 2;
-                /* Vector3 defaultSize = new Vector3(defaultSizeFactor / largest, defaultSizeFactor / largest, defaultSizeFactor / largest) / 2;
-                 child0.localScale = defaultSize;
-                 GLBBoxCollider.center = Multiply(GLBBounds.center, defaultSize);
-                 GLBBoxCollider.size = Multiply(GLBBounds.size, defaultSize) * 2;*/
-
+                collider.center = (GLBBounds.center / largest) * 2;
+                collider.size = (GLBBounds.size / largest) * 2;
+                
                 if (glbObject != null)
                 {
                     foreach (Transform trans in glbObject.GetComponentsInChildren<Transform>())
