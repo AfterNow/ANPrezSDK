@@ -226,6 +226,7 @@ public static class AssetLoader
                         {
                             bundle.name = asset.FileName();
                             bundle.transform.SetParent(_object.transform, false);
+                            AdjustObjectScale(_object, ref collider);
                             loadedAsset = glbParent;
                             //Debug.Log("objectloaded : " + bundle.name + " type : ASSETBUNDLE");
                         }

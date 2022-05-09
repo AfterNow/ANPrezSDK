@@ -54,7 +54,12 @@ public class AssetBundleManager : MonoBehaviour
                 {
                     var assetBundle = DownloadHandlerAssetBundle.GetContent(unityWebRequest);
                     var assetObject = (GameObject)assetBundle.LoadAsset(assetBundle.GetAllAssetNames()[0]);
-                    var container = new AssetBundleContainer(assetBundle, Instantiate(assetObject));
+                    var instantiatedAsset = Instantiate(assetObject);
+                    var container = new AssetBundleContainer(assetBundle, instantiatedAsset);
+                    foreach(var collider in instantiatedAsset.GetComponentsInChildren<Collider>(true))
+                    {
+                        Destroy(collider);
+                    }
                     _bundles.Add(path, container);
                     OnLoaded?.Invoke(container.GameObject);
                 }
