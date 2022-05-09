@@ -137,6 +137,7 @@ public class PresentationManager : MonoBehaviour
             //Dispose Audioclips
             DisposeAudioClips();
 
+            Resources.UnloadUnusedAssets();
         }
 
         public void DestroyLoadedObjects()

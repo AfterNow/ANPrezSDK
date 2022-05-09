@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
@@ -23,10 +24,26 @@ public static class AssetLoader
     public static readonly List<Texture2D> textures = new List<Texture2D>();
     public static readonly List<AudioClip> audioClips = new List<AudioClip>();
     internal static readonly List<ClickableAsset> ClickableAssets = new List<ClickableAsset>();
+    private readonly static HashSet<CancellationTokenSource> _loadingGLBS = new HashSet<CancellationTokenSource>();
+    private static int loadingAssetsCount = 0;
 
     public static void StopLoadingAssets()
     {
         CoroutineRunner.Instance.StopAllCoroutines();
+
+        //glbs are loaded in Task. cancelling it with StopCoroutine isnt possible. 
+        //hence we load them up with cancellation token which
+        //if cancelled before Task finishes, will result in killing of the process and destroy the instantiated glb.
+        foreach(var token in _loadingGLBS)
+        {
+            token.Cancel();
+        }
+        _loadingGLBS.Clear();
+        if (loadingAssetsCount > 0)
+        {
+            Resources.UnloadUnusedAssets();
+            loadingAssetsCount = 0;
+        }
     }
 
     public static IEnumerator OnLoadAsset(ARPAsset asset, Action<GameObject> onLoaded)
@@ -40,8 +57,10 @@ public static class AssetLoader
         {
             case ANPAssetType.TEXT:
                 ARPText txt = asset.text;
+                loadingAssetsCount++;
                 var request = Resources.LoadAsync<GameObject>("PrezTextAsset");
                 yield return request;
+                loadingAssetsCount--;
                 GameObject _text = (GameObject)UnityEngine.Object.Instantiate(request.asset);
                 _text.name = txt.value;
                 TextMeshPro tm = _text.GetComponentInChildren<TextMeshPro>();
@@ -62,6 +81,7 @@ public static class AssetLoader
                 break;
 
             case ANPAssetType.IMAGE:
+                loadingAssetsCount++;
                 request = Resources.LoadAsync<GameObject>("PrezImageAsset");
                 yield return request;
                 GameObject _image = (GameObject)UnityEngine.Object.Instantiate(request.asset);
@@ -69,6 +89,7 @@ public static class AssetLoader
 
                 // Load image in to the child of the loaded asset (that's the one which has 'MeshRenderer')
                 CoroutineRunner.Instance.StartCoroutine(LoadImage(_image.transform.GetChild(0).gameObject, assetPath));
+                loadingAssetsCount--;
                 if (isClickable)
                 {
                     collider = _image.transform.GetChild(0).gameObject.AddComponent<BoxCollider>();
@@ -78,11 +99,11 @@ public static class AssetLoader
                 break;
 
             case ANPAssetType.VIDEO:
-
+                loadingAssetsCount++;
                 request = Resources.LoadAsync<GameObject>("PrezVideoAsset");
                 yield return request;
                 GameObject _video = (GameObject)UnityEngine.Object.Instantiate(request.asset);
-
+                loadingAssetsCount--;
                 GameObject videoParent = new GameObject();
                 _video.transform.parent = videoParent.transform;
                 if (isClickable)
@@ -105,10 +126,11 @@ public static class AssetLoader
                 GameObject glbParent = new GameObject();
                 glbParent.name = fileName;
                 glbParent.AddComponent<Rotate>();
-                
+                loadingAssetsCount++;
                 request = Resources.LoadAsync<GameObject>("PrezObjectAsset");
                 yield return request;
                 GameObject _object = (GameObject)UnityEngine.Object.Instantiate(request.asset);
+                loadingAssetsCount--;
                 _object.name = "GLTF";
                 _object.gameObject.SetActive(true);
                 _object.transform.SetParent(glbParent.transform);
@@ -125,17 +147,17 @@ public static class AssetLoader
                 {
                     GameObject glb = null;
 
-                    while (IsGLBLoading)
-                    {
-                        yield return null;
-                    }
-
                     IsGLBLoading = true;
+                    loadingAssetsCount++;
+                    var cancellationToken = new CancellationTokenSource();
+                    _loadingGLBS.Add(cancellationToken);
 
-                    var glbLoader = GLBLoader.LoadGLTFFromURL(new Uri(assetPath).ToString(), _object.transform);
+                    var glbLoader = GLBLoader.LoadGLTFFromURL(new Uri(assetPath).ToString(), _object.transform, cancellationToken);
                     yield return new WaitForTask(glbLoader);
-
+                    loadingAssetsCount--;
                     glb = glbLoader.Result;
+
+                    _loadingGLBS.Remove(cancellationToken);
 
                     if (glb != null)
                     {
@@ -185,14 +207,8 @@ public static class AssetLoader
                         {
                             Debug.LogException(exception);
                         }
-
-                        while (IsGLBLoading)
-                        {
-                            yield return null;
-                        }
-
                     }
-                    else
+                    else if(!cancellationToken.IsCancellationRequested)
                     {
                         Debug.LogError(fileName + " not loaded");
                         UnityEngine.Object.Destroy(_object);
@@ -202,8 +218,10 @@ public static class AssetLoader
                 }
                 else if (fileExtention == SDKConstants.ASSETBUNDLE || fileExtention == SDKConstants.UNITYPACKAGE)
                 {
+                    loadingAssetsCount++;
                     yield return AssetBundleManager.LoadAssetBundle(assetPath, (bundle) =>
                     {
+                        loadingAssetsCount--;
                         if (bundle != null)
                         {
                             bundle.name = asset.FileName();
@@ -222,6 +240,7 @@ public static class AssetLoader
                 break;
 
             case ANPAssetType.AUDIO:
+                loadingAssetsCount++;
                 request = Resources.LoadAsync<GameObject>("PrezAudioAsset");
                 yield return request;
                 GameObject _audio = (GameObject)UnityEngine.Object.Instantiate(request.asset);
@@ -230,6 +249,7 @@ public static class AssetLoader
                 using (UnityWebRequest uwr = UnityWebRequestMultimedia.GetAudioClip(UriBuilderExtension.UriPath(assetPath), AudioType.UNKNOWN))
                 {
                     yield return uwr.SendWebRequest();
+                    loadingAssetsCount--;
                     if (string.IsNullOrEmpty(uwr.error))
                     {
                         var clip = DownloadHandlerAudioClip.GetContent(uwr);

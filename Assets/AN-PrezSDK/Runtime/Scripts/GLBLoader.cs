@@ -1,6 +1,7 @@
 ﻿using GLTFast;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -14,7 +15,7 @@ public static class GLBLoader
         _deferAgent = CoroutineRunner.Instance.gameObject.AddComponent<TimeBudgetPerFrameDeferAgent>();
     }
 
-    public static async Task<GameObject> LoadGLTFFromURL(string path, Transform parent)
+    public static async Task<GameObject> LoadGLTFFromURL(string path, Transform parent, CancellationTokenSource cancellationToken)
     {
 
         var gltf = new GltfImport(null, _deferAgent);
@@ -28,8 +29,24 @@ public static class GLBLoader
 
         var success = await gltf.Load(path, settings);
 
-        gltfImports.Add(gltf);
-        return success && gltf.InstantiateMainScene(parent) ? parent.GetChild(0).gameObject : null;
+        try
+        {
+            if (!cancellationToken.IsCancellationRequested)
+            {
+                gltfImports.Add(gltf);
+                return success && gltf.InstantiateMainScene(parent) ? parent.GetChild(0).gameObject : null;
+            }
+            else
+            {
+                gltf.Dispose();
+                UnityEngine.Object.Destroy(parent.transform.parent.gameObject);
+                return null;
+            }
+        }
+        finally
+        {
+            cancellationToken.Dispose();
+        }
     }
 
     public static void DisposeGltf()
@@ -39,6 +56,5 @@ public static class GLBLoader
             item.Dispose();
         }
         gltfImports.Clear();
-
     }
 }

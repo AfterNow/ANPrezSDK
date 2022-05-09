@@ -16,7 +16,7 @@ using System.IO;
 /// </summary>
 class PrezSDKManager : MonoBehaviour
 {
-    #region private variables
+    #region private/internal variables
 
     private int slideIdx = -1;
     private int slideCount = 0;
@@ -27,7 +27,6 @@ class PrezSDKManager : MonoBehaviour
     private bool isAnimating = false;
     private bool isSlideEnded = false;
     private int targetSlide = 0;
-    private bool CanReset = false;
     private int targetSlideIdx = 0;
     private bool waitingForPresentationLoad;
     private PresentationManager.LoadedSlide previousSlide;
@@ -38,34 +37,31 @@ class PrezSDKManager : MonoBehaviour
     private List<ARPTransition> _transitions = new List<ARPTransition>();
     private List<AudioSource> audioSources = new List<AudioSource>();
     private readonly LinkedList<int> _slideTracker = new LinkedList<int>();
+    private AnimationTimeline animationTimeline;
+    private PresentationManager _manager;
+    internal static Dictionary<string, GameObject> prezAssets = new Dictionary<string, GameObject>();
+    #endregion
+
+    #region serialized values
+
+    [SerializeField] BasePrezController baseController;
+    [SerializeField] GameObject presentationAnchorOverride;
+    [field:SerializeField] public bool EnableClickable { get; private set; }
 
     #endregion
 
-    #region public/serialized variables
-
-    [SerializeField] BasePrezController baseController;
-    public GameObject presentationAnchorOverride;
-    internal AnimationTimeline animationTimeline;
-    public static PrezSDKManager _instance = null;
-    [HideInInspector] public PresentationManager _manager;
-    internal static Dictionary<string, GameObject> prezAssets = new Dictionary<string, GameObject>();
-    [field:SerializeField] public bool EnableClickable { get; private set; }
+    #region non serialized public accessors
+    public float? PlayStartTime { get; private set; }
     public IEnumerator<ClickableAsset> ClickableAssets
     {
         get
         {
-            foreach(var asset in AssetLoader.ClickableAssets)
+            foreach (var asset in AssetLoader.ClickableAssets)
             {
                 yield return asset;
             }
         }
     }
-
-    #endregion
-
-    #region public properties
-    public float? PlayStartTime { get; private set; }
-
     #endregion
 
     #region enums
@@ -82,7 +78,6 @@ class PrezSDKManager : MonoBehaviour
 
     private void Awake()
     {
-        _instance = this;
         baseController.AssignEvents(OnStartPresentation, Next_Step, Next_Slide, Previous_Slide, Quit);
 
         var instance = CoroutineRunner.Instance;
@@ -308,7 +303,6 @@ class PrezSDKManager : MonoBehaviour
         targetSlideIdx = _targetSlideIdx;
 
         SlideProgressionType progressionType = (SlideProgressionType)nextSlide;
-        CanReset = false;
         if (!isPlaying)
         {
             bool show = targetSlideIdx == -1;
@@ -393,7 +387,6 @@ class PrezSDKManager : MonoBehaviour
             //only after new slide has loaded, and old slide has finished
             //Play();
             OnSlideTransition(targetSlideIdx);
-            CanReset = true;
         }
         else if (targetSlideIdx == _manager._location.slides.Count)
         {
@@ -405,7 +398,6 @@ class PrezSDKManager : MonoBehaviour
             StopSlide(false, () =>
             {
                 isPlaying = false;
-                CanReset = true;
             });
         }
         else
