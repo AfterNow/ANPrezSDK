@@ -7,7 +7,7 @@ namespace AfterNow.PrezSDK.Shared
     public abstract class BasePrezController : MonoBehaviour
     {
         /// <summary>
-        /// Call this function with username and password to login to an account
+        /// Call this function with username and password to login to an account.
         /// </summary>
         /// <param name="username"></param>
         /// <param name="password"></param>
@@ -17,7 +17,8 @@ namespace AfterNow.PrezSDK.Shared
         }
 
         /// <summary>
-        /// Call this function to logout to login with a new account
+        /// Call this function to logout to login with a new account.
+        /// This cleans up and frees the resources allocated by SDK in the session.
         /// </summary>
         public void Logout()
         {
