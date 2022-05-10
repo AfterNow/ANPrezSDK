@@ -27,9 +27,6 @@ namespace AfterNow.PrezSDK
         internal static Dictionary<ARPAsset, GameObject> loadedObjects = new Dictionary<ARPAsset, GameObject>();
         internal static float totalLength = 3f;
 
-        internal delegate void OnSlideLoaded();
-        internal static event OnSlideLoaded onSlideLoaded;
-
         private void Awake()
         {
             _instance = this;

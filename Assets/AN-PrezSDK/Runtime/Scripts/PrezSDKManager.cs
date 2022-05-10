@@ -16,7 +16,6 @@ namespace AfterNow.PrezSDK
     {
         #region private/internal variables
 
-        private int slideIdx = -1;
         private int slideCount = 0;
         private int SlidePoint = -1;
         private int _lastPlayedPoint = -1;
@@ -27,10 +26,8 @@ namespace AfterNow.PrezSDK
         private bool isAnimating = false;
         private bool isSlideEnded = false;
         private int targetSlide = 0;
-        private int targetSlideIdx = 0;
         private bool waitingForPresentationLoad;
         private PresentationManager.LoadedSlide previousSlide;
-        private Coroutine slideTransition;
         private ARPAsset _asset;
         private ARPTransition _transition;
         private List<ARPAsset> _assets = new List<ARPAsset>();
@@ -183,7 +180,6 @@ namespace AfterNow.PrezSDK
                 _slideTracker.Clear();
                 PrezStates.CurrentSlide = 0;
                 targetSlide = 0;
-                slideIdx = -1;
                 baseController.Callback_OnPresentationEnd();
             }
             else
@@ -445,7 +441,6 @@ namespace AfterNow.PrezSDK
 
         internal bool OnStartPresentation(string presentationID)
         {
-            slideIdx = -1;
             if (waitingForPresentationLoad) return false;
             //StatusText.text = null;
             waitingForPresentationLoad = true;
