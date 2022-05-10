@@ -3,22 +3,52 @@ using System.Collections;
 using System.Collections.Concurrent;
 using UnityEngine;
 
-    public class CoroutineRunner : Singleton<CoroutineRunner>
+namespace AfterNow.PrezSDK
+{
+    internal class CoroutineRunner : MonoBehaviour
     {
+        internal static bool isQuitting = false;
+        internal static CoroutineRunner Instance
+        {
+            get
+            {
+                if(isQuitting) throw new InvalidProgramException("Application is quitting");
+
+                if (_instance == null)
+                {
+                    _instance = new GameObject("PrezCoroutineRunner").AddComponent<CoroutineRunner>();
+                    DontDestroyOnLoad(_instance.gameObject);
+                }
+
+                return _instance;
+            }
+        }
+
+        private static CoroutineRunner _instance;
         private static readonly ConcurrentQueue<Action> _executionQueue = new ConcurrentQueue<Action>();
         private static readonly ConcurrentQueue<IEnumerator> _executionQueue1 = new ConcurrentQueue<IEnumerator>();
 
-        public static void DispatchToMainThread(Action action)
+        internal static T AddComponent<T>() where T : Component
+        {
+            var instance = Instance;
+            if (instance.TryGetComponent<T>(out T comp)) return comp;
+            else
+            {
+                return instance.gameObject.AddComponent<T>();
+            }
+        }
+
+        internal static void DispatchToMainThread(Action action)
         {
             _executionQueue.Enqueue(action);
         }
 
-        public static void DispatchToMainThread(IEnumerator enumerator)
+        internal static void DispatchToMainThread(IEnumerator enumerator)
         {
             _executionQueue1.Enqueue(enumerator);
         }
 
-        public void SkipXFrames(int frames, Action action)
+        internal void SkipXFrames(int frames, Action action)
         {
             if (action != null)
                 StartCoroutine(SkipXFramesAndExecute(frames, action));
@@ -59,44 +89,10 @@ using UnityEngine;
                 }
             }
         }
-    }
 
-    public static class CoroutineExtension
-    {
-        /// <summary>
-        /// Starts a coroutine on the MonoBehaviour of CoroutineRunner gameObject if MonoBehaviour param is null
-        /// </summary>
-        /// <param name="iterator"></param>
-        public static Coroutine Start(this IEnumerator iterator, MonoBehaviour mb = null)
+        private void OnApplicationQuit()
         {
-            if (mb != null) return mb.StartCoroutine(iterator);
-            return CoroutineRunner.Instance.StartCoroutine(iterator);
-        }
-
-        /// <summary>
-        /// Allows only one instance of the coroutine to be running
-        /// </summary>
-        /// <param name="iterator"></param>
-        /// <param name="mb"></param>
-        /// <returns></returns>
-        public static Coroutine StartOne(this IEnumerator iterator, MonoBehaviour mb = null)
-        {
-            if (mb != null)
-            {
-                mb.StopCoroutine(iterator);
-                return mb.StartCoroutine(iterator);
-            }
-            CoroutineRunner.Instance.StopCoroutine(iterator);
-            return CoroutineRunner.Instance.StartCoroutine(iterator);
-        }
-
-        /// <summary>
-        /// Stop only works for Coroutines started with IEnumerator.Run
-        /// </summary>
-        /// <param name="coroutine"></param>
-        public static void Stop(this Coroutine coroutine, MonoBehaviour mb = null)
-        {
-            if (mb != null) mb.StopCoroutine(coroutine);
-            else CoroutineRunner.Instance.StopCoroutine(coroutine);
+            isQuitting = true;
         }
     }
+}

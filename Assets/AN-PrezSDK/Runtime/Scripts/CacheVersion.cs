@@ -1,16 +1,19 @@
 ﻿using System;
 
-[Serializable]
-public class CacheVersion
+namespace AfterNow.PrezSDK
 {
-    public DateTime lastModified;
-    public DateTime expiryTime;
-    public string presentationID;
-
-    public CacheVersion(DateTime lastModified,DateTime expiryTime,string prez_id)
+    [Serializable]
+    internal class CacheVersion
     {
-        this.lastModified = lastModified;
-        this.expiryTime = expiryTime;
-        presentationID = prez_id;
+        internal DateTime lastModified;
+        internal DateTime expiryTime;
+        internal string presentationID;
+
+        internal CacheVersion(DateTime lastModified, DateTime expiryTime, string prez_id)
+        {
+            this.lastModified = lastModified;
+            this.expiryTime = expiryTime;
+            presentationID = prez_id;
+        }
     }
 }

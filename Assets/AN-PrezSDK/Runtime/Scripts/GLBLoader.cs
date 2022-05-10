@@ -5,56 +5,59 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public static class GLBLoader
+namespace AfterNow.PrezSDK
 {
-    static readonly IDeferAgent _deferAgent;
-    static readonly List<GltfImport> gltfImports = new List<GltfImport>();
-
-    static GLBLoader()
+    internal static class GLBLoader
     {
-        _deferAgent = CoroutineRunner.Instance.gameObject.AddComponent<TimeBudgetPerFrameDeferAgent>();
-    }
+        static readonly IDeferAgent _deferAgent;
+        static readonly List<GltfImport> gltfImports = new List<GltfImport>();
 
-    public static async Task<GameObject> LoadGLTFFromURL(string path, Transform parent, CancellationTokenSource cancellationToken)
-    {
-
-        var gltf = new GltfImport(null, _deferAgent);
-
-        var settings = new ImportSettings
+        static GLBLoader()
         {
-            generateMipMaps = true,
-            anisotropicFilterLevel = 3,
-            nodeNameMethod = ImportSettings.NameImportMethod.OriginalUnique
-        };
+            _deferAgent = CoroutineRunner.Instance.gameObject.AddComponent<TimeBudgetPerFrameDeferAgent>();
+        }
 
-        var success = await gltf.Load(path, settings);
-
-        try
+        internal static async Task<GameObject> LoadGLTFFromURL(string path, Transform parent, CancellationTokenSource cancellationToken)
         {
-            if (!cancellationToken.IsCancellationRequested)
+
+            var gltf = new GltfImport(null, _deferAgent);
+
+            var settings = new ImportSettings
             {
-                gltfImports.Add(gltf);
-                return success && gltf.InstantiateMainScene(parent) ? parent.GetChild(0).gameObject : null;
-            }
-            else
-            {
-                gltf.Dispose();
-                UnityEngine.Object.Destroy(parent.transform.parent.gameObject);
-                return null;
-            }
-        }
-        finally
-        {
-            cancellationToken.Dispose();
-        }
-    }
+                generateMipMaps = true,
+                anisotropicFilterLevel = 3,
+                nodeNameMethod = ImportSettings.NameImportMethod.OriginalUnique
+            };
 
-    public static void DisposeGltf()
-    {
-        foreach (var item in gltfImports)
-        {
-            item.Dispose();
+            var success = await gltf.Load(path, settings);
+
+            try
+            {
+                if (!cancellationToken.IsCancellationRequested)
+                {
+                    gltfImports.Add(gltf);
+                    return success && gltf.InstantiateMainScene(parent) ? parent.GetChild(0).gameObject : null;
+                }
+                else
+                {
+                    gltf.Dispose();
+                    UnityEngine.Object.Destroy(parent.transform.parent.gameObject);
+                    return null;
+                }
+            }
+            finally
+            {
+                cancellationToken.Dispose();
+            }
         }
-        gltfImports.Clear();
+
+        internal static void DisposeGltf()
+        {
+            foreach (var item in gltfImports)
+            {
+                item.Dispose();
+            }
+            gltfImports.Clear();
+        }
     }
 }
