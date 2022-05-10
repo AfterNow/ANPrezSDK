@@ -61,6 +61,12 @@ namespace AfterNow.PrezSDK.Shared
             _quit();
         }
 
+        /// <summary>
+        /// This callback is invoked after the PrezSDKManager has been initialized (after Awake)
+        /// </summary>
+        /// <param name="sdkManager"></param>
+        public abstract void Callback_OnSDKInitialize(PrezSDKManager sdkManager);
+
 
         /// <summary>
         /// This callback is invoked automatically after the presentation has been joined. 

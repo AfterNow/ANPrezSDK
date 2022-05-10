@@ -10,7 +10,6 @@ namespace AfterNow.PrezSDK.Example
 {
     public class ExampleController : BasePrezController
     {
-        [SerializeField] PrezSDKManager prezSDKManager;
         [SerializeField] string userEmailId;
         [SerializeField] string userPassword;
         [SerializeField] string defaultPresentationID;
@@ -37,8 +36,14 @@ namespace AfterNow.PrezSDK.Example
         [SerializeField] GameObject UserLoginUI;
         [SerializeField] TMP_InputField PresentationID;
 
+        PrezSDKManager prezSDKManager;
         string presentationID = null;
         bool hasSlideLoaded = false;
+
+        public override void Callback_OnSDKInitialize(PrezSDKManager sdkManager)
+        {
+            prezSDKManager = sdkManager;
+        }
 
         public override void Callback_OnPresentationEnd()
         {

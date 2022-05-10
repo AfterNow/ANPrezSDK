@@ -3378,7 +3378,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4301919201a3c840a34a74c244fa852, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prezSDKManager: {fileID: 0}
   userEmailId: 
   userPassword: 
   defaultPresentationID: 

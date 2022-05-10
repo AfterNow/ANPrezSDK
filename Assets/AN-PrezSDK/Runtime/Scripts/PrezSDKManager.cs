@@ -12,7 +12,7 @@ using System.IO;
 
 namespace AfterNow.PrezSDK
 {
-    class PrezSDKManager : MonoBehaviour
+    public class PrezSDKManager : MonoBehaviour
     {
         #region private/internal variables
 
@@ -118,6 +118,8 @@ namespace AfterNow.PrezSDK
             {
                 AssetLoader.OnClickableActivate = null;
             }
+
+            baseController.Callback_OnSDKInitialize(this);
         }
 
         public void Login(string username, string password)
