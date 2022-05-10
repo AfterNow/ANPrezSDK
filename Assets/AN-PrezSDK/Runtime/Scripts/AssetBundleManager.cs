@@ -22,7 +22,7 @@ public class AssetBundleManager : MonoBehaviour
 
     private static AssetBundleManager _instance;
 
-    private static Dictionary<string, AssetBundleContainer> _bundles = new Dictionary<string, AssetBundleContainer>();
+    private static readonly Dictionary<string, AssetBundleContainer> _bundles = new Dictionary<string, AssetBundleContainer>();
 
     public static void Cleanup()
     {
@@ -84,6 +84,3 @@ public class AssetBundleManager : MonoBehaviour
         }
     }
 }
-
-
-

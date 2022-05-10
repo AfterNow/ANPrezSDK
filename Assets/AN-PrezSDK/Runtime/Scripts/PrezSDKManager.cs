@@ -37,7 +37,7 @@ class PrezSDKManager : MonoBehaviour
     private List<ARPAsset> _assets = new List<ARPAsset>();
     private List<ARPTransition> _transitions = new List<ARPTransition>();
     private List<AudioSource> audioSources = new List<AudioSource>();
-    private readonly LinkedList<int> _slideTracker = new LinkedList<int>();
+    private readonly SlideTracker _slideTracker = new SlideTracker();
     private AnimationTimeline animationTimeline;
     private PresentationManager _manager;
     internal static Dictionary<string, GameObject> prezAssets = new Dictionary<string, GameObject>();
@@ -181,6 +181,7 @@ class PrezSDKManager : MonoBehaviour
 
         if (slideCount == PrezStates.CurrentSlide + 1)
         {
+            _slideTracker.Clear();
             PrezStates.CurrentSlide = 0;
             targetSlide = 0;
             slideIdx = -1;
@@ -188,6 +189,7 @@ class PrezSDKManager : MonoBehaviour
         }
         else
         {
+            _slideTracker.AddLastSlide(targetSlide);
             targetSlide = PrezStates.CurrentSlide + 1;
         }
         GoToSlide(targetSlide);
@@ -201,7 +203,7 @@ class PrezSDKManager : MonoBehaviour
             //Clear present slide data before playing another slide
             ClearPresentSlide();
 
-            targetSlide = PrezStates.CurrentSlide == 0 ? slideCount - 1 : PrezStates.CurrentSlide - 1;
+            targetSlide = _slideTracker.GetPreviousSlide();
             GoToSlide(targetSlide);
         }
     }
@@ -240,13 +242,11 @@ class PrezSDKManager : MonoBehaviour
 
         if (isPlaying)
         {
-            //Debug.Log("nextstep isPlaying");
             NextStepLogic();
         }
         else if (isDone)
         {
-            //Debug.Log("nextstep isDone");
-            TransitionSlide(1, -1);
+            Next_Slide();
         }
     }
 
@@ -286,158 +286,6 @@ class PrezSDKManager : MonoBehaviour
 
         //Clear lists of assets
         ClearObjects();
-    }
-
-
-    /// <summary>
-    /// The most inporttant function
-    /// </summary>
-    /// <param name="nextSlide">1 to move forward, -1 to move backward, 0 to reset slide(?)</param>
-    /// <param name="targetSlideIdx"></param>
-    public void TransitionSlide(int nextSlide = 1, int targetSlideIdx = -1, bool shouldTrySync = true, bool clickable = false, Action OnFinish = null)
-    {
-        if (slideTransition != null)
-        {
-            //Debug.Log("stopping coroutine");
-            StopCoroutine(slideTransition);
-        }
-        slideTransition = StartCoroutine(StartTransitionSlide(nextSlide, targetSlideIdx, shouldTrySync, clickable, OnFinish));
-    }
-
-    private IEnumerator StartTransitionSlide(int nextSlide, int _targetSlideIdx, bool shouldTrySync, bool clickable, Action OnFinish)
-    {
-        targetSlideIdx = _targetSlideIdx;
-
-        SlideProgressionType progressionType = (SlideProgressionType)nextSlide;
-        if (!isPlaying)
-        {
-            bool show = targetSlideIdx == -1;
-        }
-
-
-        //isPlaying = true;
-
-        //if (isPlaying)
-        //{
-        if (targetSlideIdx == -1)
-        {
-            if (nextSlide == 1)
-            {
-                //targetSlideIdx = slideIdx.Value + 1;
-                targetSlideIdx = slideIdx + 1;
-                if (targetSlideIdx == _manager._location.slides.Count)
-                {
-                    _slideTracker.Clear();
-                }
-                else
-                {
-                    _slideTracker.AddLast(targetSlideIdx);
-                }
-            }
-            else if (nextSlide == -1)
-            {
-                if (_slideTracker.Count > 1)
-                {
-                    targetSlideIdx = _slideTracker.Last.Previous.Value;
-                    _slideTracker.RemoveLast();
-                }
-                else
-                {
-                    targetSlideIdx = -1;
-                }
-            }
-            else
-            {
-                //targetSlideIdx = slideIdx.Value;
-                targetSlideIdx = slideIdx;
-            }
-        }
-        else if (clickable)
-        {
-            _slideTracker.AddLast(targetSlideIdx);
-        }
-
-        if (nextSlide == 0)
-        {
-            //ClearActiveSlide(true);
-            yield return null;
-        }
-
-        //Debug.Log("targetSlideIdx : " + targetSlideIdx + " _manager._location.slides.Count : " + _manager._location.slides.Count);
-        //Debug.Log("targetSlideIdx : " + targetSlideIdx + " slides.Count : " + _manager._location.slides.Count);
-        if (targetSlideIdx < _manager._location.slides.Count && targetSlideIdx >= 0)
-        {
-            //Coroutine slideLoader = GotoSlidePlayMode(targetSlideIdx);
-
-            //if (_slide.Slide.DownloadProgress == 1f) //if current slide is loaded, animate it out
-            //{
-            bool hasSlideStopped = false;
-
-            LeanTween.value(presentationAnchorOverride, 0, 1, /*_manager._location.slides[targetSlideIdx].transition.delay*/0).setOnComplete(() =>
-            {
-                StopSlide(false, () =>
-                {
-                    if (targetSlideIdx != _manager._location.slides.Count)
-                    {
-                        //   slideIdx.Value = targetSlideIdx;
-                        slideIdx = targetSlideIdx;
-                    }
-                    hasSlideStopped = true;
-                });
-            });
-            while (!hasSlideStopped) yield return null;
-            //}
-            //yield return slideLoader;
-            //yield return StartCoroutine(UpdateVRBackground(newSlideController.Slide.BackgroundTexture, newSlideController.Slide.backgroundOrientation));
-
-            //only after new slide has loaded, and old slide has finished
-            //Play();
-            OnSlideTransition(targetSlideIdx);
-        }
-        else if (targetSlideIdx == _manager._location.slides.Count)
-        {
-            if (targetSlideIdx != _manager._location.slides.Count)
-                slideIdx = targetSlideIdx;
-            //Last slide, let it do the transition..
-
-            shouldTrySync = false;
-            StopSlide(false, () =>
-            {
-                isPlaying = false;
-            });
-        }
-        else
-        {
-            /*currentSlide.StopSlide(false, () =>
-            {
-                isPlaying = false;
-                ResetLocation();
-                AppManager.Instance.slideNo.Value = 0;
-                eventUpdatePresValues();
-                eventUpdateMenuLayout(AppManager.Instance.appMode);
-                if (AppManager.Instance.isPresenter && AppNetworkController.Instance.channel.Value != null)
-                {
-                    AppNetworkController.Instance.SelectPresentationMode(AppManager.Instance.presentationState.Value);
-                }
-                CanReset = true;
-                if (targetSlideIdx != Location.slides.Count)
-                    slideIdx.Value = targetSlideIdx;
-            });*/
-        }
-        //}
-        slideTransition = null;
-        yield return null;
-        //ClearActiveSlide(false);
-        //OnFirstTimeLoaded();
-        OnFinish?.Invoke();
-    }
-
-    private void OnSlideTransition(int targetSlideIdx)
-    {
-        //AppManager.Instance.slideNo.Value = targetSlideIdx + 1;
-        //AppManager.Instance.isPresPaused.Value = false;
-        //            slideIdx.Value = targetSlideIdx;
-        slideIdx = targetSlideIdx;
     }
 
 

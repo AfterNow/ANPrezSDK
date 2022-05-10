@@ -66,8 +66,8 @@ public class ClickableAsset : MonoBehaviour
         onDestroy();
     }
 
-    /*private void OnMouseDown()
+    private void OnMouseDown()
     {
         OnClick();
-    }*/
+    }
 }
