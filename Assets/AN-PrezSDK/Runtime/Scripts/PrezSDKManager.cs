@@ -119,10 +119,10 @@ namespace AfterNow.PrezSDK
                 AssetLoader.OnClickableActivate = null;
             }
 
-            baseController.Callback_OnSDKInitialize(this);
+            baseController.OnSDKInitialize(this);
         }
 
-        public void Login(string username, string password)
+        internal void Login(string username, string password)
         {
             PrezWebCalls.user_email = username;
             PrezWebCalls.user_password = password;
@@ -143,7 +143,7 @@ namespace AfterNow.PrezSDK
             });
         }
 
-        public void Logout()
+        internal void Logout()
         {
             DeleteDownloadedFiles();
             baseController.Callback_OnUserLogout();

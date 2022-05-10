@@ -7,6 +7,24 @@ namespace AfterNow.PrezSDK.Shared
     public abstract class BasePrezController : MonoBehaviour
     {
         /// <summary>
+        /// Call this function with username and password to login to an account
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        public void Login(string username, string password)
+        {
+            sdkManager.Login(username, password);
+        }
+
+        /// <summary>
+        /// Call this function to logout to login with a new account
+        /// </summary>
+        public void Logout()
+        {
+            sdkManager.Logout();
+        }
+
+        /// <summary>
         /// Call this function with Presentation ID after Authorization is successful.
         /// Returns false if presentation cannot be joined at the moment. 
         /// Returns true if the request has been taken into consideration.
@@ -60,12 +78,6 @@ namespace AfterNow.PrezSDK.Shared
         {
             _quit();
         }
-
-        /// <summary>
-        /// This callback is invoked after the PrezSDKManager has been initialized (after Awake)
-        /// </summary>
-        /// <param name="sdkManager"></param>
-        public abstract void Callback_OnSDKInitialize(PrezSDKManager sdkManager);
 
 
         /// <summary>
@@ -151,10 +163,21 @@ namespace AfterNow.PrezSDK.Shared
             _quit = quit;
         }
 
+        /// <summary>
+        /// This callback is invoked after the PrezSDKManager has been initialized (after Awake).
+        /// Store the PrezSDKManager object reference to access functions like Login and Logout
+        /// </summary>
+        /// <param name="sdkManager"></param>
+        internal void OnSDKInitialize(PrezSDKManager sdkManager)
+        {
+            this.sdkManager = sdkManager;
+        }
+
         private Func<string, bool> _onJoinPresentation;
         private Action _nextStep;
         private Action _nextSlide;
         private Action _previousSlide;
         private Action _quit;
+        private PrezSDKManager sdkManager;
     }
 }

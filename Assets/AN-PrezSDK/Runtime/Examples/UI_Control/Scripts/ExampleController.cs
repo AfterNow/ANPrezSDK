@@ -28,22 +28,16 @@ namespace AfterNow.PrezSDK.Example
         [SerializeField] Button nextStep;
         [SerializeField] Button Quit;
         [SerializeField] Button LoadPresentation;
-        [SerializeField] Button Login;
-        [SerializeField] Button Logout;
+        [SerializeField] Button LoginButton;
+        [SerializeField] Button LogoutButton;
 
         [SerializeField] GameObject LoadPresentationUI;
         [SerializeField] GameObject PlayPresentationUI;
         [SerializeField] GameObject UserLoginUI;
         [SerializeField] TMP_InputField PresentationID;
 
-        PrezSDKManager prezSDKManager;
         string presentationID = null;
         bool hasSlideLoaded = false;
-
-        public override void Callback_OnSDKInitialize(PrezSDKManager sdkManager)
-        {
-            prezSDKManager = sdkManager;
-        }
 
         public override void Callback_OnPresentationEnd()
         {
@@ -132,12 +126,7 @@ namespace AfterNow.PrezSDK.Example
         {
             userLoginStatusText.text = "Authenticating...";
             userLoginStatusText.color = Color.black;
-            prezSDKManager.Login(userEmailIdInput.text, userPasswordInput.text);
-        }
-
-        public void UserLogout()
-        {
-            prezSDKManager.Logout();
+            Login(userEmailIdInput.text, userPasswordInput.text);
         }
 
         private void Start()
@@ -183,14 +172,14 @@ namespace AfterNow.PrezSDK.Example
                 }
             });
 
-            Login.onClick.AddListener(() =>
+            LoginButton.onClick.AddListener(() =>
             {
                 UserLogin();
             });
 
-            Logout.onClick.AddListener(() =>
+            LogoutButton.onClick.AddListener(() =>
             {
-                UserLogout();
+                Logout();
             });
         }
 
