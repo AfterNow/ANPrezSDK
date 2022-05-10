@@ -476,8 +476,11 @@ class PrezSDKManager : MonoBehaviour
             });
         }, (prezFailed) =>
         {
-            waitingForPresentationLoad = false;
-            baseController.Callback_OnPresentationFailed(prezFailed);
+            CoroutineRunner.DispatchToMainThread(() =>
+            {
+                waitingForPresentationLoad = false;
+                baseController.Callback_OnPresentationFailed(prezFailed);
+            });
         });
         return true;
     }
