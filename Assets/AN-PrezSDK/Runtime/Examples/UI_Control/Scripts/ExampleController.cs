@@ -1,5 +1,4 @@
-﻿using AfterNow.PrezSDK.Internal.Helpers;
-using AfterNow.PrezSDK.Shared;
+﻿using AfterNow.PrezSDK.Shared;
 using AfterNow.PrezSDK.Shared.Enums;
 using System;
 using System.Collections;
@@ -71,7 +70,7 @@ namespace AfterNow.PrezSDK.Example
                 else
                 {
                     //Enable Presentation UI one second after the user is authorized successfully
-                    Invoke("EnableLoadPresentationUI", 2f);
+                    EnableLoadPresentationUI();
                 }
 
                 UserLoginUI.SetActive(false);
@@ -90,7 +89,7 @@ namespace AfterNow.PrezSDK.Example
             {
                 presentationLoadStatusText.text = "Loading Presentation...";
                 presentationLoadStatusText.color = Color.green;
-                Invoke("EnablePlayPresentationUI", 2f);
+                EnablePlayPresentationUI();
             }
             else
             {
@@ -244,11 +243,6 @@ namespace AfterNow.PrezSDK.Example
 
         public override void Callback_OnUserLogout()
         {
-            InternalStates.Reset();
-
-            //Delete downloaded files
-            PrezSDKManager.DeleteDownloadedFiles();
-
             //Clear email and password fields
             userEmailIdInput.text = string.Empty;
             userPasswordInput.text = string.Empty;

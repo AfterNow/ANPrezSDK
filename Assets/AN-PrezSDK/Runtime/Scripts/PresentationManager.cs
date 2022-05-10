@@ -73,9 +73,6 @@ namespace AfterNow.PrezSDK
         private void OnDestroy()
         {
             PrezAPIHelper.StopDownload();
-
-            //delete files
-            PrezSDKManager.DeleteDownloadedFiles();
         }
 
         internal class LoadedSlide

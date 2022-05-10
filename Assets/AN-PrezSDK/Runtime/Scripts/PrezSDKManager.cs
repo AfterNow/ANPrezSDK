@@ -143,6 +143,7 @@ namespace AfterNow.PrezSDK
 
         public void Logout()
         {
+            DeleteDownloadedFiles();
             baseController.Callback_OnUserLogout();
         }
 
@@ -163,7 +164,7 @@ namespace AfterNow.PrezSDK
 
             prezAssets.Clear();
             _manager._location = null;
-
+            DeleteDownloadedFiles();
             //Remove PresentationManager from the presentationAnchorOverride
             Destroy(presentationAnchorOverride.GetComponent<PresentationManager>());
         }
@@ -659,15 +660,27 @@ namespace AfterNow.PrezSDK
             OnSyncGroup(num);
         }
 
-        internal static void DeleteDownloadedFiles()
+        static void DeleteDownloadedFiles()
         {
-            DirectoryInfo directoryInfo = new DirectoryInfo(InitializeSDK.DownloadFolderPath);
-
-            foreach (var item in directoryInfo.EnumerateDirectories())
+            try
             {
-                item.Delete(true);
-            }
+                DirectoryInfo directoryInfo = new DirectoryInfo(InitializeSDK.DownloadFolderPath);
 
+                foreach (var item in directoryInfo.EnumerateDirectories())
+                {
+                    item.Delete(true);
+                }
+            }
+            catch(Exception ex)
+            {
+                Debug.LogException(ex);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            DeleteDownloadedFiles();
+            InternalStates.Reset();
         }
     }
 }
