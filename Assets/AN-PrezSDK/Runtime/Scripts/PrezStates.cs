@@ -1,18 +1,20 @@
 ﻿
-namespace AfterNow.PrezSDK.Internal.Views
+using AfterNow.PrezSDK.Internal.Views;
+
+namespace AfterNow.PrezSDK
 {
-    public static class PrezStates
+    internal static class PrezStates
     {
-        public static Presentation Presentation;
+        internal static Presentation Presentation;
 
         /// <summary>
         /// From 0 to SlideCount - 1
         /// </summary>
-        public static int CurrentSlide;
-        public static int PresentationID;
-        public static int PresenterID;
+        internal static int CurrentSlide;
+        internal static int PresentationID;
+        internal static int PresenterID;
 
-        public static void Reset()
+        internal static void Reset()
         {
             Presentation = null;
             CurrentSlide = 0;

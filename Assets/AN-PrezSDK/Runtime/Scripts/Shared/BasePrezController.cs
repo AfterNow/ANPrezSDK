@@ -7,6 +7,32 @@ namespace AfterNow.PrezSDK.Shared
     public abstract class BasePrezController : MonoBehaviour
     {
         /// <summary>
+        /// Use this to determine if SDK has been initialized or not
+        /// </summary>
+        public bool HasInitialized { get; private set; }
+
+        /// <summary>
+        /// Call this function with username and password to login to an account.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        public void Login(string username, string password)
+        {
+            ThrowIfNotInitialized();
+            sdkManager.Login(username, password);
+        }
+
+        /// <summary>
+        /// Call this function to logout to login with a new account.
+        /// This cleans up and frees the resources allocated by SDK in the session.
+        /// </summary>
+        public void Logout()
+        {
+            ThrowIfNotInitialized();
+            sdkManager.Logout();
+        }
+
+        /// <summary>
         /// Call this function with Presentation ID after Authorization is successful.
         /// Returns false if presentation cannot be joined at the moment. 
         /// Returns true if the request has been taken into consideration.
@@ -145,10 +171,28 @@ namespace AfterNow.PrezSDK.Shared
             _quit = quit;
         }
 
+        /// <summary>
+        /// This callback is invoked after the PrezSDKManager has been initialized (after Awake).
+        /// Store the PrezSDKManager object reference to access functions like Login and Logout
+        /// </summary>
+        /// <param name="sdkManager"></param>
+        internal void OnSDKInitialize(PrezSDKManager sdkManager)
+        {
+            this.sdkManager = sdkManager;
+            HasInitialized = true;
+        }
+
         private Func<string, bool> _onJoinPresentation;
         private Action _nextStep;
         private Action _nextSlide;
         private Action _previousSlide;
         private Action _quit;
+        private PrezSDKManager sdkManager;
+
+
+        private void ThrowIfNotInitialized()
+        {
+            if (!HasInitialized) throw new InvalidOperationException("PrezSDKManager has not been Initialized (Awake has not been invoked by PlayerLoop). Check HasInitialized before calling the function.");
+        }
     }
 }

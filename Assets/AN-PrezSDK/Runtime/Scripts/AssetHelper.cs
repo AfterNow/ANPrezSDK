@@ -5,10 +5,12 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-    public static class PrezAssetHelper
+namespace AfterNow.PrezSDK
+{
+    internal static class PrezAssetHelper
     {
         private static readonly Dictionary<string, TMP_FontAsset> LoadedFontAssets = new Dictionary<string, TMP_FontAsset>();
-        public static TMP_FontAsset GetFontAsset(this ARPText asset)
+        internal static TMP_FontAsset GetFontAsset(this ARPText asset)
         {
             string fontName = asset.GetFontName();
             if (LoadedFontAssets.TryGetValue(fontName, out TMP_FontAsset font))
@@ -29,13 +31,13 @@ using UnityEngine;
             }
         }
 
-        public static Color GetColor(string stringColor)
+        internal static Color GetColor(string stringColor)
         {
             ColorUtility.TryParseHtmlString(stringColor, out Color newColor);
             return newColor;
         }
 
-        public static TextAlignmentOptions GetTMPAlignment(this ARPText text)
+        internal static TextAlignmentOptions GetTMPAlignment(this ARPText text)
         {
             switch (text.alignment)
             {
@@ -50,7 +52,7 @@ using UnityEngine;
             }
         }
 
-        public static WrapMode GetWrapMode(this ARPTransition transition)
+        internal static WrapMode GetWrapMode(this ARPTransition transition)
         {
             switch (transition.internalAnimationWrap)
             {
@@ -67,17 +69,17 @@ using UnityEngine;
             }
         }
 
-        public static Texture2D GetBackgroundTexture(this Slide slide)
+        internal static Texture2D GetBackgroundTexture(this Slide slide)
         {
             if (slide.BackgroundTexture == null) return null;
-            if(slide.BackgroundTexture is Texture2D tex)
+            if (slide.BackgroundTexture is Texture2D tex)
             {
                 return tex;
             }
             return null;
         }
 
-        public static void UpdateItemTransform(this ARPAsset asset,Transform newTransform)
+        internal static void UpdateItemTransform(this ARPAsset asset, Transform newTransform)
         {
             if (asset.itemTransform == null)
             {
@@ -86,7 +88,7 @@ using UnityEngine;
             asset.itemTransform.SetTransform(newTransform);
         }
 
-        public static ItemTransform GetItemTransform(this ARPAsset asset)
+        internal static ItemTransform GetItemTransform(this ARPAsset asset)
         {
             if (asset.itemTransform == null)
             {
@@ -95,7 +97,7 @@ using UnityEngine;
             return asset.itemTransform;
         }
 
-        public static void UpdateItemTransform(this Location asset, Transform newTransform)
+        internal static void UpdateItemTransform(this Location asset, Transform newTransform)
         {
             if (asset.itemTransform == null)
             {
@@ -104,7 +106,7 @@ using UnityEngine;
             asset.itemTransform.SetTransform(newTransform);
         }
 
-        public static ItemTransform GetItemTransform(this Location asset)
+        internal static ItemTransform GetItemTransform(this Location asset)
         {
             if (asset.itemTransform == null)
             {
@@ -113,7 +115,7 @@ using UnityEngine;
             return asset.itemTransform;
         }
 
-        public static void SetInitialTransform(this GameObject obj, ItemTransform itemTransform)
+        internal static void SetInitialTransform(this GameObject obj, ItemTransform itemTransform)
         {
             Transform trans = obj.transform;
             trans.localPosition = itemTransform.position.GetVector();
@@ -122,14 +124,14 @@ using UnityEngine;
         }
 
 
-        public static void SetTransform(this ItemTransform item,Transform transform)
+        internal static void SetTransform(this ItemTransform item, Transform transform)
         {
             item.position = item.position.SetVector(transform.localPosition);
             item.rotation = item.rotation.SetQuaternion(transform.localRotation);
             item.localScale = item.localScale.SetVector(transform.localScale);
         }
 
-        public static PrezVector3 SetVector(this PrezVector3 item, Vector3 vector)
+        internal static PrezVector3 SetVector(this PrezVector3 item, Vector3 vector)
         {
             item.x = vector.x;
             item.y = vector.y;
@@ -137,7 +139,7 @@ using UnityEngine;
             return item;
         }
 
-        public static PrezQuaternion SetQuaternion(this PrezQuaternion item, Quaternion quat)
+        internal static PrezQuaternion SetQuaternion(this PrezQuaternion item, Quaternion quat)
         {
             item.x = quat.x;
             item.y = quat.y;
@@ -146,17 +148,17 @@ using UnityEngine;
             return item;
         }
 
-        public static Vector3 GetVector(this PrezVector3 vec)
+        internal static Vector3 GetVector(this PrezVector3 vec)
         {
             return new Vector3(vec.x, vec.y, vec.z);
         }
 
-        public static Quaternion GetQuaternion(this PrezQuaternion quat)
+        internal static Quaternion GetQuaternion(this PrezQuaternion quat)
         {
             return new Quaternion(quat.x, quat.y, quat.z, quat.w);
         }
 
-        public static string ReplacementString()
+        internal static string ReplacementString()
         {
             string replacement = null;
 
@@ -189,4 +191,5 @@ using UnityEngine;
             return replacement;
         }
     }
+}
 

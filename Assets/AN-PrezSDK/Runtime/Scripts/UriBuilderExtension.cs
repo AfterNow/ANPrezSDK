@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-    public static class UriBuilderExtension
+namespace AfterNow.PrezSDK
+{
+    internal static class UriBuilderExtension
     {
-        public static string UriPath(string path)
+        internal static string UriPath(string path)
         {
             if (!string.IsNullOrEmpty(path))
             {
@@ -19,3 +17,4 @@ using System.Threading.Tasks;
             return null;
         }
     }
+}

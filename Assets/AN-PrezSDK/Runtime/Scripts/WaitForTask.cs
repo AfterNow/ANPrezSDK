@@ -1,12 +1,15 @@
 ﻿using System.Threading.Tasks;
 using UnityEngine;
 
-    public class WaitForTask : CustomYieldInstruction
+namespace AfterNow.PrezSDK
+{
+    internal class WaitForTask : CustomYieldInstruction
     {
         public override bool keepWaiting => !_task.IsCompleted;
         private readonly Task _task;
-        public WaitForTask(Task task)
+        internal WaitForTask(Task task)
         {
             _task = task;
         }
     }
+}

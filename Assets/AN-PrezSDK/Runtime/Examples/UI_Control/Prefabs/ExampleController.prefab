@@ -3378,7 +3378,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4301919201a3c840a34a74c244fa852, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prezSDKManager: {fileID: 0}
   userEmailId: 
   userPassword: 
   defaultPresentationID: 
@@ -3394,8 +3393,8 @@ MonoBehaviour:
   nextStep: {fileID: 4202088469839041603}
   Quit: {fileID: 5051317054822044615}
   LoadPresentation: {fileID: 4988791008098173820}
-  Login: {fileID: 4664634827335020053}
-  Logout: {fileID: 4197029928578123046}
+  LoginButton: {fileID: 4664634827335020053}
+  LogoutButton: {fileID: 4197029928578123046}
   LoadPresentationUI: {fileID: 5051317054217683731}
   PlayPresentationUI: {fileID: 5051317055338781738}
   UserLoginUI: {fileID: 4164361775722798514}
