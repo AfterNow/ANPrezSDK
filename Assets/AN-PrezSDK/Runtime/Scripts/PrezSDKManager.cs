@@ -677,7 +677,6 @@ namespace AfterNow.PrezSDK
                         DirectoryInfo directoryInfo = new DirectoryInfo(InitializeSDK.DownloadFolderPath);
                         directoryInfo.Delete(true);
                         triesLeft = 0;
-                        deletionRoutine = null;
                         Debug.Log($"Deleted assets successfully from: {InitializeSDK.DownloadFolderPath}");
                     }
                     catch (Exception ex)
@@ -688,6 +687,7 @@ namespace AfterNow.PrezSDK
 
                     yield return null;
                 }
+                deletionRoutine = null;
             }
 
             if(deletionRoutine != null)
