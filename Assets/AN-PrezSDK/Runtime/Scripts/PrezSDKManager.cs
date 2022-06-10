@@ -37,6 +37,7 @@ namespace AfterNow.PrezSDK
         private AnimationTimeline animationTimeline;
         private PresentationManager _manager;
         internal static Dictionary<string, GameObject> prezAssets = new Dictionary<string, GameObject>();
+        private static Coroutine deletionRoutine;
         #endregion
 
         #region serialized values
@@ -161,7 +162,7 @@ namespace AfterNow.PrezSDK
             //Destroy assets on quit
             foreach (var asset in prezAssets)
             {
-                Destroy(asset.Value.gameObject);
+                DestroyImmediate(asset.Value);
             }
 
             prezAssets.Clear();
@@ -462,6 +463,7 @@ namespace AfterNow.PrezSDK
                         _manager = presentationAnchorOverride.AddComponent<PresentationManager>();
                         _manager.Init(prez.locations[0]);
                         StartCoroutine(LoadSlide(PrezStates.CurrentSlide));
+                        if (deletionRoutine != null) CoroutineRunner.Instance.StopCoroutine(deletionRoutine);
                         baseController.Callback_OnPresentationJoin(PresentationJoinStatus.SUCCESS, prez.match.shortId);
                     }
                     else
@@ -664,19 +666,35 @@ namespace AfterNow.PrezSDK
 
         static void DeleteDownloadedFiles()
         {
-            try
+            static IEnumerator TryDelete()
             {
-                DirectoryInfo directoryInfo = new DirectoryInfo(InitializeSDK.DownloadFolderPath);
-
-                foreach (var item in directoryInfo.EnumerateDirectories())
+                yield return Resources.UnloadUnusedAssets();
+                int triesLeft = 5;
+                while (triesLeft > 0)
                 {
-                    item.Delete(true);
+                    try
+                    {
+                        DirectoryInfo directoryInfo = new DirectoryInfo(InitializeSDK.DownloadFolderPath);
+                        directoryInfo.Delete(true);
+                        triesLeft = 0;
+                        deletionRoutine = null;
+                        Debug.Log($"Deleted assets successfully from: {InitializeSDK.DownloadFolderPath}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogException(ex);
+                        triesLeft--;
+                    }
+
+                    yield return null;
                 }
             }
-            catch(Exception ex)
+
+            if(deletionRoutine != null)
             {
-                Debug.LogException(ex);
+                CoroutineRunner.Instance.StopCoroutine(deletionRoutine);
             }
+            deletionRoutine = CoroutineRunner.Instance.StartCoroutine(TryDelete());
         }
 
         private void OnDestroy()
